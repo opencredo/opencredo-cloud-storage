@@ -10,6 +10,9 @@ import com.xerox.amazonws.sqs2.SQSException;
 import com.xerox.amazonws.sqs2.SQSUtils;
 
 
+/**
+ * MessageSource that creates messages from a Simple Queue Service.
+ */
 public class SqsReceivingMessageSource implements MessageSource<Message> {
 
     private final MessageQueue messageQueue;
@@ -27,10 +30,11 @@ public class SqsReceivingMessageSource implements MessageSource<Message> {
         try {
             com.xerox.amazonws.sqs2.Message message = this.messageQueue.receiveMessage();
             MessageBuilder builder = MessageBuilder.withPayload(message.getMessageBody());
+
             //decide what headers we want to map
             return builder.build();
         } catch (SQSException sqsE) {
-            throw new MessagingException("Exception retreiving message from SQS queue " + messageQueue.getUrl());
+            throw new MessagingException("Exception retrieving message from SQS queue " + messageQueue.getUrl());
         }
     }
 }
