@@ -26,7 +26,7 @@
         <typicaVersion>1.5.2a</typicaVersion>
         <junitVersion>4.4</junitVersion>
         <commonsLoggingVersion>1.1.1</commonsLoggingVersion>
-        <springIntegrationVersion>1.0.2.SR1</springIntegrationVersion>
+        <springIntegrationVersion>1.0.3.RELEASE</springIntegrationVersion>
     </properties>
 
     <dependencies>
