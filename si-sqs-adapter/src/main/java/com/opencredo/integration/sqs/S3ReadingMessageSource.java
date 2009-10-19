@@ -7,7 +7,18 @@ import org.springframework.integration.core.Message;
 import org.springframework.integration.core.MessagingException;
 
 import org.apache.log4j.Logger;
+import org.jets3t.service.S3Service;
+import org.jets3t.service.S3ServiceException;
+import org.jets3t.service.impl.rest.httpclient.RestS3Service;
+import org.jets3t.service.security.AWSCredentials;
+import org.jets3t.service.model.S3Bucket;
+import org.jets3t.service.model.S3Object;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+import com.xerox.amazonws.sqs2.SQSException;
+import com.xerox.amazonws.sqs2.MessageQueue;
 
 
 /**
@@ -18,20 +29,21 @@ public class S3ReadingMessageSource implements MessageSource<Message> {
 	//private final String awsAccessKey = "AKIAJJC4KITQHSAY43MQ";
 	//private final String awsSecretKey = "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";
 
-    private s3Channel;
+    private MessageQueue s3Queue;
     private static final Logger LOGGER = Logger.getLogger(S3ReadingMessageSource.class);
 
     public S3ReadingMessageSource(MessageQueue messageQueue) {
-        //this.s3Queue = messageQueue;
+        this.s3Queue = messageQueue;
     }
 
-    public S3ReadingMessageSource(String queueName, String awsAccessKeyId, String awsSecretKey) throws SQSException {
+    public S3ReadingMessageSource(String queueName, String awsAccessKeyId, String awsSecretKey) throws Exception {
         //this.s3Queue = SQSUtils.connectToQueue(queueName, awsAccessKeyId, awsSecretKey);
     	S3Service s3Service = new RestS3Service(new AWSCredentials(awsAccessKeyId, awsSecretKey));
     
     	//list buckets to test if connection works correctly
     	S3Bucket[] myBuckets = s3Service.listAllBuckets();
     	//TODO:log4j
+        S3Bucket testBucket = myBuckets[0];
     	System.out.println("Number of buckets: " + myBuckets.length);
     	
     	// Retrieve the HEAD of the data object we created previously.
@@ -55,13 +67,13 @@ public class S3ReadingMessageSource implements MessageSource<Message> {
 
     public Message<Message> receive() {
         try {
-            Message message = this.s3Queue.receiveMessage();
+            com.xerox.amazonws.sqs2.Message message = this.s3Queue.receiveMessage();
             MessageBuilder builder = MessageBuilder.withPayload(message.getMessageBody());
 
             //decide what headers we want to map
             return builder.build();
         } catch (SQSException sqsE) {
-            throw new MessagingException("Exception retrieving message from S3 queue " + messageQueue.getUrl());
+            throw new MessagingException("Exception retrieving message from S3 queue " + this.s3Queue.getUrl());
         }
     }
 }

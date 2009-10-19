@@ -6,6 +6,6 @@ public class S3InboundFileAdapter{
 
   
     public Message<Message> convertS3ToMessage() {
-    	
+        return null;	
     }
 }
