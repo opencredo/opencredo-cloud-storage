@@ -51,6 +51,16 @@
     		<groupId>log4j</groupId>
     		<artifactId>log4j</artifactId>
     		<version>1.2.15</version>
+				<exclusions>
+					<exclusion>
+						<groupId>com.sun.jdmk</groupId>
+						<artifactId>jmxtools</artifactId>	
+					</exclusion>
+						<exclusion>
+							<groupId>com.sun.jmx</groupId>
+							<artifactId>jmxri</artifactId>	
+						</exclusion>		
+				</exclusions>
 	</dependency>
         <dependency>
             <artifactId>commons-logging</artifactId>
@@ -76,6 +86,7 @@
       	    <groupId>net.java.dev.jets3t</groupId>
       	    <artifactId>jets3t</artifactId>
             <version>0.7.1</version>
+		
     	</dependency>
     </dependencies>
 
