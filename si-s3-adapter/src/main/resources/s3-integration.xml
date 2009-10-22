@@ -27,8 +27,16 @@
        		<integration:interval-trigger interval="5000"/>
     	    </integration:poller>
     	</integration:inbound-channel-adapter>
+    		
+    		
+    		
+    		
+    	<integration:channel id="s3InputChannel2" />
     	
+	<beans:bean id="s3CustomFileSystemAdapter" class="com.opencredo.integration.s3.S3CustomFileSystemAdapter" /> 	
+	<integration:source-adapter channel="s3InputChannel2" period="5000" ref="s3CustomFileSystemAdapter" 
+      		method="checkS3" />
 	
-
+	
 </beans:beans>
 

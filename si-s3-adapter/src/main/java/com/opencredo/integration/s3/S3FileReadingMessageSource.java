@@ -11,7 +11,7 @@ import org.jets3t.service.S3Service;
 import org.jets3t.service.S3ServiceException;
 import org.jets3t.service.impl.rest.httpclient.RestS3Service;
 import org.jets3t.service.security.AWSCredentials;
-import org.jets3t.service.model.S3Bucket;
+//import org.jets3t.service.model.S3Bucket;
 
 
 //https://sibucket.s3.amazonaws.com:443/
@@ -62,7 +62,7 @@ public class S3FileReadingMessageSource extends FileReadingMessageSource {
 	public Message<java.io.File> receive(){
 		try {
 
-			//TODO: Convert a newly created s3 object to a Message
+			//TODO: Convert a newly created file to a Message
 			
 			//this.inputDirectory.
 			

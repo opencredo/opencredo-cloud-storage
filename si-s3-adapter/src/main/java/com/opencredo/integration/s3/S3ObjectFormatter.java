@@ -1,0 +1,27 @@
+package com.opencredo.integration.s3;
+
+import org.jets3t.service.impl.rest.httpclient.RestS3Service;
+import org.jets3t.service.security.AWSCredentials;
+import org.springframework.integration.annotation.MessageEndpoint;
+import org.springframework.integration.annotation.ServiceActivator;
+import org.springframework.integration.core.Message;
+import org.springframework.integration.message.MessageBuilder;
+
+
+@MessageEndpoint(inputChannel="s3InputChannel2", outputChannel="s3OutputMessageChannel")
+public class S3ObjectFormatter {
+
+	@ServiceActivator
+	public Message<?> convertS3(Object s3Object){
+	
+		//convert s3 objects to spring integration messages and sends them to outputChannel
+        
+        //MessageBuilder builder = MessageBuilder.withPayload(message.getMessageBody());
+
+        //decide what headers we want to map
+        //return builder.build();
+		
+		return null;
+	}
+}
+
