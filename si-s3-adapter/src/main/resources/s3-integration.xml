@@ -5,36 +5,28 @@
 	xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:integration="http://www.springframework.org/schema/integration"
 	xmlns:file="http://www.springframework.org/schema/integration/file"
+	xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
 			http://www.springframework.org/schema/beans/spring-beans.xsd
 			http://www.springframework.org/schema/integration
 			 http://www.springframework.org/schema/integration/spring-integration-1.0.xsd
 			http://www.springframework.org/schema/integration/file
-			http://www.springframework.org/schema/integration/file/spring-integration-file.xsd">
-						
-	<beans:bean id="s3Resource" class="com.opencredo.integration.s3.S3Resource" />
-		
-	<beans:bean id="s3FileReadingMessageSource" class="com.opencredo.integration.s3.S3FileReadingMessageSource">
-		<beans:property name="inputDirectory" ref="s3Resource" />
-	</beans:bean>
-		
-	<integration:channel id="s3InputChannel"/>
-	
-	<integration:inbound-channel-adapter id="s3FileInputChannel" channel="s3InputChannel" ref="s3FileReadingMessageSource" method="receive">
+			http://www.springframework.org/schema/integration/file/spring-integration-file.xsd
+			http://www.springframework.org/schema/context 
+			http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+				
+	<context:annotation-config />
+							  		
+    	<integration:channel id="s3InputChannel" />
+    	
+	<beans:bean id="s3CustomFileSystemAdapter" class="com.opencredo.integration.s3.S3CustomFileSystemAdapter" /> 	
+
+	<integration:inbound-channel-adapter id="s3InputChannelAdapter" channel="s3InputChannel" 
+				ref="s3CustomFileSystemAdapter" method="checkS3">
 	    <integration:poller>
        		<integration:interval-trigger interval="5000"/>
     	    </integration:poller>
     	</integration:inbound-channel-adapter>
-    		
-    		
-    		
-    		
-    	<integration:channel id="s3InputChannel2" />
-    	
-	<beans:bean id="s3CustomFileSystemAdapter" class="com.opencredo.integration.s3.S3CustomFileSystemAdapter" /> 	
-	<integration:source-adapter channel="s3InputChannel2" period="5000" ref="s3CustomFileSystemAdapter" 
-      		method="checkS3" />
-	
 	
 </beans:beans>
 
