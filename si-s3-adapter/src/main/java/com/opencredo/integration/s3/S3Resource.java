@@ -14,6 +14,7 @@ import org.jets3t.service.model.S3Bucket;
 import org.jets3t.service.model.S3Object;
 import org.jets3t.service.security.AWSCredentials;
 import org.springframework.core.io.Resource;
+import org.springframework.util.Assert;
 
 
 public class S3Resource implements Resource{
@@ -23,7 +24,7 @@ public class S3Resource implements Resource{
 	
 	private S3Service s3Service;
 	private S3Bucket s3Bucket;
-	private String fileName = null;
+	private String s3fileName = null;
 	
 	public S3Resource(String bucketName, String awsAccessKeyId, String awsSecretKey){
 		try {
@@ -34,11 +35,7 @@ public class S3Resource implements Resource{
 			e.printStackTrace();
 		}
 	}
-	
-	public void setFileName(String fileName){
-		this.fileName = fileName;
-	}
-	
+
 	public Resource createRelative(String arg0) throws IOException {
 		
 		return null;
@@ -57,6 +54,7 @@ public class S3Resource implements Resource{
 	public String getDescription() {
 		return new String("JetS3t Properties: " + s3Service.getJetS3tProperties().toString());
 	}
+
 
 	public File getFile() throws IOException {
 		return tempDestinationDirectory;
@@ -87,8 +85,9 @@ public class S3Resource implements Resource{
 
 	public long lastModified() throws IOException {
 		//TODO: TimeStamp/long conversion
+		Assert.notNull(s3fileName, "File name should be known");
 		try {
-			return Long.parseLong(s3Service.getObjectDetails(s3Bucket, fileName).getMetadata("METADATA_HEADER_LAST_MODIFIED_DATE").toString());
+			return Long.parseLong(s3Service.getObjectDetails(s3Bucket, s3fileName).getMetadata("METADATA_HEADER_LAST_MODIFIED_DATE").toString());
 		} catch (S3ServiceException e) {
 			e.printStackTrace();
 			return 0;
@@ -100,7 +99,7 @@ public class S3Resource implements Resource{
 		return null;
 	}
 
-	public S3Bucket getBucket(String bucketName) {
+	public S3Bucket getS3Bucket(String bucketName) {
 		
 		try {
 			return s3Service.getBucket(bucketName);
@@ -110,8 +109,8 @@ public class S3Resource implements Resource{
 			return null;
 		}
 	}
-
-	public void setBucket(String bucketName) {
+	
+	public void setS3Bucket(String bucketName) {
 		try {
 			s3Bucket = s3Service.getBucket(bucketName);
 		} 
@@ -119,6 +118,22 @@ public class S3Resource implements Resource{
 			e.printStackTrace();
 		}
 		
+	}
+	
+	public S3Service getS3Service() {
+			return s3Service;
+	}
+
+	public void setS3Service(S3Service s3Service) {	
+		this.s3Service = s3Service;	
+	}
+	
+	public void setS3FileName(String fileName){
+		s3fileName = fileName;
+	}
+	
+	public String getS3FileName(){
+		return s3fileName;
 	}
 	
 	public void sendFileToBucket(String filename){
