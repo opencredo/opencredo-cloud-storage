@@ -1,10 +1,9 @@
 package com.opencredo.integration.s3;
 
-import java.io.File;
 
 import org.jets3t.service.model.S3Object;
 import org.springframework.integration.core.Message;
-import org.springframework.integration.file.transformer.AbstractFilePayloadTransformer;
+import org.springframework.integration.core.MessagingException;
 
 public class S3MessageTransformer {
 
@@ -15,7 +14,7 @@ public class S3MessageTransformer {
 			
 		} 
 		catch (Exception e) {
-			throw new MessagingException(message, "failed to transform  Message", e);
+			throw new MessagingException(s3Object, "failed to transform  Message", e);
 		}
 		return null;
 	}
