@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.Map;
 
 
+import org.jets3t.service.Constants;
+import org.jets3t.service.S3ObjectsChunk;
 import org.jets3t.service.S3Service;
 import org.jets3t.service.S3ServiceException;
 import org.jets3t.service.impl.rest.httpclient.RestS3Service;
@@ -85,8 +87,11 @@ public class S3FileReadingMessageSource implements MessageSource {
 		
 		try {
 			if (s3Service.checkBucketStatus(s3Bucket.getName()) == BUCKET_STATUS__MY_BUCKET){
-				//objectsInBucket contain only metadata, not the actual content
-				objectsInBucket = s3Service.listObjects(s3Bucket);
+				//objectsInBucket contain only minimal information, not the actual content or metadata
+				//objectsInBucket = s3Service.listObjects(s3Bucket);
+				S3ObjectsChunk chunk = s3Service.listObjectsChunked(s3Bucket.getName(),
+			             null, null, Constants.DEFAULT_OBJECT_LIST_CHUNK_SIZE, null, true);
+			    objectsInBucket = chunk.getObjects();
 				Arrays.sort(objectsInBucket, new S3ObjectLastModifiedDateComparator());
 				S3Object firstObjectWithUnsentKey = findFirstObjectWithUnsentKey(objectsInBucket);
 				if (firstObjectWithUnsentKey != null){

@@ -38,17 +38,5 @@ public class S3FileReadingMessageSourceTest {
         verify(s3ServiceMock).checkBucketStatus(bucketName);
     }
  
-    /*
-    @Test(expected = Exception.class)
-    public void getPriceNonExistentSkuThrowsException() throws SkuNotFoundException {
-        when(mockedDependency.getPriceBySku(BAD_SKU)).toReturn(null);
-        final BigDecimal price = systemUnderTest.getPrice(BAD_SKU);
-    }
- 
-    @Test(expected = RuntimeException.class)
-    public void getPriceDataAccessThrowsRuntimeException() throws SkuNotFoundException {
-        when(mockedDependency.getPriceBySku(SKU)).toThrow(new RuntimeException("Fatal data access exception."));
-        final BigDecimal price = systemUnderTest.getPrice(SKU);
-    }
-    */
+
 }
