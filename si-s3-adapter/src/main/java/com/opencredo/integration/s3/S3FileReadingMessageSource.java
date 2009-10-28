@@ -1,6 +1,5 @@
 package com.opencredo.integration.s3;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
@@ -25,7 +24,7 @@ import org.springframework.integration.core.Message;
 /** 
  * MessageSource that creates messages from a Simple Queue Service.
  */
-public class S3FileReadingMessageSource implements MessageSource {
+public class S3FileReadingMessageSource implements MessageSource<S3Object> {
 	
 	class S3ObjectLastModifiedDateComparator implements Comparator<S3Object>{
 
@@ -87,8 +86,7 @@ public class S3FileReadingMessageSource implements MessageSource {
 		
 		try {
 			if (s3Service.checkBucketStatus(s3Bucket.getName()) == BUCKET_STATUS__MY_BUCKET){
-				//objectsInBucket contain only minimal information, not the actual content or metadata
-				//objectsInBucket = s3Service.listObjects(s3Bucket);
+				//objectsInBucket contain only minimal information, not the actual content
 				S3ObjectsChunk chunk = s3Service.listObjectsChunked(s3Bucket.getName(),
 			             null, null, Constants.DEFAULT_OBJECT_LIST_CHUNK_SIZE, null, true);
 			    objectsInBucket = chunk.getObjects();

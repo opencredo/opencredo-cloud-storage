@@ -3,8 +3,10 @@ package com.opencredo.integration.s3;
 import org.jets3t.service.S3Service;
 import org.jets3t.service.S3ServiceException;
 import org.jets3t.service.model.S3Bucket;
+import org.jets3t.service.model.S3Object;
 
 import static org.junit.Assert.assertNotNull;
+
 import org.junit.Before;
 import org.junit.Test;
 import static org.mockito.Mockito.verify;
@@ -13,6 +15,7 @@ import static org.jets3t.service.S3Service.*;
 
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.integration.core.Message;
 
 public class S3FileReadingMessageSourceTest {
 	
@@ -38,5 +41,11 @@ public class S3FileReadingMessageSourceTest {
         verify(s3ServiceMock).checkBucketStatus(bucketName);
     }
  
+    @Test
+    public void testReceive() throws S3ServiceException {
+    	 Message<S3Object> message = systemUnderTest.receive();
+    	 assertNotNull("returned message shouldn't be null", message);
+    	 
+    }
 
 }
