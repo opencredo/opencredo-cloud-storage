@@ -35,7 +35,7 @@ public class S3FileReadingMessageSourceTest {
 	private S3Bucket s3Bucket;
 
 	@Before
-    public void doBeforeEachTestCase() throws S3ServiceException {
+    public void doBeforeTests() throws S3ServiceException {
         //MockitoAnnotations.initMocks(this);
 		s3Service = new RestS3Service(new AWSCredentials("AKIAJJC4KITQHSAY43MQ","U0H0Psg7aS5qrKpLFqZXFUUOq2rK6l2xAfHxZWTd"));
 		s3Bucket = new S3Bucket("sibucket", "LOCATION_EUROPE");
