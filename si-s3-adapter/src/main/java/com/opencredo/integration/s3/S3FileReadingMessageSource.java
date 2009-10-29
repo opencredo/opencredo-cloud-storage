@@ -1,13 +1,9 @@
 package com.opencredo.integration.s3;
 
-import java.io.File;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.PriorityBlockingQueue;
@@ -17,17 +13,13 @@ import org.jets3t.service.Constants;
 import org.jets3t.service.S3ObjectsChunk;
 import org.jets3t.service.S3Service;
 import org.jets3t.service.S3ServiceException;
-import org.jets3t.service.impl.rest.httpclient.RestS3Service;
 import org.jets3t.service.model.S3Bucket;
 import org.jets3t.service.model.S3Object;
-import org.jets3t.service.security.AWSCredentials;
 import static  org.jets3t.service.S3Service.*;
 
 import org.springframework.integration.message.MessageBuilder;
 import org.springframework.integration.message.MessageSource;
 import org.springframework.integration.core.Message;
-import org.springframework.integration.file.AcceptOnceFileListFilter;
-import org.springframework.integration.file.FileListFilter;
 
 /** 
  * MessageSource that creates messages from a Simple Queue Service.
@@ -57,7 +49,7 @@ public class S3FileReadingMessageSource implements MessageSource<S3Object> {
 	private S3Service s3Service;
 	private S3Bucket s3Bucket;
 	
-	private Map<String, String> sentKeysMap = new HashMap<String, String>(); // (etag, last_modified_timestamp)
+	//private Map<String, String> sentKeysMap = new HashMap<String, String>(); // (etag, last_modified_timestamp)
 	
 	public S3Service getS3Service() {
 		return s3Service;
@@ -74,6 +66,10 @@ public class S3FileReadingMessageSource implements MessageSource<S3Object> {
 	public void setsBucket(S3Bucket sBucket) {
 		this.s3Bucket = sBucket;
 	}
+	
+	public Queue<S3Object> getQueueToBeReceived(){
+		return toBeReceived;
+	}
     
     public S3FileReadingMessageSource(S3Service s3Service, S3Bucket sBucket){ 
     	this.s3Service = s3Service;
@@ -81,7 +77,6 @@ public class S3FileReadingMessageSource implements MessageSource<S3Object> {
     	this.toBeReceived = new PriorityBlockingQueue<S3Object>(INTERNAL_QUEUE_CAPACITY, new S3ObjectLastModifiedDateComparator());
     }
 	
-    
 	public Message<S3Object> receive(){
 		
 		//TODO: poll, get fileName and uri on new files 
@@ -95,15 +90,9 @@ public class S3FileReadingMessageSource implements MessageSource<S3Object> {
 				Set<S3Object> newS3Objects = new HashSet<S3Object>(filteredS3Objects);
 				if (!newS3Objects.isEmpty()) 
 					toBeReceived.addAll(newS3Objects);
-				
-				//Arrays.sort(objectsInBucket, new S3ObjectLastModifiedDateComparator());
-				//S3Object firstObjectWithUnsentKey = findFirstObjectWithUnsentKey(objectsInBucket);
-				//if (firstObjectWithUnsentKey != null){
-				//TODO
 				MessageBuilder<S3Object> builder = MessageBuilder.withPayload(toBeReceived.poll());
 				return builder.build();
-				//}
-				//else return null;
+	
 			}
 			else return null;
 		} 
@@ -113,26 +102,5 @@ public class S3FileReadingMessageSource implements MessageSource<S3Object> {
 		}
 		
 	}
-
-	/*
-	//TODO:remove
-	private S3Object findFirstObjectWithUnsentKey(S3Object[] objectsInBucket) {
-		if (sentKeysMap.isEmpty()){
-			if (objectsInBucket.length > 0){
-				return objectsInBucket[0];
-			}
-			else{
-				return null;
-			}
-		}
-		else{
-			int i =0;
-			while (sentKeysMap.containsKey(objectsInBucket[i]) && (i<objectsInBucket.length) ) i++; 
-			if (i < objectsInBucket.length) 
-				return objectsInBucket[i];
-			else return null;
-		}
-	} 
-	*/
 	        	          
 }
