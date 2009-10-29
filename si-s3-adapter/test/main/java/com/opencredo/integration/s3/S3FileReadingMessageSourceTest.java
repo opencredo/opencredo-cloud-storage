@@ -43,9 +43,14 @@ public class S3FileReadingMessageSourceTest {
 	}
  
     @Test
+    public void testReceiveNotNull() throws S3ServiceException {
+    	 Message<S3Object> message = systemUnderTest.receive();
+    	 assertNotNull("returned message shouldn't be null", message);   	 
+    }
+    
+    @Test
     public void testReceive() throws S3ServiceException {
     	 Message<S3Object> message = systemUnderTest.receive();
-    	 assertNotNull("returned message shouldn't be null", message);
     	 
     }
 

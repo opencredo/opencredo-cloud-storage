@@ -3,6 +3,7 @@ package com.opencredo.integration.s3;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -44,7 +45,7 @@ public class S3FileReadingMessageSource implements MessageSource<S3Object> {
 	private S3Service s3Service;
 	private S3Bucket s3Bucket;
 	
-	private Map<String, String> sentKeysMap; // (etag, last_modified_timestamp)
+	private Map<String, String> sentKeysMap = new HashMap<String, String>(); // (etag, last_modified_timestamp)
 	
 	public S3Service getS3Service() {
 		return s3Service;
@@ -110,11 +111,21 @@ public class S3FileReadingMessageSource implements MessageSource<S3Object> {
 	}
 
 	private S3Object findFirstObjectWithUnsentKey(S3Object[] objectsInBucket) {
-		int i =0;
-		while (sentKeysMap.containsKey(objectsInBucket[i]) && (i<objectsInBucket.length) ) i++; 
-		if (i < objectsInBucket.length) 
-			return objectsInBucket[i];
-		else return null;
+		if (sentKeysMap.isEmpty()){
+			if (objectsInBucket.length > 0){
+				return objectsInBucket[0];
+			}
+			else{
+				return null;
+			}
+		}
+		else{
+			int i =0;
+			while (sentKeysMap.containsKey(objectsInBucket[i]) && (i<objectsInBucket.length) ) i++; 
+			if (i < objectsInBucket.length) 
+				return objectsInBucket[i];
+			else return null;
+		}
 	} 
 	        	          
 }
