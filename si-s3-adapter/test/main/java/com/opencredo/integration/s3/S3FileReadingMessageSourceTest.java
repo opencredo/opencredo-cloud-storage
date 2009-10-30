@@ -1,33 +1,21 @@
 package com.opencredo.integration.s3;
 
-import static org.jets3t.service.S3Service.BUCKET_STATUS__MY_BUCKET;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import java.util.Calendar;
-import java.util.Map;
 
 import org.jets3t.service.Constants;
 import org.jets3t.service.S3ObjectsChunk;
 import org.jets3t.service.S3Service;
 import org.jets3t.service.S3ServiceException;
-import org.jets3t.service.acl.AccessControlList;
 import org.jets3t.service.impl.rest.httpclient.RestS3Service;
 import org.jets3t.service.model.S3Bucket;
-import org.jets3t.service.model.S3BucketLoggingStatus;
 import org.jets3t.service.model.S3Object;
-import org.jets3t.service.model.S3Owner;
-import org.jets3t.service.security.AWSCredentials;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import static org.mockito.Mockito.*;
 
 import org.springframework.integration.core.Message;
-
 
 public class S3FileReadingMessageSourceTest {
 	
