@@ -1,6 +1,5 @@
 package com.opencredo.integration.s3;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
@@ -25,7 +24,7 @@ public class AcceptOnceS3ObjectListFilter {
 		this.seen = new LinkedBlockingQueue<S3Object>();
 	}
 
-	public final List<S3Object> filterFiles(S3Object[] s3Objects) {
+	public final List<S3Object> filterS3Objects(S3Object[] s3Objects) {
 		List<S3Object> accepted = new ArrayList<S3Object>();
 		if (s3Objects != null) {
 			for (S3Object s3Object : s3Objects) {

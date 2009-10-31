@@ -3,11 +3,15 @@ package com.opencredo.integration.s3;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.PriorityBlockingQueue;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 
 import org.jets3t.service.Constants;
 import org.jets3t.service.S3ObjectsChunk;
@@ -22,9 +26,9 @@ import org.springframework.integration.message.MessageSource;
 import org.springframework.integration.core.Message;
 
 /** 
- * MessageSource that creates messages from a Simple Queue Service.
+ * MessageSource that creates messages containing meta-data maps of S3Objects
  */
-public class S3FileReadingMessageSource implements MessageSource<S3Object> {
+public class S3FileReadingMessageSource implements MessageSource<Map> {
 	
 	class S3ObjectLastModifiedDateComparator implements Comparator<S3Object>{
 
@@ -42,6 +46,9 @@ public class S3FileReadingMessageSource implements MessageSource<S3Object> {
 	}
 	
 	private static final int INTERNAL_QUEUE_CAPACITY = 5;
+	
+	//private final Logger logger = Logger.getLogger(this.getClass());
+	private final Log logger = LogFactory.getLog(this.getClass());
 	
 	private volatile AcceptOnceS3ObjectListFilter filter = new AcceptOnceS3ObjectListFilter();
 
@@ -71,28 +78,32 @@ public class S3FileReadingMessageSource implements MessageSource<S3Object> {
 		return toBeReceived;
 	}
     
-    public S3FileReadingMessageSource(S3Service s3Service, S3Bucket sBucket){ 
+    public S3FileReadingMessageSource(S3Service s3Service, S3Bucket s3Bucket){ 
     	this.s3Service = s3Service;
-    	this.s3Bucket = sBucket;
+    	this.s3Bucket = s3Bucket;
+    	logger.debug("S3FileReadingMessageSource initiation. s3service: "+ s3Service + "s3Bucket: "+ s3Bucket);
     	this.toBeReceived = new PriorityBlockingQueue<S3Object>(INTERNAL_QUEUE_CAPACITY, new S3ObjectLastModifiedDateComparator());
     }
 	
-	public Message<S3Object> receive(){
+	public Message<Map> receive(){
 		
-		//TODO: poll, get fileName and uri on new files 
+		logger.debug("receive() call received");
 		
 		try {
 			if (s3Service.checkBucketStatus(s3Bucket.getName()) == BUCKET_STATUS__MY_BUCKET){
-				//objectsInBucket contain only minimal information, not the actual content
+	
+				//typical info contained in a list: key, lastmodified, etag, size, owner, storageclass
 				S3ObjectsChunk chunk = s3Service.listObjectsChunked(s3Bucket.getName(),
 			             null, null, Constants.DEFAULT_OBJECT_LIST_CHUNK_SIZE, null, true);
-				List<S3Object> filteredS3Objects = this.filter.filterFiles(chunk.getObjects());
+				
+				List<S3Object> filteredS3Objects = addBucketInfo(this.filter.filterS3Objects(chunk.getObjects()));
+				logger.debug("filteredS3Objects: "+filteredS3Objects);
 				Set<S3Object> newS3Objects = new HashSet<S3Object>(filteredS3Objects);
 				if (!newS3Objects.isEmpty()) 
 					toBeReceived.addAll(newS3Objects);
-				MessageBuilder<S3Object> builder = MessageBuilder.withPayload(toBeReceived.poll());
+				MessageBuilder<Map> builder = MessageBuilder.withPayload(toBeReceived.poll().getMetadataMap());
+				logger.debug(builder);
 				return builder.build();
-	
 			}
 			else return null;
 		} 
@@ -101,6 +112,15 @@ public class S3FileReadingMessageSource implements MessageSource<S3Object> {
 			return null;
 		}
 		
+	}
+
+	//add bucket info to metadata so that the transformer knows where the original file is stored without injection
+	private List<S3Object> addBucketInfo(List<S3Object> filteredS3Objects) {
+		Iterator<S3Object> it = filteredS3Objects.iterator();
+		while(it.hasNext()){
+			it.next().addMetadata("bucketName", s3Bucket.getName());
+		}
+		return filteredS3Objects;
 	}
 	        	          
 }

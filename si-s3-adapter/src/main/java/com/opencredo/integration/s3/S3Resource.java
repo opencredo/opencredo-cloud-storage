@@ -22,10 +22,12 @@ public class S3Resource implements Resource{
 	private S3Service s3Service;
 	private S3Bucket s3Bucket;
 	private File s3File = null;
+	private S3Object s3Object = null;
+	public static final AWSCredentials awsCredentials = new AWSCredentials("AKIAJJC4KITQHSAY43MQ", "U0H0Psg7aS5qrKpLFqZXFUUOq2rK6l2xAfHxZWTd");
 	
 	public S3Resource(String bucketName, String awsAccessKeyId, String awsSecretKey){
 		try {
-			s3Service = new RestS3Service(new AWSCredentials(awsAccessKeyId, awsSecretKey));	
+			s3Service = new RestS3Service(awsCredentials);	
 			s3Bucket = s3Service.getBucket(bucketName);
 		} 
 		catch (S3ServiceException e) {
@@ -56,6 +58,14 @@ public class S3Resource implements Resource{
 	public void setFile(File file) {
 		this.s3File = file;
 	}
+	
+	public File getS3Object() throws IOException {
+		return s3File;
+	}
+	
+	public void setS3Object(S3Object s3Object) {
+		this.s3Object = s3Object;
+	}
 
 	public String getFilename() {
 		
@@ -74,6 +84,16 @@ public class S3Resource implements Resource{
 			e.printStackTrace();
 		} 
 		catch (IOException e) {			
+			e.printStackTrace();
+		}
+	}
+	
+	public void sendS3ObjectToBucket(){
+		try {
+			Assert.notNull(s3Object, "s3File should not be null");
+			s3Service.putObject(s3Bucket, s3Object);
+		} 
+		catch (S3ServiceException e) {
 			e.printStackTrace();
 		}
 	}
