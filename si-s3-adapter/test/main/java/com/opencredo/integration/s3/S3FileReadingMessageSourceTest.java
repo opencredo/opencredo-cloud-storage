@@ -15,10 +15,13 @@ import org.jets3t.service.impl.rest.httpclient.RestS3Service;
 import org.jets3t.service.model.S3Bucket;
 import org.jets3t.service.model.S3Object;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
 
 
 import org.springframework.integration.core.Message;
 
+@RunWith(MockitoJUnitRunner.class)
 public class S3FileReadingMessageSourceTest {
 	
 	private final Log logger = LogFactory.getLog(this.getClass());

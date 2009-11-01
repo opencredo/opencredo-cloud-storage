@@ -6,14 +6,16 @@ import java.io.IOException;
 import org.jets3t.service.model.S3Object;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.integration.core.Message;
+import org.mockito.Mock;
 import org.springframework.integration.message.MessageBuilder;
 
 import static org.mockito.Mockito.*;
 
 public class S3WritingMessageHandlerTest {
 
+
 	S3Resource s3Resource;
+	
 	S3WritingMessageHandler systemUnderTest;
 	
 	@Before

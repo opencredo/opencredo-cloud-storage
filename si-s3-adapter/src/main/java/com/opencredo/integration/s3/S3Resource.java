@@ -98,7 +98,6 @@ public class S3Resource implements Resource{
 		}
 	}
 	
-	
 	public Resource createRelative(String arg0) throws IOException {
 		
 		return null;
