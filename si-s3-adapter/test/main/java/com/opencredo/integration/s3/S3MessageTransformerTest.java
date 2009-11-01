@@ -1,15 +1,17 @@
 package com.opencredo.integration.s3;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jets3t.service.model.S3Object;
+import static org.mockito.Mockito.*;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 import org.springframework.integration.core.Message;
 
 public class S3MessageTransformerTest {
 	
-	 
      private S3MessageTransformer systemUnderTest;
 	
 	 @Before
@@ -20,9 +22,14 @@ public class S3MessageTransformerTest {
 	 @Test
 	 public void testTransformedMessageNotNull() {
 		 
-		 Message<S3Object> messageToTransformMock = mock(Message.class);
-		 when(messageToTransformMock.getPayload()).thenReturn(new S3Object());
+		 Message<Map> messageToTransformMock = mock(Message.class);
+		 Map<String, Object> testMetaData = new HashMap<String, Object>();
+		 testMetaData.put("bucketName", "sibucket");
+		 testMetaData.put("key", "test.txt");
+		 when(messageToTransformMock.getPayload()).thenReturn(testMetaData);
+		 
 		 Message<S3Object> messageTransformed = systemUnderTest.transform(messageToTransformMock);
+		 
 		 assertNotNull(messageTransformed);
 	 }
 	 

@@ -1,8 +1,8 @@
 package com.opencredo.integration.s3;
 
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.when;
 
+import static org.mockito.Mockito.*;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -14,10 +14,8 @@ import org.jets3t.service.S3ServiceException;
 import org.jets3t.service.impl.rest.httpclient.RestS3Service;
 import org.jets3t.service.model.S3Bucket;
 import org.jets3t.service.model.S3Object;
-import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import static org.mockito.Mockito.*;
+
 
 import org.springframework.integration.core.Message;
 
