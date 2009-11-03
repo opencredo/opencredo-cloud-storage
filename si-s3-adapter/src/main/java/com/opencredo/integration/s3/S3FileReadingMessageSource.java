@@ -81,7 +81,6 @@ public class S3FileReadingMessageSource implements MessageSource<Map> {
     public S3FileReadingMessageSource(S3Service s3Service, S3Bucket s3Bucket){ 
     	this.s3Service = s3Service;
     	this.s3Bucket = s3Bucket;
-    	logger.debug("S3FileReadingMessageSource initiation. s3service: "+ s3Service + "s3Bucket: "+ s3Bucket);
     	this.toBeReceived = new PriorityBlockingQueue<S3Object>(INTERNAL_QUEUE_CAPACITY, new S3ObjectLastModifiedDateComparator());
     }
 	
@@ -93,16 +92,17 @@ public class S3FileReadingMessageSource implements MessageSource<Map> {
 			if (s3Service.checkBucketStatus(s3Bucket.getName()) == BUCKET_STATUS__MY_BUCKET){
 	
 				//typical info contained in a list: key, lastmodified, etag, size, owner, storageclass
+				//logger.debug("s3Bucket.getName(): "+s3Bucket.getName());
 				S3ObjectsChunk chunk = s3Service.listObjectsChunked(s3Bucket.getName(),
 			             null, null, Constants.DEFAULT_OBJECT_LIST_CHUNK_SIZE, null, true);
-				
+				logger.debug("chunk: "+chunk);
 				List<S3Object> filteredS3Objects = addBucketInfo(this.filter.filterS3Objects(chunk.getObjects()));
 				logger.debug("filteredS3Objects: "+filteredS3Objects);
 				Set<S3Object> newS3Objects = new HashSet<S3Object>(filteredS3Objects);
 				if (!newS3Objects.isEmpty()) 
 					toBeReceived.addAll(newS3Objects);
 				MessageBuilder<Map> builder = MessageBuilder.withPayload(toBeReceived.poll().getMetadataMap());
-				logger.debug(builder);
+				//logger.debug(builder);
 				return builder.build();
 			}
 			else return null;
