@@ -12,6 +12,7 @@ import org.springframework.integration.message.MessageHandlingException;
 public class S3WritingMessageHandler implements MessageHandler {
 
 	private S3Resource s3Resource;
+
 	private static int keyIndex = 0;
 
 	public S3WritingMessageHandler(S3Resource s3resource){
@@ -80,6 +81,14 @@ public class S3WritingMessageHandler implements MessageHandler {
 	private String stringKeyGenerator() {
 		keyIndex++;
 		return "stringData"+keyIndex;
+	}
+	
+	public S3Resource getS3Resource() {
+		return s3Resource;
+	}
+
+	public void setS3Resource(S3Resource s3Resource) {
+		this.s3Resource = s3Resource;
 	}
     
 }

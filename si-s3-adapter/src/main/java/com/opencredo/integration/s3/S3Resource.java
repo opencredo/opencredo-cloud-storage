@@ -25,7 +25,7 @@ public class S3Resource implements Resource{
 	private S3Object s3Object = null;
 	public static final AWSCredentials awsCredentials = new AWSCredentials("AKIAJJC4KITQHSAY43MQ", "U0H0Psg7aS5qrKpLFqZXFUUOq2rK6l2xAfHxZWTd");
 	
-	public S3Resource(String bucketName, String awsAccessKeyId, String awsSecretKey){
+	public S3Resource(String bucketName){
 		try {
 			s3Service = new RestS3Service(awsCredentials);	
 			s3Bucket = s3Service.getBucket(bucketName);

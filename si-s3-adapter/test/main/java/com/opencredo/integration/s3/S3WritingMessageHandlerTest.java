@@ -7,7 +7,7 @@ import org.jets3t.service.model.S3Object;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
+//import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.integration.message.MessageBuilder;
 
@@ -16,7 +16,6 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class S3WritingMessageHandlerTest {
 
-	//@Mock
 	S3Resource s3Resource;
 	
 	S3WritingMessageHandler systemUnderTest;
@@ -41,4 +40,5 @@ public class S3WritingMessageHandlerTest {
 			e.printStackTrace();
 		}
 	}
+	
 }
