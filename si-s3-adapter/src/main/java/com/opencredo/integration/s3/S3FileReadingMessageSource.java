@@ -85,8 +85,7 @@ public class S3FileReadingMessageSource implements MessageSource<Map> {
     }
 	
 	public Message<Map> receive(){
-		
-		logger.debug("receive() call received");
+		if (logger.isDebugEnabled()) logger.debug("receive() call received");
 		
 		try {
 			if (s3Service.checkBucketStatus(s3Bucket.getName()) == BUCKET_STATUS__MY_BUCKET){
@@ -95,14 +94,13 @@ public class S3FileReadingMessageSource implements MessageSource<Map> {
 				//logger.debug("s3Bucket.getName(): "+s3Bucket.getName());
 				S3ObjectsChunk chunk = s3Service.listObjectsChunked(s3Bucket.getName(),
 			             null, null, Constants.DEFAULT_OBJECT_LIST_CHUNK_SIZE, null, true);
-				logger.debug("chunk: "+chunk);
+				if (logger.isDebugEnabled()) logger.debug("chunk: "+chunk);
 				List<S3Object> filteredS3Objects = addBucketInfo(this.filter.filterS3Objects(chunk.getObjects()));
-				logger.debug("filteredS3Objects: "+filteredS3Objects);
+				if (logger.isDebugEnabled()) logger.debug("filteredS3Objects: "+filteredS3Objects);
 				Set<S3Object> newS3Objects = new HashSet<S3Object>(filteredS3Objects);
 				if (!newS3Objects.isEmpty()) 
 					toBeReceived.addAll(newS3Objects);
 				MessageBuilder<Map> builder = MessageBuilder.withPayload(toBeReceived.poll().getMetadataMap());
-				//logger.debug(builder);
 				return builder.build();
 			}
 			else return null;

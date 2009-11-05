@@ -15,10 +15,13 @@ public class S3MessageTransformer implements Transformer{
 
 	private final Log logger = LogFactory.getLog(this.getClass());
 	
+	/**
+	 * transforms the message with a metadata map payload 
+	 * to message with the actual content
+	 */
 	public Message<S3Object> transform(Message<?> s3MetaDataMapMessage) {
-		//TODO: transform the message with metadata to message with real content
-		logger.debug("S3MessageTransformer.transform() called.");
-		logger.debug(s3MetaDataMapMessage.getPayload());
+		if (logger.isDebugEnabled()) logger.debug("S3MessageTransformer.transform() called.");
+		if (logger.isDebugEnabled()) logger.debug(s3MetaDataMapMessage.getPayload());
 		Map<String, Object> metaDataMap = (Map<String, Object>) s3MetaDataMapMessage.getPayload();
 		try {
 			S3Service s3Service = new RestS3Service(S3Resource.awsCredentials);
