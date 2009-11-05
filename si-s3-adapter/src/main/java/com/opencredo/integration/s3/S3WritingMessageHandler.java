@@ -31,7 +31,8 @@ public class S3WritingMessageHandler implements MessageHandler {
 	}
 
 	/**
-	 * write the content of Message to S3
+	 * write the content of Message to S3 Bucket with handlers that convert the 
+	 * message payload to s3object.
 	 */
     public void handleMessage(Message<?> message){
     	Assert.notNull(message, "message must not be null");
@@ -55,7 +56,7 @@ public class S3WritingMessageHandler implements MessageHandler {
 						"unsupported Message payload type [" + payload.getClass().getName() + "]");
 			}
 			s3Resource.setS3Object(objectToSend);
-			s3Resource.sendS3ObjectToBucket();
+			s3Resource.sendS3ObjectToS3();
 		}
 		catch (IllegalArgumentException e) {
 			e.printStackTrace();
@@ -98,8 +99,7 @@ public class S3WritingMessageHandler implements MessageHandler {
 		Assert.notNull(fileNameGenerator, "FileNameGenerator must not be null");
 		this.s3KeyNameGenerator = fileNameGenerator;
 	}
-	
-	
+		
 	public S3Resource getS3Resource() {
 		return s3Resource;
 	}

@@ -43,7 +43,7 @@ public class S3FileReadingMessageSourceTest {
 	}
 	
     @Test
-    public void testQueueToBeReceivedNotNull() throws S3ServiceException {
+    public void receiveMessageTest() throws S3ServiceException {
     	S3Bucket s3BucketMock = mock(S3Bucket.class);
     	S3Service s3ServiceMock = mock(RestS3Service.class);
     	when(s3ServiceMock.checkBucketStatus(anyString())).thenReturn(BUCKET_STATUS__MY_BUCKET);
@@ -56,7 +56,10 @@ public class S3FileReadingMessageSourceTest {
     	
     	Message<Map> message = systemUnderTest.receive();
     	
-    	assertNotNull("Queue should not be empty at this point.", systemUnderTest.getQueueToBeReceived());   	 
+    	assertNotNull("Queue should not be empty at this point.", systemUnderTest.getQueueToBeReceived());
+    	
+    	assertEquals("unexpected message content", "sibucket", message.getPayload().get("bucketName"));
+    	assertEquals("unexpected key", "test.txt", message.getPayload().get("key"));
     }
     
 }

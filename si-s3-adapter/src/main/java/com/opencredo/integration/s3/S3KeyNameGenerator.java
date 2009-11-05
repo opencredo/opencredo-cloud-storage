@@ -1,5 +1,7 @@
 package com.opencredo.integration.s3;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 import java.util.HashMap;
 
@@ -11,7 +13,7 @@ import org.springframework.util.Assert;
 
 public class S3KeyNameGenerator implements FileNameGenerator{
 
-	private String defaultStringKey = new String("string.s3");
+	String defaultStringKey = new String("string.s3");
 	
 	public void setDefaultStringKey(String defaultStringKey) {
 		this.defaultStringKey = defaultStringKey;
@@ -25,6 +27,7 @@ public class S3KeyNameGenerator implements FileNameGenerator{
 			return defaultStringKey;
 		}
 		else if ((c.isInstance(File.class)) || (c.isInstance(S3Object.class)) ) {
+			assertNotNull(message.getHeaders().get(FileHeaders.FILENAME));
 			return (new HashMap(message.getHeaders())).get(FileHeaders.FILENAME).toString();
 		}
 		else return null;

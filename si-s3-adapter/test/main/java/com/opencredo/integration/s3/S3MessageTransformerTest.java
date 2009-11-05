@@ -20,7 +20,7 @@ public class S3MessageTransformerTest {
      }
 	 
 	 @Test
-	 public void testTransformedMessageNotNull() {
+	 public void transformMessageTest() {
 		 
 		 Message<Map> messageToTransformMock = mock(Message.class);
 		 Map<String, Object> testMetaData = new HashMap<String, Object>();
@@ -31,6 +31,7 @@ public class S3MessageTransformerTest {
 		 Message<S3Object> messageTransformed = systemUnderTest.transform(messageToTransformMock);
 		 
 		 assertNotNull(messageTransformed);
+		 assertEquals("not the expected key", "test.txt", messageTransformed.getPayload().getKey());
 	 }
 	 
 }

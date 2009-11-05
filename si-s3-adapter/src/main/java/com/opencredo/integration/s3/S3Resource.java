@@ -68,38 +68,33 @@ public class S3Resource implements Resource{
 	}
 
 	public String getFilename() {
-		
 		return s3File.getName();
 	}
 	
-	public void sendFileToBucket(){
-		try {
-			Assert.notNull(s3File, "s3File should not be null");
-			s3Service.putObject(s3Bucket, new S3Object(s3File));
-		} 
-		catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} 
-		catch (S3ServiceException e) {
-			e.printStackTrace();
-		} 
-		catch (IOException e) {			
-			e.printStackTrace();
-		}
+	public void sendFileToS3() throws NoSuchAlgorithmException, S3ServiceException, IOException{
+		Assert.notNull(s3File, "s3File should not be null");
+		s3Service.putObject(s3Bucket, new S3Object(s3File));
 	}
 	
-	public void sendS3ObjectToBucket(){
-		try {
-			Assert.notNull(s3Object, "s3File should not be null");
-			s3Service.putObject(s3Bucket, s3Object);
-		} 
-		catch (S3ServiceException e) {
-			e.printStackTrace();
-		}
+	public void sendFileToS3(File file) throws NoSuchAlgorithmException, S3ServiceException, IOException{
+		setFile(file);
+		sendFileToS3();
+	}
+	
+	public void sendS3ObjectToS3() throws S3ServiceException{
+		Assert.notNull(s3Object, "s3File should not be null");
+		s3Service.putObject(s3Bucket, s3Object);
+
+	}
+	
+	public void sendS3ObjectToS3(S3Object s3object) throws S3ServiceException{
+		setS3Object(s3object);
+		sendS3ObjectToS3();
+
 	}
 	
 	public Resource createRelative(String arg0) throws IOException {
-		
+		//TODO:
 		return null;
 	}
 
@@ -118,20 +113,22 @@ public class S3Resource implements Resource{
 	}
 
 	public URI getURI() throws IOException {
-		
+		//TODO:
 		return null;
 	}
 
 	public URL getURL() throws IOException {
+		//TODO:
 		return null;
 	}
 
 	public boolean isOpen() {
-		return false;
+		//TODO:
+		return true;
 	}
 
 	public boolean isReadable() {
-		
+		//TODO
 		return true;
 	}
 
@@ -146,9 +143,15 @@ public class S3Resource implements Resource{
 		}
 	}
 
-	public InputStream getInputStream() throws IOException {
+	public InputStream getInputStream() throws IOException {				
+		try {
+			return s3Object.getDataInputStream();
+		} 
+		catch (S3ServiceException e) {
+			e.printStackTrace();
+			return null;
+		}
 		
-		return null;
 	}
 
 }

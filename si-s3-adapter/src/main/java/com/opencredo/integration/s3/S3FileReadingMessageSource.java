@@ -24,6 +24,8 @@ import static  org.jets3t.service.S3Service.*;
 import org.springframework.integration.message.MessageBuilder;
 import org.springframework.integration.message.MessageSource;
 import org.springframework.integration.core.Message;
+import org.springframework.integration.file.FileHeaders;
+import org.springframework.util.Assert;
 
 /** 
  * MessageSource that creates messages containing meta-data maps of S3Objects
@@ -94,13 +96,17 @@ public class S3FileReadingMessageSource implements MessageSource<Map> {
 				//logger.debug("s3Bucket.getName(): "+s3Bucket.getName());
 				S3ObjectsChunk chunk = s3Service.listObjectsChunked(s3Bucket.getName(),
 			             null, null, Constants.DEFAULT_OBJECT_LIST_CHUNK_SIZE, null, true);
-				if (logger.isDebugEnabled()) logger.debug("chunk: "+chunk);
+				if (logger.isDebugEnabled()) logger.debug("chunk created: "+chunk);
 				List<S3Object> filteredS3Objects = addBucketInfo(this.filter.filterS3Objects(chunk.getObjects()));
 				if (logger.isDebugEnabled()) logger.debug("filteredS3Objects: "+filteredS3Objects);
 				Set<S3Object> newS3Objects = new HashSet<S3Object>(filteredS3Objects);
 				if (!newS3Objects.isEmpty()) 
 					toBeReceived.addAll(newS3Objects);
-				MessageBuilder<Map> builder = MessageBuilder.withPayload(toBeReceived.poll().getMetadataMap());
+				Map metaDataMapPayload = toBeReceived.poll().getMetadataMap();
+				MessageBuilder<Map> builder = MessageBuilder.withPayload(metaDataMapPayload);
+				builder.setHeader(FileHeaders.FILENAME, metaDataMapPayload.get("key"));
+				//Assert.notNull(metaDataMapPayload.get("key"), "metaDataMapPayload shouldn't be null");
+				if (logger.isDebugEnabled()) logger.debug("metaDataMapPayload: "+metaDataMapPayload);
 				return builder.build();
 			}
 			else return null;
@@ -108,15 +114,17 @@ public class S3FileReadingMessageSource implements MessageSource<Map> {
 		catch (S3ServiceException e) {
 			e.printStackTrace();
 			return null;
-		}
-		
+		}		
 	}
 
 	//add bucket info to metadata so that the transformer knows where the original file is stored without injection
 	private List<S3Object> addBucketInfo(List<S3Object> filteredS3Objects) {
 		Iterator<S3Object> it = filteredS3Objects.iterator();
+		S3Object tempS3Object;
 		while(it.hasNext()){
-			it.next().addMetadata("bucketName", s3Bucket.getName());
+			tempS3Object = it.next();
+			tempS3Object.addMetadata("bucketName", s3Bucket.getName());
+			tempS3Object.addMetadata("key", tempS3Object.getKey());
 		}
 		return filteredS3Objects;
 	}

@@ -20,25 +20,23 @@ public class S3WritingMessageHandlerTest {
 	
 	S3WritingMessageHandler systemUnderTest;
 	
+	MessageBuilder<File> messageBuilder;
+	
 	@Before
-	public void init(){
+	public void init() throws IOException{
 		s3Resource = mock(S3Resource.class);		
 		systemUnderTest = new S3WritingMessageHandler(s3Resource);
+			
+		messageBuilder = MessageBuilder.withPayload(File.createTempFile("test", null));
 	}
 	
 	@Test
-	public void handleMessageCallsSetS3ObjectOnS3Resource(){
-		try {
-			MessageBuilder<File> messageBuilder;
-			messageBuilder = MessageBuilder.withPayload(File.createTempFile("test", null));
+	public void fileUploadedToBucketTest(){
 		
-			systemUnderTest.handleMessage(messageBuilder.build());
+		systemUnderTest.handleMessage(messageBuilder.build());
 		
-			verify(s3Resource).setS3Object((S3Object) anyObject());
-		} 
-		catch (IOException e) {
-			e.printStackTrace();
-		}
+		verify(s3Resource).setS3Object((S3Object) anyObject());
+				
 	}
-	
+		
 }
