@@ -112,7 +112,6 @@
     <modules>
         <module>si-s3-adapter</module>
         <module>si-sqs-adapter</module>
-        <module>si-adapter-app</module>
     </modules>
 
 </project>
