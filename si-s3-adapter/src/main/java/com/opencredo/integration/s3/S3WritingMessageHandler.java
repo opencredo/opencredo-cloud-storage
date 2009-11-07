@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jets3t.service.model.S3Object;
 import org.springframework.integration.message.MessageHandler;
 import org.springframework.integration.core.Message;
@@ -21,6 +23,8 @@ import org.springframework.util.Assert;
  * filename property in it's header. 
  */
 public class S3WritingMessageHandler implements MessageHandler {
+	
+	private final Log logger = LogFactory.getLog(S3WritingMessageHandler.class);
 	
 	private volatile S3KeyNameGenerator s3KeyNameGenerator = new S3KeyNameGenerator();
 	
@@ -37,6 +41,7 @@ public class S3WritingMessageHandler implements MessageHandler {
     public void handleMessage(Message<?> message){
     	Assert.notNull(message, "message must not be null");
 		Object payload = message.getPayload();
+		if (logger.isDebugEnabled()) logger.debug("message: "+message);
 		String generatedKeyName = s3KeyNameGenerator.generateFileName(message);
 		Assert.notNull(payload, "message payload must not be null");
 		S3Object objectToSend = null;
