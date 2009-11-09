@@ -9,6 +9,7 @@ import java.util.Map;
 import org.jets3t.service.S3ServiceException;
 import org.jets3t.service.model.S3Object;
 import org.springframework.integration.core.Message;
+import org.springframework.integration.file.FileHeaders;
 import org.springframework.integration.message.MessageBuilder;
 
 /*
@@ -51,8 +52,9 @@ public class MainApp {
 		sb.append(testString);
 
 		MessageBuilder<S3Object> builder = MessageBuilder.withPayload(new S3Object(sb.toString()));
-
+		//builder.setHeader(FileHeaders.FILENAME, testHandler.getName());
 		handler.handleMessage(builder.build());
+		
 	}
 
 	public S3FileReadingMessageSource getMessageSource() {

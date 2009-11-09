@@ -33,11 +33,11 @@ public class S3KeyNameGeneratorTest {
 		testFile.deleteOnExit();
 		if (logger.isDebugEnabled()) logger.debug(testFile);
 		MessageBuilder<File> builder = MessageBuilder.withPayload(testFile);
-		builder.setHeader(FileHeaders.FILENAME, testFile.getName());
+		//builder.setHeader(FileHeaders.FILENAME, testFile.getName());
 		message = builder.build();
 		S3KeyNameGenerator generator = new S3KeyNameGenerator();
 		
-		assertNotNull(message.getHeaders().get(FileHeaders.FILENAME));
+		//assertNotNull(message.getHeaders().get(FileHeaders.FILENAME));
 		assertEquals("not expected key name", testFile.getName(), generator.generateFileName(message));
 	}
 }

@@ -29,10 +29,13 @@ public class S3KeyNameGenerator implements FileNameGenerator{
 		if (c.equals(String.class) ){
 			return defaultStringKey;
 		}
-		else if ((c.equals(File.class)) || (c.equals(S3Object.class)) ) {
-			if (logger.isDebugEnabled()) 
-			Assert.notNull(message.getHeaders().get(FileHeaders.FILENAME));
-			return (new HashMap(message.getHeaders())).get(FileHeaders.FILENAME).toString();
+		else if (c.equals(File.class))  {
+			//Assert.notNull(message.getHeaders().get(FileHeaders.FILENAME));
+			//return (new HashMap(message.getHeaders())).get(FileHeaders.FILENAME).toString();
+			return ((File) message.getPayload()).getName();
+		}
+		else if (c.equals(S3Object.class)) {
+			return ((S3Object) message.getPayload()).getKey();
 		}
 		else return null;
 	}

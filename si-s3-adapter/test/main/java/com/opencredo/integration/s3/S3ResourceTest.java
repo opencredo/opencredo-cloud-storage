@@ -28,8 +28,9 @@ public class S3ResourceTest {
 
 		S3Resource s3Resource = new S3Resource(bucketName);
 		s3Resource.setS3Service(s3ServiceMock);
-		
-		s3Resource.sendFileToS3(File.createTempFile("testFile", "s3"));
+		File testFile = File.createTempFile("testFile", "s3");
+		testFile.deleteOnExit();
+		s3Resource.sendFileToS3(testFile);
 		
 		verify(s3ServiceMock).putObject(any(S3Bucket.class), any(S3Object.class));
 	}
