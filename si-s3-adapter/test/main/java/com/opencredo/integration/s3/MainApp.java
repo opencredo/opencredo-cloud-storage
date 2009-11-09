@@ -6,14 +6,19 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Map;
 
+import junit.framework.Assert;
+
 import org.jets3t.service.S3ServiceException;
 import org.jets3t.service.model.S3Object;
+import org.junit.Before;
+import org.junit.Test;
 import org.springframework.integration.core.Message;
-import org.springframework.integration.file.FileHeaders;
 import org.springframework.integration.message.MessageBuilder;
 
+import com.opencredo.integration.s3.S3Resource;
+
 /*
- * This application is used to test if the adapter produces the 
+ * Main application test class used to test if the adapter produces the 
  * expected behaviour.
  */
 
@@ -22,25 +27,32 @@ public class MainApp {
 	S3MessageTransformer transformer;
 	S3WritingMessageHandler handler;
 	
-	public static void main(String[] args) throws IOException, S3ServiceException{
-		String bucketName = new String("sibucket");
-		S3Resource resource = new S3Resource(bucketName);
-		MainApp mainApp = new MainApp(new S3FileReadingMessageSource(resource.getS3Service(), resource.getS3Bucket()), new S3MessageTransformer(), new S3WritingMessageHandler(resource));
-		mainApp.implementApp();	
+	String bucketName;
+	S3Resource resource;
+	
+	@Before
+	public void init() throws IOException, S3ServiceException{
+		bucketName = new String("sibucket");
+		resource = new S3Resource(bucketName);
+		messageSource = new S3FileReadingMessageSource(resource.getS3Service(), resource.getS3Bucket());
+		transformer = new S3MessageTransformer();
+		handler = new S3WritingMessageHandler(resource);
 	}
 	
-	public MainApp(S3FileReadingMessageSource messageSource, S3MessageTransformer transformer,
-			S3WritingMessageHandler handler) throws IOException, S3ServiceException{
-		setMessageSource(messageSource);
-		setTransformer(transformer);
-		setHandler(handler);
-		implementApp();
-	}
-	
-	private void implementApp() throws IOException, S3ServiceException {
-		String testString = new String("AppendTestString");
+	/*
+	 * When receive is called, the next unread file in the S3Bucket is read. 
+	 * The information that is read does not contain the actual content, but a meta-data map 
+	 * that contains the location of the actual Object. S3MessageTransformer is used to 
+	 * transform this message into a Message<S3Object>. 
+	 * In this test scenario, the content is edited, and uploaded again to the S3 Bucket.
+	 * Writing to the bucket is done by the S3WritingMessageHandler.
+	 */
+	@Test
+	public void fileContentsReadFromS3AndUploadedToS3AsStringTest() throws IOException, S3ServiceException {
+		String testString = new String("AppendedTestString");
 		Message<Map> receivedMessage = messageSource.receive();
 		Message<S3Object> transformedMessage = transformer.transform(receivedMessage);
+		
 		S3Object payload = transformedMessage.getPayload();
 		InputStream is = payload.getDataInputStream();
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
@@ -51,34 +63,15 @@ public class MainApp {
 		}
 		sb.append(testString);
 
-		MessageBuilder<S3Object> builder = MessageBuilder.withPayload(new S3Object(sb.toString()));
-		//builder.setHeader(FileHeaders.FILENAME, testHandler.getName());
+		S3Object updatedS3ObjectToSend = new S3Object(sb.toString());
+		MessageBuilder<S3Object> builder = MessageBuilder.withPayload(updatedS3ObjectToSend);
 		handler.handleMessage(builder.build());
 		
-	}
-
-	public S3FileReadingMessageSource getMessageSource() {
-		return messageSource;
-	}
-
-	public void setMessageSource(S3FileReadingMessageSource messageSource) {
-		this.messageSource = messageSource;
-	}
-
-	public S3MessageTransformer getTransformer() {
-		return transformer;
-	}
-
-	public void setTransformer(S3MessageTransformer transformer) {
-		this.transformer = transformer;
-	}
-
-	public S3WritingMessageHandler getHandler() {
-		return handler;
-	}
-
-	public void setHandler(S3WritingMessageHandler handler) {
-		this.handler = handler;
+		S3Object newObject = resource.getS3Service().getObject(resource.getS3Bucket(), updatedS3ObjectToSend.getKey());
+		//Assert.assertEquals(sb.length(), new BufferedReader(new InputStreamReader(resource.getS3Service().getObject(resource.getS3Bucket(), receivedMessage.getPayload().get("key").toString()).getDataInputStream())).);
+		Assert.assertEquals(sb.toString(), newObject.getKey());
+	
+		reader.close();
 	}
 
 }
