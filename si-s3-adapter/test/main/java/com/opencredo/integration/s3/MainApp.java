@@ -34,7 +34,8 @@ public class MainApp {
 	public void init() throws IOException, S3ServiceException{
 		bucketName = new String("sibucket");
 		resource = new S3Resource(bucketName);
-		messageSource = new S3FileReadingMessageSource(resource.getS3Service(), resource.getS3Bucket());
+		messageSource = new S3FileReadingMessageSource();
+		messageSource.setS3Resource(resource);
 		transformer = new S3MessageTransformer();
 		handler = new S3WritingMessageHandler(resource);
 	}

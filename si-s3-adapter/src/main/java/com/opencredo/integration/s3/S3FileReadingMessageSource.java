@@ -15,9 +15,7 @@ import org.apache.commons.logging.Log;
 
 import org.jets3t.service.Constants;
 import org.jets3t.service.S3ObjectsChunk;
-import org.jets3t.service.S3Service;
 import org.jets3t.service.S3ServiceException;
-import org.jets3t.service.model.S3Bucket;
 import org.jets3t.service.model.S3Object;
 import static  org.jets3t.service.S3Service.*;
 
@@ -48,53 +46,38 @@ public class S3FileReadingMessageSource implements MessageSource<Map> {
 	}
 	
 	private static final int INTERNAL_QUEUE_CAPACITY = 5;
-	
-	//private final Logger logger = Logger.getLogger(this.getClass());
 	private final Log logger = LogFactory.getLog(this.getClass());
 	
 	private volatile AcceptOnceS3ObjectListFilter filter = new AcceptOnceS3ObjectListFilter();
 
 	private final Queue<S3Object> toBeReceived;
-	private S3Service s3Service;
-	private S3Bucket s3Bucket;
-	
-	//private Map<String, String> sentKeysMap = new HashMap<String, String>(); // (etag, last_modified_timestamp)
-	
-	public S3Service getS3Service() {
-		return s3Service;
-	}
-
-	public void setS3Service(S3Service s3Service) {
-		this.s3Service = s3Service;
-	}
-
-	public S3Bucket getsBucket() {
-		return s3Bucket;
-	}
-
-	public void setsBucket(S3Bucket sBucket) {
-		this.s3Bucket = sBucket;
-	}
+	S3Resource s3Resource;
 	
 	public Queue<S3Object> getQueueToBeReceived(){
 		return toBeReceived;
 	}
     
-    public S3FileReadingMessageSource(S3Service s3Service, S3Bucket s3Bucket){ 
-    	this.s3Service = s3Service;
-    	this.s3Bucket = s3Bucket;
+    public S3FileReadingMessageSource(){ 
+
     	this.toBeReceived = new PriorityBlockingQueue<S3Object>(INTERNAL_QUEUE_CAPACITY, new S3ObjectLastModifiedDateComparator());
+    }
+    
+    public void setS3Resource(S3Resource s3Resource){
+    	this.s3Resource = s3Resource;
     }
 	
 	public Message<Map> receive(){
 		if (logger.isDebugEnabled()) logger.debug("receive() call received");
 		
+		Assert.notNull(s3Resource, "S3Resource cannot be null");
+    	Assert.notNull(s3Resource.getS3Service(), "S3Service cannot be null");
+    	Assert.notNull(s3Resource.getS3Bucket(), "S3Bucket cannot be null");
+		
 		try {
-			if (s3Service.checkBucketStatus(s3Bucket.getName()) == BUCKET_STATUS__MY_BUCKET){
+			if (s3Resource.getS3Service().checkBucketStatus(s3Resource.getS3Bucket().getName()) == BUCKET_STATUS__MY_BUCKET){
 	
 				//typical info contained in a list: key, lastmodified, etag, size, owner, storageclass
-				//logger.debug("s3Bucket.getName(): "+s3Bucket.getName());
-				S3ObjectsChunk chunk = s3Service.listObjectsChunked(s3Bucket.getName(),
+				S3ObjectsChunk chunk = s3Resource.getS3Service().listObjectsChunked(s3Resource.getS3Bucket().getName(),
 			             null, null, Constants.DEFAULT_OBJECT_LIST_CHUNK_SIZE, null, true);
 				if (logger.isDebugEnabled()) logger.debug("chunk created: "+chunk);
 				List<S3Object> filteredS3Objects = addBucketInfo(this.filter.filterS3Objects(chunk.getObjects()));
@@ -105,7 +88,6 @@ public class S3FileReadingMessageSource implements MessageSource<Map> {
 				Map metaDataMapPayload = toBeReceived.poll().getMetadataMap();
 				MessageBuilder<Map> builder = MessageBuilder.withPayload(metaDataMapPayload);
 				builder.setHeader(FileHeaders.FILENAME, metaDataMapPayload.get("key"));
-				//Assert.notNull(metaDataMapPayload.get("key"), "metaDataMapPayload shouldn't be null");
 				if (logger.isDebugEnabled()) logger.debug("metaDataMapPayload: "+metaDataMapPayload);
 				return builder.build();
 			}
@@ -117,13 +99,16 @@ public class S3FileReadingMessageSource implements MessageSource<Map> {
 		}		
 	}
 
-	//add bucket info to metadata so that the transformer knows where the original file is stored without injection
+	/*
+	 * add bucket info to metadata so that the transformer knows where the original file is stored 
+	 * without injection
+	 */
 	private List<S3Object> addBucketInfo(List<S3Object> filteredS3Objects) {
 		Iterator<S3Object> it = filteredS3Objects.iterator();
 		S3Object tempS3Object;
 		while(it.hasNext()){
 			tempS3Object = it.next();
-			tempS3Object.addMetadata("bucketName", s3Bucket.getName());
+			tempS3Object.addMetadata("bucketName", s3Resource.getS3Bucket().getName());
 			tempS3Object.addMetadata("key", tempS3Object.getKey());
 		}
 		return filteredS3Objects;

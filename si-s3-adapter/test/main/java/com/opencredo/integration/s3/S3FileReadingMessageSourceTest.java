@@ -46,13 +46,17 @@ public class S3FileReadingMessageSourceTest {
     public void receiveMessageTest() throws S3ServiceException {
     	S3Bucket s3BucketMock = mock(S3Bucket.class);
     	S3Service s3ServiceMock = mock(RestS3Service.class);
-    	when(s3ServiceMock.checkBucketStatus(anyString())).thenReturn(BUCKET_STATUS__MY_BUCKET);
-    	//when(s3ServiceMock.listObjectsChunked(eq(bucketName),
-	    //         anyString(), anyString(), eq(Constants.DEFAULT_OBJECT_LIST_CHUNK_SIZE), anyString(), eq(true))).thenReturn(new S3ObjectsChunk(null, null, s3ObjectArray, null, null));
+    	S3Resource s3resourceMock = mock(S3Resource.class);
+    	when(s3resourceMock.getS3Service()).thenReturn(s3ServiceMock, s3ServiceMock, s3ServiceMock);
+    	when(s3resourceMock.getS3Bucket()).thenReturn(s3BucketMock, s3BucketMock, s3BucketMock);
+    	
+    	when(s3ServiceMock.checkBucketStatus(anyString())).thenReturn(BUCKET_STATUS__MY_BUCKET);    	
     	when(s3ServiceMock.listObjectsChunked(anyString(),
 	             anyString(), anyString(), anyLong(), anyString(), anyBoolean())).thenReturn(new S3ObjectsChunk(null, null, s3ObjectArray, null, null));
     	when(s3BucketMock.getName()).thenReturn("sibucket","sibucket");
-    	systemUnderTest = new S3FileReadingMessageSource(s3ServiceMock, s3BucketMock);
+    	
+    	systemUnderTest = new S3FileReadingMessageSource();
+    	systemUnderTest.setS3Resource(s3resourceMock);
     	
     	Message<Map> message = systemUnderTest.receive();
     	
