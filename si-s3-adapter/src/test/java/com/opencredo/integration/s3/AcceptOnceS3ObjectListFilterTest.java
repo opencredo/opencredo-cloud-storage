@@ -5,6 +5,7 @@ import org.jets3t.service.model.S3Object;
 import org.junit.Assert;
 import org.junit.Test;
 
+
 public class AcceptOnceS3ObjectListFilterTest {
 
 	AcceptOnceS3ObjectListFilter sut;

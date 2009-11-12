@@ -15,14 +15,12 @@ import org.junit.Test;
 import org.springframework.integration.core.Message;
 import org.springframework.integration.message.MessageBuilder;
 
-import com.opencredo.integration.s3.S3Resource;
-
 /*
  * Main application test class used to test if the adapter produces the 
  * expected behaviour.
  */
 
-public class MainApp {
+public class MainAppTest {
 	S3FileReadingMessageSource messageSource;
 	S3MessageTransformer transformer;
 	S3WritingMessageHandler handler;
@@ -49,7 +47,7 @@ public class MainApp {
 	 * Writing to the bucket is done by the S3WritingMessageHandler.
 	 */
 	@Test
-	public void fileContentsReadFromS3AndUploadedToS3AsStringTest() throws IOException, S3ServiceException {
+	public void testFileContentsReadFromS3AndUploadedToS3AsString() throws IOException, S3ServiceException {
 		String testString = new String("AppendedTestString");
 		Message<Map> receivedMessage = messageSource.receive();
 		Message<S3Object> transformedMessage = transformer.transform(receivedMessage);
