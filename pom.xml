@@ -118,6 +118,7 @@
     <modules>
         <module>si-s3-adapter</module>
         <module>si-sqs-adapter</module>
+        <module>sample-s3quote</module>
     </modules>
 
 </project>

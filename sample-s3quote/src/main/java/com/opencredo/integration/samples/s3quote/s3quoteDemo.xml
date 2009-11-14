@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/integration"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:stream="http://www.springframework.org/schema/integration/stream"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+			http://www.springframework.org/schema/integration
+			http://www.springframework.org/schema/integration/spring-integration-1.0.xsd
+			http://www.springframework.org/schema/integration/stream
+			http://www.springframework.org/schema/integration/stream/spring-integration-stream-1.0.xsd">
+
+	<channel id="tickerUploadRequests" />
+	<channel id="tickers" />                              
+	<beans:bean id="s3TickerBuilder" class="com.opencredo.integration.samples.s3quote.S3TickerBuilder" />
+	
+	<beans:bean id="s3Resource" class="com.opencredo.integration.s3.S3Resource">
+		<beans:constructor-arg index="0" value="s3quote" />
+	</beans:bean>
+	<beans:bean id="s3WritingMessageHandler" class="com.opencredo.integration.s3.S3WritingMessageHandler">
+		<beans:constructor-arg index="0" ref="s3Resource"/>
+	</beans:bean>
+	<service-activator input-channel="tickerUploadRequests" 
+	 	   	   ref="s3TickerBuilder" 
+	 	   	   method="buildTicker" 
+	 	   	   output-channel="tickers"/>
+	<inbound-channel-adapter ref="s3WritingMessageHandler" method="handleMessage" channel="tickers">
+		<poller>
+			<interval-trigger interval="5000"/>
+		</poller>		
+	</inbound-channel-adapter>
+	
+	<channel id="s3tickers" datatype="org.jets3t.service.model.S3Object"/>
+	<beans:bean id="s3FileReadingMessageSource" class="com.opencredo.integration.s3.S3FileReadingMessageSource">
+		<beans:property name="s3Resource" ref="s3Resource" />
+	</beans:bean>
+	<service-activator input-channel="s3tickers" 
+	 	   	   ref="s3FileReadingMessageSource" 
+	 	   	   method="receive" 
+	 	   	   output-channel="s3tickerMessages"/>
+	
+	<channel id="s3tickerMessages" datatype="org.jets3t.service.model.S3Object" />
+	<channel id="s3tickerMessageContents" datatype="org.jets3t.service.model.S3Object" />
+	<beans:bean id="s3MessageTransformer" class="com.opencredo.integration.s3.S3MessageTransformer"/>
+	<service-activator input-channel="s3tickerMessages" 
+ 	   	   ref="s3MessageTransformer" 
+ 	   	   method="transform" 
+ 	   	   output-channel="s3tickerMessageContents"/>
+ 	   	   
+
+	<beans:bean id="s3quoteService" class="com.opencredo.integration.samples.s3quote.S3QuoteService"/>
+	<inbound-channel-adapter ref="s3quoteService" method="lookupQuote" channel="s3tickerMessageContents">
+		<poller>
+			<interval-trigger interval="5000"/>
+		</poller>		
+	</inbound-channel-adapter>
+
+</beans:beans>
