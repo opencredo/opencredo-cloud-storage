@@ -13,9 +13,10 @@
 	<annotation-config/>
 	<context:component-scan base-package="com.opencredo.integration.samples.s3quote"/>
 	
+	<gateway id="s3TickerUploader" service-interface="com.opencredo.integration.samples.s3quote.S3TickerUploader"/>
+		
 	<channel id="tickers" />                              
-	<beans:bean id="s3TickerBuilder" class="com.opencredo.integration.samples.s3quote.S3TickerBuilder" />
-	
+
 	<beans:bean id="s3Resource" class="com.opencredo.integration.s3.S3Resource">
 		<beans:constructor-arg index="0" value="s3quote" />
 	</beans:bean>
