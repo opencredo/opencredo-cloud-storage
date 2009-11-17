@@ -46,6 +46,7 @@ public class S3FileReadingMessageSource implements MessageSource<Map> {
 	}
 	
 	private static final int INTERNAL_QUEUE_CAPACITY = 5;
+	
 	private final Log logger = LogFactory.getLog(this.getClass());
 	
 	private volatile AcceptOnceS3ObjectListFilter filter = new AcceptOnceS3ObjectListFilter();
@@ -112,6 +113,11 @@ public class S3FileReadingMessageSource implements MessageSource<Map> {
 			tempS3Object.addMetadata("key", tempS3Object.getKey());
 		}
 		return filteredS3Objects;
+	}
+
+	public void setFilter(AcceptOnceS3ObjectListFilter filter) {
+		Assert.notNull(filter, "'filter' should not be null");
+		this.filter = filter;
 	}
 	        	          
 }
