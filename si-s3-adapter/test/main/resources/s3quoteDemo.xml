@@ -9,8 +9,8 @@
 			http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 			http://www.springframework.org/schema/integration
 			http://www.springframework.org/schema/integration/spring-integration-1.0.xsd
-			http://www.opencredo.com/schema/integration/amqp
-			http://www.opencredo.com/schema/integration/amqp/spring-integration-amqp-1.0.xsd"">
+			http://www.opencredo.com/schema/integration/s3
+			http://www.opencredo.com/schema/integration/s3/spring-integration-s3-1.0.xsd"">
 
 	<channel id="tickers" /> 
 	<gateway id="s3TickerUploader" service-interface="com.opencredo.integration.samples.s3quote.S3TickerUploader" default-request-channel="tickers"/>                             
@@ -22,9 +22,7 @@
 		<beans:constructor-arg index="0" ref="s3Resource"/>
 	</beans:bean>
 	<s3:outbound-channel-adapter id="s3WritingMessageHandler" channel="tickers">
-		<poller>
-			<interval-trigger interval="5000"/>
-		</poller>		
+			
 	</s3:outbound-channel-adapter>
 	
 	<channel id="s3tickers" datatype="org.jets3t.service.model.S3Object"/>

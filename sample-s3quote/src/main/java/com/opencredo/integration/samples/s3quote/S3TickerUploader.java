@@ -9,9 +9,6 @@ import org.springframework.integration.core.Message;
  */
 public interface S3TickerUploader {
 
-	@Gateway(requestChannel="tickers")
 	void sendTicker(Message<String> ticker);
-
-	
 
 }

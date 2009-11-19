@@ -1,3 +1,18 @@
+/* Copyright 2008 the original author or authors.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+
 package com.opencredo.integration.s3;
 
 import java.util.Comparator;
@@ -28,7 +43,7 @@ import org.springframework.util.Assert;
 /** 
  * MessageSource that creates messages containing meta-data maps of S3Objects
  */
-public class S3FileReadingMessageSource implements MessageSource<Map> {
+public class S3InboundAdapter implements MessageSource<Map> {
 	
 	class S3ObjectLastModifiedDateComparator implements Comparator<S3Object>{
 
@@ -46,25 +61,15 @@ public class S3FileReadingMessageSource implements MessageSource<Map> {
 	}
 	
 	private static final int INTERNAL_QUEUE_CAPACITY = 5;
-	
 	private final Log logger = LogFactory.getLog(this.getClass());
-	
-	private volatile AcceptOnceS3ObjectListFilter filter = new AcceptOnceS3ObjectListFilter();
-
 	private final Queue<S3Object> toBeReceived;
-	S3Resource s3Resource;
 	
-	public Queue<S3Object> getQueueToBeReceived(){
-		return toBeReceived;
-	}
-    
-    public S3FileReadingMessageSource(){ 
+	private S3Resource s3Resource;
+	private volatile S3ObjectListFilter filter = new AcceptOnceS3ObjectListFilter();
+	
+    public S3InboundAdapter(){ 
 
     	this.toBeReceived = new PriorityBlockingQueue<S3Object>(INTERNAL_QUEUE_CAPACITY, new S3ObjectLastModifiedDateComparator());
-    }
-    
-    public void setS3Resource(S3Resource s3Resource){
-    	this.s3Resource = s3Resource;
     }
 	
 	public Message<Map> receive(){
@@ -115,7 +120,16 @@ public class S3FileReadingMessageSource implements MessageSource<Map> {
 		return filteredS3Objects;
 	}
 
-	public void setFilter(AcceptOnceS3ObjectListFilter filter) {
+    
+    public void setS3Resource(S3Resource s3Resource){
+    	this.s3Resource = s3Resource;
+    }
+    
+	public Queue<S3Object> getQueueToBeReceived(){
+		return toBeReceived;
+	}
+	
+	public void setFilter(S3ObjectListFilter filter) {
 		Assert.notNull(filter, "'filter' should not be null");
 		this.filter = filter;
 	}

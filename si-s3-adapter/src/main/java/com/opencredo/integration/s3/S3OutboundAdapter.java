@@ -1,3 +1,18 @@
+/* Copyright 2008 the original author or authors.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+
 package com.opencredo.integration.s3;
 
 import org.springframework.integration.file.DefaultFileNameGenerator;
@@ -22,15 +37,15 @@ import org.springframework.util.Assert;
  * a default destination. If the payload is S3Object or File, it should have the
  * filename property in it's header. 
  */
-public class S3WritingMessageHandler implements MessageHandler {
+public class S3OutboundAdapter implements MessageHandler {
 	
-	private final Log logger = LogFactory.getLog(S3WritingMessageHandler.class);
+	private final Log logger = LogFactory.getLog(S3OutboundAdapter.class);
 	
 	private volatile S3KeyNameGenerator s3KeyNameGenerator = new S3KeyNameGenerator();
 	
 	private S3Resource s3Resource;
 
-	public S3WritingMessageHandler(S3Resource s3resource){
+	public S3OutboundAdapter(S3Resource s3resource){
 		this.s3Resource = s3resource;
 	}
 
@@ -70,7 +85,6 @@ public class S3WritingMessageHandler implements MessageHandler {
 			throw new MessageHandlingException(message, "failed to write Message payload to file", e);
 		}	
 	}
-    
     
     private S3Object fileToS3Handler(File fileInput){
     	try {
