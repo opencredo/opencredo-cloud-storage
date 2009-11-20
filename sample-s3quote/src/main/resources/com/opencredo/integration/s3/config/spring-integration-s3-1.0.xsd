@@ -17,12 +17,24 @@
 
 	<xsd:element name="inbound-channel-adapter">
 		<xsd:annotation>
-			<xsd:documentation>Defines an inbound Channel Adapter for polling an S3 Bucket.</xsd:documentation>
+	<xsd:documentation>Defines an inbound Channel Adapter for polling an S3
+		Bucket.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
-				<xsd:element ref="integration:poller" minOccurs="0" maxOccurs="1"/>
+	<xsd:element ref="integration:poller" minOccurs="0"
+		maxOccurs="1" />
 			</xsd:sequence>
+			<xsd:attribute name="id" type="xsd:ID"/>
+			<xsd:attribute name="channel" type="xsd:string">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<tool:annotation kind="ref">
+							<tool:expected-type type="org.springframework.integration.core.MessageChannel" />
+						</tool:annotation>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:attribute>
 			<xsd:attribute name="s3-directory" type="xsd:string">
 				<xsd:annotation>
 					<xsd:appinfo>
