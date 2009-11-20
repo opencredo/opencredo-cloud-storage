@@ -15,40 +15,27 @@
 	<channel id="tickers" /> 
 	<gateway id="s3TickerUploader" service-interface="com.opencredo.integration.samples.s3quote.S3TickerUploader" default-request-channel="tickers"/>                             
 
-	<beans:bean id="s3Resource" class="com.opencredo.integration.s3.S3Resource">
-		<beans:constructor-arg index="0" value="s3quote" />
-	</beans:bean>
-	<beans:bean id="s3WritingMessageHandler" class="com.opencredo.integration.s3.S3WritingMessageHandler">
-		<beans:constructor-arg index="0" ref="s3Resource"/>
-	</beans:bean>
-	<s3:outbound-channel-adapter id="s3WritingMessageHandler" channel="tickers">
-		<poller>
-			<interval-trigger interval="5000"/>
-		</poller>		
-	</s3:outbound-channel-adapter>
+	<s3:s3-directory id="s3quote" bucket-name="s3quote" />
+
+	<s3:outbound-channel-adapter s3-directory="s3quote" channel="tickers" />
 	
 	<channel id="s3tickers" datatype="org.jets3t.service.model.S3Object"/>
-	<beans:bean id="s3FileReadingMessageSource" class="com.opencredo.integration.s3.S3FileReadingMessageSource">
-		<beans:property name="s3Resource" ref="s3Resource" />
-	</beans:bean>
-	<service-activator input-channel="s3tickers" 
-	 	   	   ref="s3FileReadingMessageSource" 
-	 	   	   method="receive" 
-	 	   	   output-channel="s3tickerMessages"/>
-	
-	<channel id="s3tickerMessages" datatype="org.jets3t.service.model.S3Object" />
-	<channel id="s3tickerMessageContents" datatype="org.jets3t.service.model.S3Object" />
-	<beans:bean id="s3MessageTransformer" class="com.opencredo.integration.s3.S3MessageTransformer"/>
-	<service-activator input-channel="s3tickerMessages" 
- 	   	   ref="s3MessageTransformer" 
- 	   	   method="transform" 
- 	   	   output-channel="s3tickerMessageContents"/>
- 	   	   
-	<beans:bean id="s3quoteService" class="com.opencredo.integration.samples.s3quote.S3QuoteService"/>
-	<s3:inbound-channel-adapter ref="s3quoteService" method="lookupQuote" channel="s3tickerMessageContents">
+	<s3:inbound-channel-adapter id="s3tickerMessages" s3-directory="s3quote" channel="s3tickers">
 		<poller>
 			<interval-trigger interval="5000"/>
 		</poller>		
 	</s3:inbound-channel-adapter>
+	
+	<channel id="s3tickerMessageContents" datatype="org.jets3t.service.model.S3Object" />
+	<service-activator input-channel="s3tickerMessages" 
+ 	   	   ref="s3MessageTransformer" 
+ 	   	   method="transform" 
+ 	   	   output-channel="s3tickerMessageContents"/>   	   
+ 	<beans:bean id="s3MessageTransformer" class="com.opencredo.integration.s3.S3MessageTransformer"/>
+ 	
+ 	<service-activator input-channel="s3tickerMessageContents" 
+ 	   	   ref="s3quoteService" 
+ 	   	   method="lookupQuote" />
+	<beans:bean id="s3quoteService" class="com.opencredo.integration.samples.s3quote.S3QuoteService"/>
 
 </beans:beans>

@@ -43,7 +43,7 @@ import org.springframework.util.Assert;
 /** 
  * MessageSource that creates messages containing meta-data maps of S3Objects
  */
-public class S3InboundAdapter implements MessageSource<Map> {
+public class S3InboundPollingAdapter implements MessageSource<Map> {
 	
 	class S3ObjectLastModifiedDateComparator implements Comparator<S3Object>{
 
@@ -67,7 +67,7 @@ public class S3InboundAdapter implements MessageSource<Map> {
 	private S3Resource s3Resource;
 	private volatile S3ObjectListFilter filter = new AcceptOnceS3ObjectListFilter();
 	
-    public S3InboundAdapter(){ 
+    public S3InboundPollingAdapter(){ 
 
     	this.toBeReceived = new PriorityBlockingQueue<S3Object>(INTERNAL_QUEUE_CAPACITY, new S3ObjectLastModifiedDateComparator());
     }

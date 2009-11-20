@@ -27,7 +27,7 @@ public class S3FileReadingMessageSourceTest {
 	
 	private static final String bucketName = "sibucket";
 	
-	private S3InboundAdapter systemUnderTest;
+	private S3InboundPollingAdapter systemUnderTest;
 	
 	private  S3Bucket s3Bucket = new S3Bucket("sibucket", "LOCATION_EUROPE");
 	private S3Object[] s3ObjectArray = new S3Object[]{new S3Object(s3Bucket, "test.txt")};
@@ -52,7 +52,7 @@ public class S3FileReadingMessageSourceTest {
 	             anyString(), anyString(), anyLong(), anyString(), anyBoolean())).thenReturn(new S3ObjectsChunk(null, null, s3ObjectArray, null, null));
     	when(s3BucketMock.getName()).thenReturn("sibucket","sibucket");
     	
-    	systemUnderTest = new S3InboundAdapter();
+    	systemUnderTest = new S3InboundPollingAdapter();
     	systemUnderTest.setS3Resource(s3resourceMock);
     	
     	Message<Map> message = systemUnderTest.receive();

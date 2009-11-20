@@ -21,7 +21,7 @@ import org.springframework.integration.message.MessageBuilder;
  */
 
 public class MainAppTest {
-	S3InboundAdapter messageSource;
+	S3InboundPollingAdapter messageSource;
 	S3MessageTransformer transformer;
 	S3OutboundAdapter handler;
 	
@@ -32,7 +32,7 @@ public class MainAppTest {
 	public void init() throws IOException, S3ServiceException{
 		bucketName = new String("sibucket");
 		resource = new S3Resource(bucketName);
-		messageSource = new S3InboundAdapter();
+		messageSource = new S3InboundPollingAdapter();
 		messageSource.setS3Resource(resource);
 		transformer = new S3MessageTransformer();
 		handler = new S3OutboundAdapter(resource);

@@ -26,14 +26,14 @@ import org.springframework.integration.message.MessageBuilder;
 import org.springframework.integration.transformer.Transformer;
 import java.util.Map;
 
+/**
+ * transforms the message with a metadata map payload 
+ * to message with the actual content
+ */
 public class S3MessageTransformer implements Transformer{
 
 	private final Log logger = LogFactory.getLog(this.getClass());
 	
-	/**
-	 * transforms the message with a metadata map payload 
-	 * to message with the actual content
-	 */
 	public Message<S3Object> transform(Message<?> s3MetaDataMapMessage) {
 		if (logger.isDebugEnabled()) logger.debug("S3MessageTransformer.transform() called.");
 		if (logger.isDebugEnabled()) logger.debug(s3MetaDataMapMessage.getPayload());
