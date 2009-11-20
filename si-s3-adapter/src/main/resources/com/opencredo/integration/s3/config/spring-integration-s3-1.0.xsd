@@ -9,10 +9,10 @@
 
 	<xsd:import namespace="http://www.springframework.org/schema/tool" />
 	<xsd:import namespace="http://www.springframework.org/schema/integration"
-		schemaLocation="http://www.springframework.org/schema/integration/spring-integration-2.0.xsd" />
+		schemaLocation="http://www.springframework.org/schema/integration/spring-integration-1.0.xsd" />
 
 	<xsd:annotation>
-		<xsd:documentation><![CDATA[Defines the configuration elements for Spring Integration's AWS adapters.]]></xsd:documentation>
+		<xsd:documentation><![CDATA[Defines the configuration elements for Spring Integration's S3 adapters.]]></xsd:documentation>
 	</xsd:annotation>
 
 	<xsd:element name="inbound-channel-adapter">
@@ -52,24 +52,15 @@
 			<xsd:documentation>Defines outbound Channel Adapter for sending message to S3 Bucket.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
-			<xsd:attribute name="s3-directory" type="xsd:string">
+			<xsd:attribute name="s3-directory" type="xsd:string" use="required">
 				<xsd:annotation>
 					<xsd:appinfo>
-						<tool:annotation>
+						<tool:annotation kind="ref">
 							<tool:expected-type type="com.opencredo.integration.s3.S3Resource"/>
 						</tool:annotation>
 					</xsd:appinfo>
 				</xsd:annotation>
-			</xsd:attribute>	
-			<xsd:attribute name="key-name-generator" type="xsd:string" use="optional">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<tool:annotation>
-							<tool:expected-type type="com.opencredo.integration.s3.S3KeyNameGenerator"/>
-						</tool:annotation>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:attribute>		
+			</xsd:attribute>			
 			<xsd:attribute name="channel" type="xsd:string" use="required">
 				<xsd:annotation>
 					<xsd:appinfo>
@@ -80,20 +71,22 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:attribute>
+			<xsd:attribute name="key-name-generator" type="xsd:string" use="optional">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<tool:annotation kind="ref">
+							<tool:expected-type type="com.opencredo.integration.s3.S3KeyNameGenerator"/>
+						</tool:annotation>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:attribute>
 		</xsd:complexType>
 	</xsd:element>
 	
 	<xsd:element name="s3-directory">
 		<xsd:complexType>
-			<xsd:sequence>
-				<xsd:annotation>
-					<xsd:appinfo>
-						<tool:annotation>
-							<tool:expected-type type="com.opencredo.integration.s3.S3Resource"/>
-						</tool:annotation>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:sequence>
+			<xsd:attribute name="id" type="xsd:string" use="required" />
+			<xsd:attribute name="bucket-name" type="xsd:string" use="required" />
 		</xsd:complexType>
 	</xsd:element>
 </schema>

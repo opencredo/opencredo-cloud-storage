@@ -11,12 +11,9 @@ public class S3AdapterParserUtils {
 	 static final String BUCKET_NAME_ATTRIBUTE = "bucket-name";
 	 static final String BUCKET_NAME_PROPERTY = "bucketName";
 	 
+	 //Inbound Properties
 	 static final String FILTER_ATTRIBUTE = "s3-filter";
 	 static final String FILTER_PROPERTY = "filter";
-	 
-	 //Inbound Properties
-	 static final String MESSAGE_SOURCE_ATTRIBUTE = "message-source";
-	 static final String MESSAGE_SOURCE_PROPERTY = "messageSource";
 	 
 	 //Outbound Properties
 	 static final String KEY_NAME_GENERATOR_ATTRIBUTE = "key-name-generator";
