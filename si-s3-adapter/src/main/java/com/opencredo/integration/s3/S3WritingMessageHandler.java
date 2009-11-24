@@ -37,15 +37,15 @@ import org.springframework.util.Assert;
  * a default destination. If the payload is S3Object or File, it should have the
  * filename property in it's header. 
  */
-public class S3OutboundAdapter implements MessageHandler {
+public class S3WritingMessageHandler implements MessageHandler {
 	
-	private final Log logger = LogFactory.getLog(S3OutboundAdapter.class);
+	private final Log logger = LogFactory.getLog(S3WritingMessageHandler.class);
 	
 	private volatile S3KeyNameGenerator s3KeyNameGenerator = new S3KeyNameGenerator();
 	
 	private S3Resource s3Resource;
 
-	public S3OutboundAdapter(S3Resource s3resource){
+	public S3WritingMessageHandler(S3Resource s3resource){
 		this.s3Resource = s3resource;
 	}
 

@@ -44,7 +44,7 @@ public class S3Resource implements Resource{
 	private S3Object s3Object = null;
 	public static final AWSCredentials awsCredentials = new AWSCredentials("AKIAJJC4KITQHSAY43MQ", "U0H0Psg7aS5qrKpLFqZXFUUOq2rK6l2xAfHxZWTd");
 	
-	private final Log logger = LogFactory.getLog(S3OutboundAdapter.class);
+	private final Log logger = LogFactory.getLog(S3WritingMessageHandler.class);
 	
 	public S3Resource(String bucketName){
 		try {

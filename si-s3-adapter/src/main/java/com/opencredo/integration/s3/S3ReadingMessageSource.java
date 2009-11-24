@@ -15,6 +15,7 @@
 
 package com.opencredo.integration.s3;
 
+import java.io.File;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
@@ -34,6 +35,7 @@ import org.jets3t.service.S3ServiceException;
 import org.jets3t.service.model.S3Object;
 import static  org.jets3t.service.S3Service.*;
 
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.integration.message.MessageBuilder;
 import org.springframework.integration.message.MessageSource;
 import org.springframework.integration.core.Message;
@@ -43,7 +45,7 @@ import org.springframework.util.Assert;
 /** 
  * MessageSource that creates messages containing meta-data maps of S3Objects
  */
-public class S3InboundPollingAdapter implements MessageSource<Map> {
+public class S3ReadingMessageSource implements MessageSource<Map>, InitializingBean {
 	
 	class S3ObjectLastModifiedDateComparator implements Comparator<S3Object>{
 
@@ -67,10 +69,15 @@ public class S3InboundPollingAdapter implements MessageSource<Map> {
 	private S3Resource s3Resource;
 	private volatile S3ObjectListFilter filter = new AcceptOnceS3ObjectListFilter();
 	
-    public S3InboundPollingAdapter(){ 
+    public S3ReadingMessageSource(){ 
 
     	this.toBeReceived = new PriorityBlockingQueue<S3Object>(INTERNAL_QUEUE_CAPACITY, new S3ObjectLastModifiedDateComparator());
     }
+    
+	public S3ReadingMessageSource(Comparator<S3Object> receptionOrderComparator) {
+		this.toBeReceived = new PriorityBlockingQueue<S3Object>(INTERNAL_QUEUE_CAPACITY, receptionOrderComparator);
+	}
+
 	
 	public Message<Map> receive(){
 		if (logger.isDebugEnabled()) logger.debug("receive() call received");
@@ -132,6 +139,13 @@ public class S3InboundPollingAdapter implements MessageSource<Map> {
 	public void setFilter(S3ObjectListFilter filter) {
 		Assert.notNull(filter, "'filter' should not be null");
 		this.filter = filter;
+	}
+
+	public void afterPropertiesSet() {
+		Assert.isTrue(this.s3Resource.exists(),
+				"Source directory [" + s3Resource + "] does not exist.");
+		Assert.isTrue(this.s3Resource.isReadable(),
+				"Source directory [" + this.s3Resource + "] is not readable.");
 	}
 	        	          
 }

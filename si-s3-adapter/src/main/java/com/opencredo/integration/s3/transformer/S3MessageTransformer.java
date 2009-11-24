@@ -13,7 +13,7 @@
 * limitations under the License.
 */
 
-package com.opencredo.integration.s3;
+package com.opencredo.integration.s3.transformer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,6 +24,9 @@ import org.jets3t.service.model.S3Object;
 import org.springframework.integration.core.Message;
 import org.springframework.integration.message.MessageBuilder;
 import org.springframework.integration.transformer.Transformer;
+
+import com.opencredo.integration.s3.S3Resource;
+
 import java.util.Map;
 
 /**

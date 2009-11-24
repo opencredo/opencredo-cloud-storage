@@ -35,15 +35,7 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:attribute>
-			<xsd:attribute name="s3-directory" type="xsd:string">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<tool:annotation>
-							<tool:expected-type type="com.opencredo.integration.s3.S3Resource"/>
-						</tool:annotation>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:attribute>	
+			<xsd:attribute name="bucket" type="xsd:string" />
 			<xsd:attribute name="s3-filter" type="xsd:string" use="optional">
 				<xsd:annotation>
 					<xsd:documentation>Reference to an S3ObjectListFilter . It is optional,
@@ -64,15 +56,7 @@
 			<xsd:documentation>Defines outbound Channel Adapter for sending message to S3 Bucket.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
-			<xsd:attribute name="s3-directory" type="xsd:string" use="required">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<tool:annotation kind="ref">
-							<tool:expected-type type="com.opencredo.integration.s3.S3Resource"/>
-						</tool:annotation>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:attribute>			
+			<xsd:attribute name="bucket" type="xsd:string" use="required" />			
 			<xsd:attribute name="channel" type="xsd:string" use="required">
 				<xsd:annotation>
 					<xsd:appinfo>

@@ -5,8 +5,8 @@ import org.springframework.integration.config.xml.AbstractIntegrationNamespaceHa
 public class S3NamespaceHandler extends AbstractIntegrationNamespaceHandler {
 
 	 public void init() {
-		 this.registerBeanDefinitionParser("inbound-channel-adapter", new S3InboundAdapterParser());
-		 this.registerBeanDefinitionParser("outbound-channel-adapter", new S3OutboundAdapterParser());
-		 this.registerBeanDefinitionParser("s3-directory", new S3ResourceParser());
+		 this.registerBeanDefinitionParser("inbound-channel-adapter", new S3InboundChannelAdapterParser());
+		 this.registerBeanDefinitionParser("outbound-channel-adapter", new S3OutboundChannelAdapterParser());
+		 
 	 }
 }

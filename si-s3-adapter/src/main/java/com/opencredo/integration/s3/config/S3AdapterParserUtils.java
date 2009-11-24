@@ -5,11 +5,8 @@ package com.opencredo.integration.s3.config;
 */
 
 public class S3AdapterParserUtils {
-	 static final String DIRECTORY_ATTRIBUTE = "s3-directory";
-	 static final String DIRECTORY_PROPERTY = "s3Resource";
-	 
-	 static final String BUCKET_NAME_ATTRIBUTE = "bucket-name";
-	 static final String BUCKET_NAME_PROPERTY = "bucketName";
+
+	 static final String BUCKET_NAME_ATTRIBUTE = "bucket";
 	 
 	 //Inbound Properties
 	 static final String FILTER_ATTRIBUTE = "s3-filter";

@@ -14,9 +14,9 @@ import org.springframework.integration.channel.PollableChannel;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
-public class S3CombinedInboundOutboundAdapterParserTest {
+public class S3InboundChannelAdapterParserTests {
 
-	private final static Logger LOG = LoggerFactory.getLogger(S3CombinedInboundOutboundAdapterParserTest.class);
+	private final static Logger LOG = LoggerFactory.getLogger(S3InboundChannelAdapterParserTests.class);
 
 
 	

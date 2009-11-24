@@ -15,22 +15,30 @@ import org.jets3t.service.model.S3Bucket;
 import org.jets3t.service.model.S3Object;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import org.springframework.integration.core.Message;
 import static  org.jets3t.service.S3Service.*;
 
+@SuppressWarnings("unchecked")
 @RunWith(MockitoJUnitRunner.class)
-public class S3FileReadingMessageSourceTest {
+public class S3ReadingMessageSourceTests {
 	
-	private final Log logger = LogFactory.getLog(this.getClass());
+	private S3ReadingMessageSource s3FileReadingMessageSource;
 	
 	private static final String bucketName = "sibucket";
-	
-	private S3InboundPollingAdapter systemUnderTest;
-	
-	private  S3Bucket s3Bucket = new S3Bucket("sibucket", "LOCATION_EUROPE");
+	private S3Bucket s3Bucket = new S3Bucket("sibucket", "LOCATION_EUROPE");
 	private S3Object[] s3ObjectArray = new S3Object[]{new S3Object(s3Bucket, "test.txt")};
+	
+	@Mock
+	private S3Bucket s3BucketMock;
+	
+	@Mock
+	private S3Service s3ServiceMock;
+	
+	@Mock
+	private S3Resource s3resourceMock;
 	
 	@Test
 	public void testChunkCanBeCreated(){
@@ -41,9 +49,7 @@ public class S3FileReadingMessageSourceTest {
 	
     @Test
     public void testReceiveMessage() throws S3ServiceException {
-    	S3Bucket s3BucketMock = mock(S3Bucket.class);
-    	S3Service s3ServiceMock = mock(RestS3Service.class);
-    	S3Resource s3resourceMock = mock(S3Resource.class);
+
     	when(s3resourceMock.getS3Service()).thenReturn(s3ServiceMock, s3ServiceMock, s3ServiceMock);
     	when(s3resourceMock.getS3Bucket()).thenReturn(s3BucketMock, s3BucketMock, s3BucketMock);
     	
@@ -52,12 +58,12 @@ public class S3FileReadingMessageSourceTest {
 	             anyString(), anyString(), anyLong(), anyString(), anyBoolean())).thenReturn(new S3ObjectsChunk(null, null, s3ObjectArray, null, null));
     	when(s3BucketMock.getName()).thenReturn("sibucket","sibucket");
     	
-    	systemUnderTest = new S3InboundPollingAdapter();
-    	systemUnderTest.setS3Resource(s3resourceMock);
+    	s3FileReadingMessageSource = new S3ReadingMessageSource();
+    	s3FileReadingMessageSource.setS3Resource(s3resourceMock);
     	
-    	Message<Map> message = systemUnderTest.receive();
+    	Message<Map> message = s3FileReadingMessageSource.receive();
     	
-    	assertNotNull("Queue should not be empty at this point.", systemUnderTest.getQueueToBeReceived());
+    	assertNotNull("Queue should not be empty at this point.", s3FileReadingMessageSource.getQueueToBeReceived());
     	
     	assertEquals("unexpected message content", "sibucket", message.getPayload().get("bucketName"));
     	assertEquals("unexpected key", "test.txt", message.getPayload().get("key"));

@@ -15,15 +15,17 @@ import org.junit.Test;
 import org.springframework.integration.core.Message;
 import org.springframework.integration.message.MessageBuilder;
 
+import com.opencredo.integration.s3.transformer.S3MessageTransformer;
+
 /*
  * Main application test class used to test if the adapter produces the 
  * expected behaviour.
  */
 
 public class MainAppTest {
-	S3InboundPollingAdapter messageSource;
+	S3ReadingMessageSource messageSource;
 	S3MessageTransformer transformer;
-	S3OutboundAdapter handler;
+	S3WritingMessageHandler handler;
 	
 	String bucketName;
 	S3Resource resource;
@@ -32,10 +34,10 @@ public class MainAppTest {
 	public void init() throws IOException, S3ServiceException{
 		bucketName = new String("sibucket");
 		resource = new S3Resource(bucketName);
-		messageSource = new S3InboundPollingAdapter();
+		messageSource = new S3ReadingMessageSource();
 		messageSource.setS3Resource(resource);
 		transformer = new S3MessageTransformer();
-		handler = new S3OutboundAdapter(resource);
+		handler = new S3WritingMessageHandler(resource);
 	}
 	
 	/*

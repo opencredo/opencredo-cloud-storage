@@ -1,4 +1,4 @@
-package com.opencredo.integration.s3;
+package com.opencredo.integration.s3.transformer;
 
 import java.util.HashMap;
 import java.util.Map;

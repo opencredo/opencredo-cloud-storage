@@ -21,14 +21,14 @@ public class S3WritingMessageHandlerTest {
 	
 	S3Resource s3Resource;
 	
-	S3OutboundAdapter systemUnderTest;
+	S3WritingMessageHandler systemUnderTest;
 	
 	MessageBuilder<File> messageBuilder;
 	
 	@Before
 	public void init() throws IOException{
 		s3Resource = mock(S3Resource.class);		
-		systemUnderTest = new S3OutboundAdapter(s3Resource);
+		systemUnderTest = new S3WritingMessageHandler(s3Resource);
 		File testHandler = File.createTempFile("testHandler", "tmp");
 		testHandler.deleteOnExit();
 		messageBuilder = MessageBuilder.withPayload(testHandler);
