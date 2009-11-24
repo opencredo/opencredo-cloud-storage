@@ -22,8 +22,7 @@
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
-	<xsd:element ref="integration:poller" minOccurs="0"
-		maxOccurs="1" />
+				<xsd:element ref="integration:poller" minOccurs="0" maxOccurs="1" />
 			</xsd:sequence>
 			<xsd:attribute name="id" type="xsd:ID"/>
 			<xsd:attribute name="channel" type="xsd:string">
@@ -79,10 +78,4 @@
 		</xsd:complexType>
 	</xsd:element>
 	
-	<xsd:element name="s3-directory">
-		<xsd:complexType>
-			<xsd:attribute name="id" type="xsd:string" use="required" />
-			<xsd:attribute name="bucket-name" type="xsd:string" use="required" />
-		</xsd:complexType>
-	</xsd:element>
 </schema>

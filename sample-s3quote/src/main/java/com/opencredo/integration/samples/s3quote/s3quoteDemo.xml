@@ -15,21 +15,21 @@
 	<channel id="tickers" /> 
 	<gateway id="s3TickerUploader" service-interface="com.opencredo.integration.samples.s3quote.S3TickerUploader" default-request-channel="tickers"/>                             
 
-	<s3:outbound-channel-adapter bucket="s3quote" channel="tickers" />
+	<s3:outbound-channel-adapter bucket="s3quotes" channel="tickers" />
 	
 	<channel id="s3tickers" datatype="org.jets3t.service.model.S3Object"/>
-	<s3:inbound-channel-adapter id="s3tickerMessages" bucket="s3quote" channel="s3tickers">
+	<s3:inbound-channel-adapter bucket="s3quotes" channel="s3tickers">
 		<poller>
 			<interval-trigger interval="5000"/>
 		</poller>		
 	</s3:inbound-channel-adapter>
 	
 	<channel id="s3tickerMessageContents" datatype="org.jets3t.service.model.S3Object" />
-	<service-activator input-channel="s3tickerMessages" 
+	<service-activator input-channel="s3tickers" 
  	   	   ref="s3MessageTransformer" 
  	   	   method="transform" 
  	   	   output-channel="s3tickerMessageContents"/>   	   
- 	<beans:bean id="s3MessageTransformer" class="com.opencredo.integration.s3.S3MessageTransformer"/>
+ 	<beans:bean id="s3MessageTransformer" class="com.opencredo.integration.s3.transformer.S3MessageTransformer"/>
  	
  	<service-activator input-channel="s3tickerMessageContents" 
  	   	   ref="s3quoteService" 

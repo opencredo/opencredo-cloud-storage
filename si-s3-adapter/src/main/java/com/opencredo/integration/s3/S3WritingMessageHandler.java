@@ -15,9 +15,6 @@
 
 package com.opencredo.integration.s3;
 
-import org.springframework.integration.file.DefaultFileNameGenerator;
-import org.springframework.integration.file.FileNameGenerator;
-
 import java.io.File;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -25,8 +22,10 @@ import java.security.NoSuchAlgorithmException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jets3t.service.model.S3Object;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.integration.message.MessageHandler;
 import org.springframework.integration.core.Message;
+import org.springframework.integration.file.FileNameGenerator;
 import org.springframework.integration.message.MessageHandlingException;
 import org.springframework.util.Assert;
 
@@ -37,11 +36,11 @@ import org.springframework.util.Assert;
  * a default destination. If the payload is S3Object or File, it should have the
  * filename property in it's header. 
  */
-public class S3WritingMessageHandler implements MessageHandler {
+public class S3WritingMessageHandler implements MessageHandler, InitializingBean {
 	
 	private final Log logger = LogFactory.getLog(S3WritingMessageHandler.class);
 	
-	private volatile S3KeyNameGenerator s3KeyNameGenerator = new S3KeyNameGenerator();
+	private volatile FileNameGenerator s3KeyNameGenerator = new S3KeyNameGenerator();
 	
 	private S3Resource s3Resource;
 
@@ -114,7 +113,7 @@ public class S3WritingMessageHandler implements MessageHandler {
 		}
     }
     
-	public void setS3KeyNameGenerator(S3KeyNameGenerator fileNameGenerator) {
+	public void setS3KeyNameGenerator(FileNameGenerator fileNameGenerator) {
 		Assert.notNull(fileNameGenerator, "FileNameGenerator must not be null");
 		this.s3KeyNameGenerator = fileNameGenerator;
 	}
@@ -125,6 +124,13 @@ public class S3WritingMessageHandler implements MessageHandler {
 
 	public void setS3Resource(S3Resource s3Resource) {
 		this.s3Resource = s3Resource;
+	}
+
+	public void afterPropertiesSet() throws Exception {
+		Assert.isTrue(this.s3Resource.exists(),
+				"Source directory [" + s3Resource + "] does not exist.");
+		Assert.isTrue(this.s3Resource.isReadable(),
+				"Source directory [" + this.s3Resource + "] is not readable.");
 	}
     
 }

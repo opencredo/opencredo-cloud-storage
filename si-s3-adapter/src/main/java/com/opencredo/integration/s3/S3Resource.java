@@ -50,6 +50,7 @@ public class S3Resource implements Resource{
 		try {
 			s3Service = new RestS3Service(awsCredentials);	
 			s3Bucket = s3Service.getBucket(bucketName);
+			Assert.notNull(s3Bucket, "bucket should not be null");
 		} 
 		catch (S3ServiceException e) {
 			e.printStackTrace();

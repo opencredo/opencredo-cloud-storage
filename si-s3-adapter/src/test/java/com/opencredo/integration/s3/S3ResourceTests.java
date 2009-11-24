@@ -10,12 +10,21 @@ import org.jets3t.service.model.S3Bucket;
 import org.jets3t.service.model.S3Object;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.util.Assert;
 
 import static org.mockito.Mockito.*;
 
-public class S3ResourceTest {
+@RunWith(MockitoJUnitRunner.class)
+public class S3ResourceTests {
 	
+	S3Resource s3Resource;
 	String bucketName;
+	
+	@Mock
+	S3Service s3ServiceMock;
 	
 	@Before
 	public void init(){
@@ -23,10 +32,15 @@ public class S3ResourceTest {
 	}
 
 	@Test
-	public void testPutObjectCalled() throws NoSuchAlgorithmException, S3ServiceException, IOException{
-		S3Service s3ServiceMock = mock(S3Service.class);
-
-		S3Resource s3Resource = new S3Resource(bucketName);
+	public void testBucketCreated() {
+		s3Resource = new S3Resource(bucketName);
+		Assert.isTrue(bucketName.equals(s3Resource.getS3Bucket().getName()));
+	}
+	
+	@Test
+	public void testPutObjectCalled() throws NoSuchAlgorithmException, S3ServiceException, IOException {
+		
+		s3Resource = new S3Resource(bucketName);
 		s3Resource.setS3Service(s3ServiceMock);
 		File testFile = File.createTempFile("testFile", "s3");
 		testFile.deleteOnExit();
