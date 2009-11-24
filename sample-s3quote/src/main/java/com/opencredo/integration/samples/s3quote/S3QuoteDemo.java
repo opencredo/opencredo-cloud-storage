@@ -4,12 +4,16 @@ package com.opencredo.integration.samples.s3quote;
 import java.io.IOException;
 import java.util.Random;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jets3t.service.S3ServiceException;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.integration.message.MessageBuilder;
 
 public class S3QuoteDemo {
+	
+	private final static Log logger = LogFactory.getLog(S3QuoteDemo.class);
 
 	public static void main(String[] args) throws IOException, S3ServiceException {
 		AbstractApplicationContext context = new ClassPathXmlApplicationContext("s3quoteDemo.xml", S3QuoteDemo.class);
@@ -21,6 +25,7 @@ public class S3QuoteDemo {
 				chars[j] = (char) (new Random().nextInt(25) + 65);
 			}
 			String ticker = new String(chars);
+			if (logger.isDebugEnabled()) logger.debug("ticker to upload: "+ticker);
 			MessageBuilder<String> builder = MessageBuilder.withPayload(ticker);
 			tickerUploader.sendTicker(builder.build());
 		}

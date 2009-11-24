@@ -19,7 +19,7 @@ public class S3QuoteService {
 		BigDecimal price = new BigDecimal(new Random().nextDouble() * 100);	
 		BufferedReader br = new BufferedReader(new InputStreamReader(s3TickerMessage.getPayload().getDataInputStream()));
 		Quote quote = new Quote(br.readLine(), price.setScale(2, RoundingMode.HALF_EVEN));
-		System.out.println(quote);
+		System.out.println("Quote Update... "+quote);
 	}
 
 }

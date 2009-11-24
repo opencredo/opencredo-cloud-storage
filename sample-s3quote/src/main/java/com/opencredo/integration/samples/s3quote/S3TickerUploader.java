@@ -1,6 +1,5 @@
 package com.opencredo.integration.samples.s3quote;
 
-import org.springframework.integration.annotation.Gateway;
 import org.springframework.integration.core.Message;
 
 /*
