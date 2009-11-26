@@ -52,6 +52,10 @@ public class S3ReadingMessageSourceFactoryBean implements FactoryBean {
 		this.comparator = comparator;
 	}
 	
+	public void setFilter(S3ObjectListFilter filter) {
+		this.filter = filter;
+	}
+	
 	private void initSource() {
 		synchronized (this.initializationMonitor) {
 			if (this.source != null) {

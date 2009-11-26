@@ -5,12 +5,9 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jets3t.service.S3ObjectsChunk;
 import org.jets3t.service.S3Service;
 import org.jets3t.service.S3ServiceException;
-import org.jets3t.service.impl.rest.httpclient.RestS3Service;
 import org.jets3t.service.model.S3Bucket;
 import org.jets3t.service.model.S3Object;
 import org.junit.Test;
@@ -28,7 +25,7 @@ public class S3ReadingMessageSourceTests {
 	private S3ReadingMessageSource s3FileReadingMessageSource;
 	
 	private static final String bucketName = "sibucket";
-	private S3Bucket s3Bucket = new S3Bucket("sibucket", "LOCATION_EUROPE");
+	private S3Bucket s3Bucket = new S3Bucket(bucketName, "LOCATION_EUROPE");
 	private S3Object[] s3ObjectArray = new S3Object[]{new S3Object(s3Bucket, "test.txt")};
 	
 	@Mock
@@ -43,7 +40,7 @@ public class S3ReadingMessageSourceTests {
 	@Test
 	public void testChunkCanBeCreated(){
 		S3ObjectsChunk chunk = new S3ObjectsChunk(null, null, s3ObjectArray, null, null);
-		assertEquals("not expected bucket", chunk.getObjects()[0].getBucketName(), "sibucket");
+		assertEquals("not expected bucket", chunk.getObjects()[0].getBucketName(), bucketName);
 		assertNotNull("chunk cannot be created.", chunk);
 	}
 	
@@ -56,7 +53,7 @@ public class S3ReadingMessageSourceTests {
     	when(s3ServiceMock.checkBucketStatus(anyString())).thenReturn(BUCKET_STATUS__MY_BUCKET);    	
     	when(s3ServiceMock.listObjectsChunked(anyString(),
 	             anyString(), anyString(), anyLong(), anyString(), anyBoolean())).thenReturn(new S3ObjectsChunk(null, null, s3ObjectArray, null, null));
-    	when(s3BucketMock.getName()).thenReturn("sibucket","sibucket");
+    	when(s3BucketMock.getName()).thenReturn(bucketName,bucketName);
     	
     	s3FileReadingMessageSource = new S3ReadingMessageSource();
     	s3FileReadingMessageSource.setS3Resource(s3resourceMock);
@@ -65,7 +62,7 @@ public class S3ReadingMessageSourceTests {
     	
     	assertNotNull("Queue should not be empty at this point.", s3FileReadingMessageSource.getQueueToBeReceived());
     	
-    	assertEquals("unexpected message content", "sibucket", message.getPayload().get("bucketName"));
+    	assertEquals("unexpected message content", bucketName, message.getPayload().get("bucketName"));
     	assertEquals("unexpected key", "test.txt", message.getPayload().get("key"));
     }
     

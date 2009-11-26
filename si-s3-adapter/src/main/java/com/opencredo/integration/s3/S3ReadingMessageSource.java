@@ -98,11 +98,14 @@ public class S3ReadingMessageSource implements MessageSource<Map>, InitializingB
 				Set<S3Object> newS3Objects = new HashSet<S3Object>(filteredS3Objects);
 				if (!newS3Objects.isEmpty()) 
 					toBeReceived.addAll(newS3Objects);
-				Map metaDataMapPayload = toBeReceived.poll().getMetadataMap();
-				MessageBuilder<Map> builder = MessageBuilder.withPayload(metaDataMapPayload);
-				builder.setHeader(FileHeaders.FILENAME, metaDataMapPayload.get("key"));
-				if (logger.isDebugEnabled()) logger.debug("metaDataMapPayload: "+metaDataMapPayload);
-				return builder.build();
+				if (!toBeReceived.isEmpty()) {
+					Map metaDataMapPayload = toBeReceived.poll().getMetadataMap();
+					MessageBuilder<Map> builder = MessageBuilder.withPayload(metaDataMapPayload);
+					builder.setHeader(FileHeaders.FILENAME, metaDataMapPayload.get("key"));
+					if (logger.isDebugEnabled()) logger.debug("metaDataMapPayload: "+metaDataMapPayload);
+					return builder.build();
+				}
+				else return null;
 			}
 			else return null;
 		} 

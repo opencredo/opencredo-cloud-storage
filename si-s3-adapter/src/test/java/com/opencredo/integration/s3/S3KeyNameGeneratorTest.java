@@ -10,6 +10,7 @@ import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
 import org.springframework.integration.core.Message;
 import org.springframework.integration.message.MessageBuilder;
+import org.springframework.util.Assert;
 
 public class S3KeyNameGeneratorTest {
 	
@@ -23,7 +24,7 @@ public class S3KeyNameGeneratorTest {
 		message = builder.build();
 		S3KeyNameGenerator generator = new S3KeyNameGenerator();
 		
-		assertEquals("not expected key name", generator.defaultStringKey, generator.generateFileName(message));
+		Assert.isTrue(generator.generateFileName(message).startsWith(generator.getDefaultStringKeyInitial()), "not expected key name");
 	}
 	
 	@Test

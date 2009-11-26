@@ -17,8 +17,11 @@ public class S3QuoteDemo {
 
 	public static void main(String[] args) throws IOException, S3ServiceException {
 		AbstractApplicationContext context = new ClassPathXmlApplicationContext("s3quoteDemo.xml", S3QuoteDemo.class);
+		
+		/*
 		S3TickerUploader tickerUploader = (S3TickerUploader) context.getBean("s3TickerUploader");
 		//sending requests for tickers to be uploaded to S3, so that they can later be read by another application.
+		//can be commented out if already uploaded enough information
 		for (int i = 0; i <4; i++) {
 			char[] chars = new char[3];
 			for (int j = 0; j < 3; j++) {
@@ -29,6 +32,7 @@ public class S3QuoteDemo {
 			MessageBuilder<String> builder = MessageBuilder.withPayload(ticker);
 			tickerUploader.sendTicker(builder.build());
 		}
+		*/
 
 	}
 }

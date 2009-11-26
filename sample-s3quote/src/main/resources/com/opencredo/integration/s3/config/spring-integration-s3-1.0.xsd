@@ -35,7 +35,7 @@
 				</xsd:annotation>
 			</xsd:attribute>
 			<xsd:attribute name="bucket" type="xsd:string" />
-			<xsd:attribute name="s3-filter" type="xsd:string" use="optional">
+			<xsd:attribute name="filter" type="xsd:string" use="optional">
 				<xsd:annotation>
 					<xsd:documentation>Reference to an S3ObjectListFilter . It is optional,
 						default filter is AcceptOnceS3ObjectListFilter.</xsd:documentation>
@@ -47,6 +47,7 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:attribute>
+			<xsd:attribute name="prevent-duplicates" type="xsd:string" use="optional"/>
 		</xsd:complexType>
 	</xsd:element>
 

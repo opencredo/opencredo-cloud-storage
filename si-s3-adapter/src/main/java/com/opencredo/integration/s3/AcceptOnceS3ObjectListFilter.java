@@ -22,21 +22,25 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.jets3t.service.model.S3Object;
 
+/*
+ * Filters S3Objects based on key values
+ */
 public class AcceptOnceS3ObjectListFilter implements S3ObjectListFilter{
 	
-	private final Queue<S3Object> seen;
+	private final Queue<String> seenKeys;
 
 	private final Object monitor = new Object();
 
 	public AcceptOnceS3ObjectListFilter(int maxCapacity) {
-		this.seen = new LinkedBlockingQueue<S3Object>(maxCapacity);
+		this.seenKeys = new LinkedBlockingQueue<String>(maxCapacity);
+		
 	}
 
 	/**
 	 * Creates an AcceptOnceFileFilter based on an unbounded queue.
 	 */
 	public AcceptOnceS3ObjectListFilter() {
-		this.seen = new LinkedBlockingQueue<S3Object>();
+		this.seenKeys = new LinkedBlockingQueue<String>();
 	}
 
 	public final List<S3Object> filterS3Objects(S3Object[] s3Objects) {
@@ -53,12 +57,12 @@ public class AcceptOnceS3ObjectListFilter implements S3ObjectListFilter{
 
 	protected boolean accept(S3Object s3Object) {
 		synchronized (this.monitor) {
-			if (seen.contains(s3Object)) {
+			if (seenKeys.contains(s3Object.getKey())) {
 				return false;
 			}
-			if (!seen.offer(s3Object)) {
-				seen.poll();
-				seen.add(s3Object);
+			if (!seenKeys.offer(s3Object.getKey())) {
+				seenKeys.poll();
+				seenKeys.add(s3Object.getKey());
 			}
 			return true;
 		}

@@ -50,5 +50,9 @@ public class S3KeyNameGenerator implements FileNameGenerator{
 		}
 		else return null;
 	}
+	
+	public String getDefaultStringKeyInitial() {
+		return this.defaultStringKeyInitial;
+	}
 
 }
