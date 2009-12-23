@@ -15,7 +15,7 @@ import org.springframework.integration.message.MessageBuilder;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class S3WritingMessageHandlerTest {
+public class S3WritingMessageHandlerTests {
 
 	private final Log logger = LogFactory.getLog(this.getClass());
 	

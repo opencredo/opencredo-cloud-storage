@@ -16,36 +16,22 @@
 
 package com.opencredo.integration.s3;
 
-import java.io.File;
-import java.util.List;
 import java.util.regex.Pattern;
 
 import org.jets3t.service.model.S3Object;
 import org.springframework.util.Assert;
 
-/**
- * A {@link FileListFilter} implementation that matches against a {@link Pattern}.
- * 
- * @author Mark Fisher
- */
 public class PatternMatchingS3ObjectListFilter extends AbstractS3ObjectListFilter {
 
 	private final Pattern pattern;
 
-	/**
-	 * Create a filter for the given pattern.
-	 */
 	public PatternMatchingS3ObjectListFilter(Pattern pattern) {
 		Assert.notNull(pattern, "pattern must not be null");
 		this.pattern = pattern;
 	}
 
-
 	protected boolean accept(S3Object s3Object) {
-		return (s3Object != null) && this.pattern.matcher(s3Object.getKey()).matches();
+		return (s3Object != null) && (s3Object.getKey() != null) && this.pattern.matcher(s3Object.getKey()).matches();
 	}
-
-
-	
 
 }

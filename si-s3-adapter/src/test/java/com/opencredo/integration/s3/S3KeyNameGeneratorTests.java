@@ -12,9 +12,9 @@ import org.springframework.integration.core.Message;
 import org.springframework.integration.message.MessageBuilder;
 import org.springframework.util.Assert;
 
-public class S3KeyNameGeneratorTest {
+public class S3KeyNameGeneratorTests {
 	
-	private final Log logger = LogFactory.getLog(S3KeyNameGeneratorTest.class);
+	private final Log logger = LogFactory.getLog(S3KeyNameGeneratorTests.class);
 	
 	Message<?> message;
 	
