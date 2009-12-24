@@ -1,14 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans:beans xmlns="http://www.springframework.org/schema/integration/file"
+<beans:beans xmlns="http://www.springframework.org/schema/integration"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xmlns:beans="http://www.springframework.org/schema/beans"
-	xmlns:integration="http://www.springframework.org/schema/integration"
+	xmlns:s3="http://www.opencredo.com/schema/integration/s3"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
-			http://www.springframework.org/schema/beans/spring-beans.xsd
+			http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
  	        	http://www.springframework.org/schema/integration
-            		http://www.springframework.org/schema/integration/spring-integration.xsd
-	        	http://www.springframework.org/schema/integration/file
-            		http://www.springframework.org/schema/integration/file/spring-integration-file.xsd">
+			http://www.springframework.org/schema/integration/spring-integration-1.0.xsd
+	        	http://www.opencredo.com/schema/integration/s3
+			http://www.opencredo.com/schema/integration/s3/spring-integration-s3-1.0.xsd">
+			
+	<!--   <channel id="tickers" /> 
+	<gateway id="s3TickerUploader" service-interface="com.opencredo.integration.samples.s3quote.S3TickerUploader" default-request-channel="tickers"/>                             
+
+	<s3:outbound-channel-adapter bucket="s3quotes" channel="tickers" />
+	-->
+	
+	<channel id="inputS3Poller" />
+	<s3:inbound-channel-adapter bucket="oc-test" channel="inputS3Poller" filter="acceptOnceS3ObjectListFilter" comparator="testComparator">
+		<poller>
+			<interval-trigger interval="5000"/>
+		</poller>		
+	</s3:inbound-channel-adapter>
+	
+	<!-- 
+	
+	<channel id="s3tickerMessageContents" />
+	<service-activator input-channel="s3tickers" 
+ 	   	   ref="s3MessageTransformer" 
+ 	   	   method="transform" 
+ 	   	   output-channel="s3tickerMessageContents"/>   	   
+ 	<beans:bean id="s3MessageTransformer" class="com.opencredo.integration.s3.transformer.S3MessageTransformer"/>
+ 	
+ 	<service-activator input-channel="s3tickerMessageContents" 
+ 	   	   ref="s3quoteService" 
+ 	   	   method="lookupQuote" />
+	<beans:bean id="s3quoteService" class="com.opencredo.integration.samples.s3quote.S3QuoteService"/>
+
+-->
+
+	<beans:bean id="acceptOnceS3ObjectListFilter" class="com.opencredo.integration.s3.AcceptOnceS3ObjectListFilter"/>		
+						
+			
+<!-- 	
+					
 	<inbound-channel-adapter id="inputDirPoller"
 		directory="file:${java.io.tmpdir}" filter="filter" comparator="testComparator"
 		auto-startup="false">
@@ -27,7 +62,9 @@
 	<beans:bean
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" />
 
+-->
 	<beans:bean id="testComparator"
-		class="org.springframework.integration.file.config.FileInboundChannelAdapterParserTests$TestComparator" />
-
+		class="com.opencredo.integration.s3.config.S3InboundChannelAdapterParserTests$TestComparator" />
+ 	
+ 	
 </beans:beans>

@@ -15,7 +15,6 @@
 
 package com.opencredo.integration.s3;
 
-import java.io.File;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
@@ -68,6 +67,7 @@ public class S3ReadingMessageSource implements MessageSource<Map>, InitializingB
 	
 	private S3Resource s3Resource;
 	private volatile S3ObjectListFilter filter = new AcceptOnceS3ObjectListFilter();
+	private Comparator<S3Object> comparator;
 	
     public S3ReadingMessageSource(){ 
 
@@ -78,7 +78,6 @@ public class S3ReadingMessageSource implements MessageSource<Map>, InitializingB
 		this.toBeReceived = new PriorityBlockingQueue<S3Object>(INTERNAL_QUEUE_CAPACITY, receptionOrderComparator);
 	}
 
-	
 	public Message<Map> receive(){
 		if (logger.isDebugEnabled()) logger.debug("receive() call received");
 		
