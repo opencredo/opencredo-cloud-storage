@@ -61,6 +61,7 @@
 				message to S3 Bucket.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
+			<xsd:attribute name="id" type="xsd:ID" />
 			<xsd:attribute name="bucket" type="xsd:string" use="required" />
 			<xsd:attribute name="channel" type="xsd:string" use="required">
 				<xsd:annotation>

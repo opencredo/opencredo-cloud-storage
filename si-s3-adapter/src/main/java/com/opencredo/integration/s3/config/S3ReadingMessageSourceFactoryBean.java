@@ -1,11 +1,9 @@
 package com.opencredo.integration.s3.config;
 
-import java.io.File;
 import java.util.Comparator;
 
 import org.jets3t.service.model.S3Object;
 import org.springframework.beans.factory.FactoryBean;
-import org.springframework.integration.file.FileReadingMessageSource;
 import org.springframework.util.Assert;
 
 import com.opencredo.integration.s3.S3ObjectListFilter;

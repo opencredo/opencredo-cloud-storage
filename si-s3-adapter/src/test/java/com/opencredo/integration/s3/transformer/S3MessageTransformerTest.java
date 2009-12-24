@@ -33,5 +33,5 @@ public class S3MessageTransformerTest {
 		 assertNotNull(messageTransformed);
 		 assertEquals("not the expected key", "test.txt", messageTransformed.getPayload().getKey());
 	 }
-	 
+
 }

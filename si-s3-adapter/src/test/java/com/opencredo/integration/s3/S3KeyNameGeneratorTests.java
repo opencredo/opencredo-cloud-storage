@@ -22,9 +22,9 @@ public class S3KeyNameGeneratorTests {
 	public void testKeyNameForString(){
 		MessageBuilder<String> builder = MessageBuilder.withPayload(new String("test string"));
 		message = builder.build();
-		S3KeyNameGenerator generator = new S3KeyNameGenerator();
+		S3DefaultKeyNameGenerator generator = new S3DefaultKeyNameGenerator();
 		
-		Assert.isTrue(generator.generateFileName(message).startsWith(generator.getDefaultStringKeyInitial()), "not expected key name");
+		Assert.isTrue(generator.generateKeyName(message).startsWith(generator.getDefaultStringKeyInitial()), "not expected key name");
 	}
 	
 	@Test
@@ -34,8 +34,8 @@ public class S3KeyNameGeneratorTests {
 		if (logger.isDebugEnabled()) logger.debug(testFile);
 		MessageBuilder<File> builder = MessageBuilder.withPayload(testFile);
 		message = builder.build();
-		S3KeyNameGenerator generator = new S3KeyNameGenerator();
+		S3KeyNameGenerator generator = new S3DefaultKeyNameGenerator();
 		
-		assertEquals("not expected key name", testFile.getName(), generator.generateFileName(message));
+		assertEquals("not expected key name", testFile.getName(), generator.generateKeyName(message));
 	}
 }

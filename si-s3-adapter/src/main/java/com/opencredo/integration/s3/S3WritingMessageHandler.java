@@ -25,7 +25,6 @@ import org.jets3t.service.model.S3Object;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.integration.message.MessageHandler;
 import org.springframework.integration.core.Message;
-import org.springframework.integration.file.FileNameGenerator;
 import org.springframework.integration.message.MessageHandlingException;
 import org.springframework.util.Assert;
 
@@ -40,7 +39,7 @@ public class S3WritingMessageHandler implements MessageHandler, InitializingBean
 	
 	private final Log logger = LogFactory.getLog(S3WritingMessageHandler.class);
 	
-	private volatile FileNameGenerator s3KeyNameGenerator = new S3KeyNameGenerator();
+	private volatile S3KeyNameGenerator s3KeyNameGenerator = new S3DefaultKeyNameGenerator();
 	
 	private S3Resource s3Resource;
 
@@ -56,7 +55,7 @@ public class S3WritingMessageHandler implements MessageHandler, InitializingBean
     	Assert.notNull(message, "message must not be null");
 		Object payload = message.getPayload();
 		if (logger.isDebugEnabled()) logger.debug("message: "+message);
-		String generatedKeyName = s3KeyNameGenerator.generateFileName(message);
+		String generatedKeyName = s3KeyNameGenerator.generateKeyName(message);
 		Assert.notNull(payload, "message payload must not be null");
 		S3Object objectToSend = null;
 		try {
@@ -113,7 +112,7 @@ public class S3WritingMessageHandler implements MessageHandler, InitializingBean
 		}
     }
     
-	public void setS3KeyNameGenerator(FileNameGenerator fileNameGenerator) {
+	public void setS3KeyNameGenerator(S3KeyNameGenerator fileNameGenerator) {
 		Assert.notNull(fileNameGenerator, "FileNameGenerator must not be null");
 		this.s3KeyNameGenerator = fileNameGenerator;
 	}
