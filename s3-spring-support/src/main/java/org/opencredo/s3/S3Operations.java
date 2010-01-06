@@ -1,19 +1,27 @@
 package org.opencredo.s3;
 
 import java.io.File;
-
-import org.jets3t.service.model.S3Object;
+import java.io.InputStream;
 
 public interface S3Operations {
 	
 	//private Jets3tExceptionTranslator defaultJets3tExceptionTranslator;
 
-	public void sendString(String key, String stringToSend) throws S3CommunicationException;
+	public void send(String key, String stringToSend) throws S3CommunicationException;
+	public void send(String bucketName, String key, String stringToSend);
 	
-	public String receiveString(String key) throws S3CommunicationException;
+	public void send(File fileToSend);
+	public void send(String bucketName, File fileToSend);
 	
-	public void sendFile(File fileToSend) throws S3CommunicationException;
+	public void send(String key, InputStream is);
+	public void send(String key, String bucketName, InputStream is);
 	
-	public File receiveFile(String key) throws S3CommunicationException;
+	public String receiveAsString(String keyName);	
+	public String receiveAsString(String bucketName, String keyName);
 	
+	public File receiveAsFile(String key);	
+	public File receiveAsFile(String bucketName, String key);
+	
+	public InputStream receiveAsInputStream(String key);
+	public InputStream receiveAsInputStream(String bucketName, String key);	
 }

@@ -25,7 +25,7 @@ public class S3TemplateTests {
 		
 		
 		String testStringToSent = new String("Test string");
-		s3Template.sendString("testKey1", testStringToSent);
+		s3Template.send("testKey1", testStringToSent);
 		
 	}
 	
