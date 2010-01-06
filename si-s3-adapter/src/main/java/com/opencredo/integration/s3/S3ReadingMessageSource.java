@@ -62,6 +62,9 @@ public class S3ReadingMessageSource implements MessageSource<Map>, InitializingB
 	}
 	
 	private static final int INTERNAL_QUEUE_CAPACITY = 5;
+	private static final String FILENAME = "filename";
+	private static final int DEFAULT_OBJECT_LIST_CHUNK_SIZE = 1000;
+	
 	private final Log logger = LogFactory.getLog(this.getClass());
 	private final Queue<S3Object> toBeReceived;
 	
@@ -89,8 +92,9 @@ public class S3ReadingMessageSource implements MessageSource<Map>, InitializingB
 			if (s3Resource.getS3Service().checkBucketStatus(s3Resource.getS3Bucket().getName()) == BUCKET_STATUS__MY_BUCKET){
 	
 				//typical info contained in a list: key, lastmodified, etag, size, owner, storageclass
+				//Because the completeListing parameter is true, follow-up requests will be sent to provide a complete S3Object listing
 				S3ObjectsChunk chunk = s3Resource.getS3Service().listObjectsChunked(s3Resource.getS3Bucket().getName(),
-			             null, null, Constants.DEFAULT_OBJECT_LIST_CHUNK_SIZE, null, true);
+			             null, null, DEFAULT_OBJECT_LIST_CHUNK_SIZE, null, true);
 				if (logger.isDebugEnabled()) logger.debug("chunk created: "+chunk);
 				List<S3Object> filteredS3Objects = addBucketInfo(this.filter.filterS3Objects(chunk.getObjects()));
 				if (logger.isDebugEnabled()) logger.debug("filteredS3Objects: "+filteredS3Objects);
@@ -100,7 +104,7 @@ public class S3ReadingMessageSource implements MessageSource<Map>, InitializingB
 				if (!toBeReceived.isEmpty()) {
 					Map metaDataMapPayload = toBeReceived.poll().getMetadataMap();
 					MessageBuilder<Map> builder = MessageBuilder.withPayload(metaDataMapPayload);
-					builder.setHeader(FileHeaders.FILENAME, metaDataMapPayload.get("key"));
+					builder.setHeader(FILENAME, metaDataMapPayload.get("key"));
 					if (logger.isDebugEnabled()) logger.debug("metaDataMapPayload: "+metaDataMapPayload);
 					return builder.build();
 				}
@@ -109,8 +113,7 @@ public class S3ReadingMessageSource implements MessageSource<Map>, InitializingB
 			else return null;
 		} 
 		catch (S3ServiceException e) {
-			e.printStackTrace();
-			return null;
+			throw new S3IntegrationException(e);
 		}		
 	}
 

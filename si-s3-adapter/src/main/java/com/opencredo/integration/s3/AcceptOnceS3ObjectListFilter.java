@@ -16,8 +16,14 @@
 package com.opencredo.integration.s3;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 import java.util.Queue;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.jets3t.service.model.S3Object;
@@ -27,18 +33,39 @@ import org.jets3t.service.model.S3Object;
  */
 public class AcceptOnceS3ObjectListFilter implements S3ObjectListFilter{
 	
-	private final Queue<String> seenKeys;
+	/*
+	private final List<String> seenKeys = new CopyOnWriteArrayList<String>();
+	private final Object monitor = new Object();
 
+	public AcceptOnceS3ObjectListFilter() {
+		
+	}
+
+	public final List<S3Object> filterS3Objects(S3Object[] s3Objects) {
+		List<S3Object> acceptedObjects = Arrays.asList(s3Objects);
+		Map <String, S3Object> acceptedObjectsMap = new HashMap<String, S3Object>();
+		Iterator<S3Object> it = acceptedObjects.iterator();
+		while (it.hasNext()) {
+			S3Object next = it.next();
+			acceptedObjectsMap.put(next.getKey(), next);
+		}
+		
+		List<String> acceptedKeys = Arrays.asList((String [])acceptedObjectsMap.keySet().toArray());
+		
+		acceptedKeys.removeAll(this.seenKeys);
+		this.seenKeys.addAll(acceptedKeys);
+		
+	}
+	*/
+
+	private final Queue<String> seenKeys;
 	private final Object monitor = new Object();
 
 	public AcceptOnceS3ObjectListFilter(int maxCapacity) {
 		this.seenKeys = new LinkedBlockingQueue<String>(maxCapacity);
-		
+
 	}
 
-	/**
-	 * Creates an AcceptOnceFileFilter based on an unbounded queue.
-	 */
 	public AcceptOnceS3ObjectListFilter() {
 		this.seenKeys = new LinkedBlockingQueue<String>();
 	}
@@ -67,5 +94,6 @@ public class AcceptOnceS3ObjectListFilter implements S3ObjectListFilter{
 			return true;
 		}
 	}
+
 
 }

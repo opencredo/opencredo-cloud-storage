@@ -53,7 +53,7 @@ public class S3Resource implements Resource{
 			Assert.notNull(s3Bucket, "bucket should not be null");
 		} 
 		catch (S3ServiceException e) {
-			e.printStackTrace();
+			throw new S3IntegrationException(e);
 		}
 	}
 
@@ -132,8 +132,7 @@ public class S3Resource implements Resource{
 			return s3Service.isBucketAccessible(s3Bucket.getName());
 		} 
 		catch (S3ServiceException e) {
-			e.printStackTrace();
-			return false;
+			throw new S3IntegrationException(e);
 		}
 	}
 
@@ -150,8 +149,7 @@ public class S3Resource implements Resource{
 			return getURL().toURI();
 		} 
 		catch (URISyntaxException e) {
-			if (logger.isDebugEnabled()) e.printStackTrace();
-			return null;
+			throw new S3IntegrationException(e);
 		}
 	}
 
@@ -186,8 +184,7 @@ public class S3Resource implements Resource{
 			return Long.parseLong(s3Service.getObjectDetails(s3Bucket, s3File.getName()).getMetadata("METADATA_HEADER_LAST_MODIFIED_DATE").toString());
 		} 
 		catch (S3ServiceException e) {
-			e.printStackTrace();
-			return 0;
+			throw new S3IntegrationException(e);
 		}
 	}
 
@@ -196,8 +193,7 @@ public class S3Resource implements Resource{
 			return s3Object.getDataInputStream();
 		} 
 		catch (S3ServiceException e) {
-			e.printStackTrace();
-			return null;
+			throw new S3IntegrationException("InputStream Problem", e);
 		}
 	}
 

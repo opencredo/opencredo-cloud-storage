@@ -25,6 +25,7 @@ import org.springframework.integration.core.Message;
 import org.springframework.integration.message.MessageBuilder;
 import org.springframework.integration.transformer.Transformer;
 
+import com.opencredo.integration.s3.S3IntegrationException;
 import com.opencredo.integration.s3.S3Resource;
 
 import java.util.Map;
@@ -48,8 +49,7 @@ public class S3MessageTransformer implements Transformer{
 			return builder.build();
 		} 
 		catch (S3ServiceException e) {
-			e.printStackTrace();
-			return null;
+			throw new S3IntegrationException("Message Transform Error", e);
 		}				
 	}
 

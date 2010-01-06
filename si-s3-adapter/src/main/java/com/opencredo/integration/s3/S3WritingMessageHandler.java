@@ -77,7 +77,7 @@ public class S3WritingMessageHandler implements MessageHandler, InitializingBean
 			s3Resource.sendS3ObjectToS3();
 		}
 		catch (IllegalArgumentException e) {
-			e.printStackTrace();
+			throw new S3IntegrationException("Illegal Argument", e);
 		}
 		catch (Exception e) {
 			throw new MessageHandlingException(message, "failed to write Message payload to file", e);
@@ -89,12 +89,10 @@ public class S3WritingMessageHandler implements MessageHandler, InitializingBean
 			return new S3Object(fileInput);
 		} 
     	catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-			return null;
+    		throw new S3IntegrationException("fileToS3Handler, No Such Algorithm", e);
 		} 
     	catch (IOException e) {
-			e.printStackTrace();
-			return null;
+    		throw new S3IntegrationException("fileToS3Handler, IO Problem", e);
 		}
     }
     
@@ -103,12 +101,10 @@ public class S3WritingMessageHandler implements MessageHandler, InitializingBean
 			return new S3Object(generatedKeyName, stringInput);
 		} 
     	catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-			return null;
+    		throw new S3IntegrationException("stringToS3Handler, No Such Algorithm", e);
 		} 
     	catch (IOException e) {
-			e.printStackTrace();
-			return null;
+    		throw new S3IntegrationException("stringToS3Handler, IO Problem", e);
 		}
     }
     
