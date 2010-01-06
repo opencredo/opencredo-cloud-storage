@@ -21,31 +21,18 @@ public class S3Exception extends RuntimeException {
 	 */
 	private static final long serialVersionUID = -3456173051068969721L;
 
-	/**
-	 * 
-	 */
 	public S3Exception() {
 		super();
 	}
 
-	/**
-	 * @param message
-	 * @param cause
-	 */
 	public S3Exception(String message, Throwable cause) {
 		super(message, cause);
 	}
 
-	/**
-	 * @param message
-	 */
 	public S3Exception(String message) {
 		super(message);
 	}
 
-	/**
-	 * @param cause
-	 */
 	public S3Exception(Throwable cause) {
 		super(cause);
 	}
