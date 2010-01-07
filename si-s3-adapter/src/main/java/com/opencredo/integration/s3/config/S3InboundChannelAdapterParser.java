@@ -9,6 +9,8 @@ import org.springframework.integration.config.xml.IntegrationNamespaceUtils;
 import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
 
+import com.opencredo.integration.ec2.config.EC2AdapterParserUtils;
+
 public class S3InboundChannelAdapterParser extends AbstractPollingInboundChannelAdapterParser {
 	 
 	@Override
@@ -16,7 +18,7 @@ public class S3InboundChannelAdapterParser extends AbstractPollingInboundChannel
 		 BeanDefinitionBuilder builder = BeanDefinitionBuilder.
 		 	genericBeanDefinition("com.opencredo.integration.s3.config.S3ReadingMessageSourceFactoryBean");
 		 
-		 IntegrationNamespaceUtils.setValueIfAttributeDefined(builder, element, S3AdapterParserUtils.BUCKET_NAME_ATTRIBUTE);
+		 IntegrationNamespaceUtils.setValueIfAttributeDefined(builder, element, EC2AdapterParserUtils.BUCKET_NAME_ATTRIBUTE);
 		 IntegrationNamespaceUtils.setReferenceIfAttributeDefined(builder, element, "comparator");
 		 String filterBeanName = this.registerS3ListFilter(element, parserContext);
 		 builder.addPropertyReference("filter", filterBeanName);

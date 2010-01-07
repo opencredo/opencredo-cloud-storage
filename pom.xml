@@ -49,7 +49,7 @@
     </build>
 
     <properties>
-        <typicaVersion>1.5.2a</typicaVersion>
+        <typicaVersion>1.6</typicaVersion>
         <junitVersion>4.4</junitVersion>
         <commonsLoggingVersion>1.1.1</commonsLoggingVersion>
         <springIntegrationVersion>1.0.3.RELEASE</springIntegrationVersion>
@@ -140,6 +140,7 @@
 
     <modules>
         <module>si-s3-adapter</module>
+        <module>si-ec2-adapter</module>
         <module>si-sqs-adapter</module>
         <module>sample-s3quote</module>
         <module>s3-spring-support</module>

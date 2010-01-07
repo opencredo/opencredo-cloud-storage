@@ -8,6 +8,8 @@ import org.springframework.integration.config.xml.AbstractOutboundChannelAdapter
 import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
 
+import com.opencredo.integration.ec2.config.EC2AdapterParserUtils;
+
 public class S3OutboundChannelAdapterParser extends AbstractOutboundChannelAdapterParser { //implements BeanDefinitionParser {
 	 
 	 @Override
@@ -15,19 +17,19 @@ public class S3OutboundChannelAdapterParser extends AbstractOutboundChannelAdapt
 		BeanDefinitionBuilder builder = BeanDefinitionBuilder.
 	 	genericBeanDefinition("com.opencredo.integration.s3.config.S3WritingMessageHandlerFactoryBean");
 	  
-		String bucket = element.getAttribute(S3AdapterParserUtils.BUCKET_NAME_ATTRIBUTE);
-		String filter = element.getAttribute(S3AdapterParserUtils.FILTER_ATTRIBUTE);
-		String keyNameGenerator = element.getAttribute(S3AdapterParserUtils.KEY_NAME_GENERATOR_ATTRIBUTE);
+		String bucket = element.getAttribute(EC2AdapterParserUtils.BUCKET_NAME_ATTRIBUTE);
+		String filter = element.getAttribute(EC2AdapterParserUtils.FILTER_ATTRIBUTE);
+		String keyNameGenerator = element.getAttribute(EC2AdapterParserUtils.KEY_NAME_GENERATOR_ATTRIBUTE);
 	  
 		if (!StringUtils.hasText(bucket)) {
-			 throw new BeanCreationException( "A " + S3AdapterParserUtils.BUCKET_NAME_ATTRIBUTE + " should be provided.");
+			 throw new BeanCreationException( "A " + EC2AdapterParserUtils.BUCKET_NAME_ATTRIBUTE + " should be provided.");
 		}
 		
 		//builder.addPropertyReference...;
-		if (StringUtils.hasText(bucket)) builder.addPropertyValue(S3AdapterParserUtils.BUCKET_NAME_PROPERTY, bucket);
-		if (StringUtils.hasText(filter)) builder.addPropertyValue(S3AdapterParserUtils.FILTER_PROPERTY, filter);
+		if (StringUtils.hasText(bucket)) builder.addPropertyValue(EC2AdapterParserUtils.BUCKET_NAME_PROPERTY, bucket);
+		if (StringUtils.hasText(filter)) builder.addPropertyValue(EC2AdapterParserUtils.FILTER_PROPERTY, filter);
 		//if (StringUtils.hasText(keynameGenerator)) builder.addPropertyValue(S3AdapterParserUtils.KEY_NAME_GENERATOR_PROPERTY, keynameGenerator);
-		if (StringUtils.hasText(keyNameGenerator)) builder.addPropertyReference(S3AdapterParserUtils.KEY_NAME_GENERATOR_PROPERTY, keyNameGenerator);
+		if (StringUtils.hasText(keyNameGenerator)) builder.addPropertyReference(EC2AdapterParserUtils.KEY_NAME_GENERATOR_PROPERTY, keyNameGenerator);
 		return builder.getBeanDefinition();
 	}
 

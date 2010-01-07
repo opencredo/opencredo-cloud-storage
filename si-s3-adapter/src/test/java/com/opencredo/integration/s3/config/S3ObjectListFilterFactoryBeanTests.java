@@ -29,6 +29,7 @@ import org.junit.Test;
 
 import org.springframework.beans.DirectFieldAccessor;
 
+import com.opencredo.integration.ec2.config.S3ObjectListFilterFactoryBean;
 import com.opencredo.integration.s3.AbstractS3ObjectListFilter;
 import com.opencredo.integration.s3.AcceptOnceS3ObjectListFilter;
 import com.opencredo.integration.s3.CompositeS3ObjectListFilter;

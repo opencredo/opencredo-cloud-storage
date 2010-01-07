@@ -54,9 +54,18 @@ public class S3WritingMessageHandler implements MessageHandler, InitializingBean
     public void handleMessage(Message<?> message){
     	Assert.notNull(message, "message must not be null");
 		Object payload = message.getPayload();
-		if (logger.isDebugEnabled()) logger.debug("message: "+message);
-		String generatedKeyName = s3KeyNameGenerator.generateKeyName(message);
 		Assert.notNull(payload, "message payload must not be null");
+		if (logger.isDebugEnabled()) logger.debug("message: "+message);
+		String key;
+		if (message.getHeaders().containsKey("key")) {
+			key = message.getHeaders().get("key", String.class);
+		}
+		else {
+			key = s3KeyNameGenerator.generateKeyName(message);
+		}
+		
+		//String generatedKeyName = s3KeyNameGenerator.generateKeyName(message);
+		
 		S3Object objectToSend = null;
 		try {
 			if (payload instanceof File) {
