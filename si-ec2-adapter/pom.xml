@@ -10,7 +10,7 @@
   <groupId>com.opencredo</groupId>
   <artifactId>si-ec2-adapter</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <name>si-s3-adapter</name>
+  <name>si-ec2-adapter</name>
   <url>http://maven.apache.org</url>
   <dependencies>
     <dependency>

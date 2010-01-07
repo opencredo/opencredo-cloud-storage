@@ -15,6 +15,7 @@ import org.jets3t.service.model.S3Object;
 import org.jets3t.service.security.AWSCredentials;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
+import org.apache.commons.lang.ArrayUtils;
 
 //TODO: Verify data transmission
 //TODO: Add support for Access control lists
@@ -187,6 +188,35 @@ public class S3Template implements S3Operations {
 			return s3Service.getObject(new S3Bucket(bucketName), key).getDataInputStream();
 		} catch (S3ServiceException e) {
 			throw new S3CommunicationException("Receiving input stream problem", e);
+		}
+	}
+	
+	public void createBucket(String bucketName){
+		Assert.notNull(bucketName, "Bucket name cannot be null");
+		try {
+			s3Service.createBucket(new S3Bucket(bucketName));
+		} catch (S3ServiceException e) {
+			throw new S3CommunicationException("Bucket creation problem", e);
+		}
+	}
+	
+	public void deleteBucket(String bucketName){
+		Assert.notNull(bucketName, "Bucket name cannot be null");
+		try {
+			s3Service.deleteBucket(new S3Bucket(bucketName));
+		} catch (S3ServiceException e) {
+			throw new S3CommunicationException("Bucket deletion problem", e);
+		}
+	}
+	
+	public String[] listBuckets(){
+		try {
+			S3Bucket[] s3buckets = s3Service.listAllBuckets();
+			String bucketNames[] = new String[s3buckets.length];
+			for (int i=0; i< s3buckets.length; i++) bucketNames[i]=s3buckets[i].getName();
+			return bucketNames;
+		} catch (S3ServiceException e) {
+			throw new S3CommunicationException("Bucket deletion problem", e);
 		}
 	}
 	

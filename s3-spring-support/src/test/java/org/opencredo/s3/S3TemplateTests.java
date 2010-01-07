@@ -8,10 +8,13 @@ import org.junit.runner.RunWith;
 //import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.opencredo.integration.s3.S3WritingMessageHandler;
+
 @RunWith(MockitoJUnitRunner.class)
 public class S3TemplateTests {
 
-	Log log = LogFactory.getLog(this.getClass());
+	//Log log = LogFactory.getLog(this.getClass());
+	private final Log logger = LogFactory.getLog(S3TemplateTests.class);
 	private S3Template s3Template;
 	
 	/*
@@ -25,7 +28,7 @@ public class S3TemplateTests {
 		s3Template.setAccessKey("AKIAJJC4KITQHSAY43MQ");
 		s3Template.setSecretAccessKey("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");
 		s3Template.connect();
-		log.debug("default bucket: "+ s3Template.getDefaultBucketName());
+		logger.debug("default bucket: "+ s3Template.getDefaultBucketName());
 	}
 	
 	@Test
@@ -34,10 +37,10 @@ public class S3TemplateTests {
 		s3Template.send("testKey1", testStringToSent);
 	}
 	
-	/*
 	@Test
-	public void testReceiveString(){
-		
+	public void listBucketsPrintOutput(){
+		String [] bucketNames = s3Template.listBuckets();
+		logger.debug("buckets: "+ bucketNames);
 	}
-	*/
+	
 }
