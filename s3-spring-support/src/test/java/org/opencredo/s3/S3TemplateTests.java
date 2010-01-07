@@ -8,8 +8,6 @@ import org.junit.runner.RunWith;
 //import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.opencredo.integration.s3.S3WritingMessageHandler;
-
 @RunWith(MockitoJUnitRunner.class)
 public class S3TemplateTests {
 
