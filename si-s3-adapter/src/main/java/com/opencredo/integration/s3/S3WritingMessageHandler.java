@@ -72,11 +72,11 @@ public class S3WritingMessageHandler implements MessageHandler, InitializingBean
 				objectToSend = fileToS3Handler((File) payload);
 			}
 			else if(payload instanceof String){
-				objectToSend = stringToS3Handler((String) payload, generatedKeyName);
+				objectToSend = stringToS3Handler((String) payload, key);
 			}
 			else if(payload instanceof S3Object){
 				objectToSend = (S3Object) payload;
-				objectToSend.setKey(generatedKeyName);
+				objectToSend.setKey(key);
 			}
 			else {
 				throw new IllegalArgumentException(
