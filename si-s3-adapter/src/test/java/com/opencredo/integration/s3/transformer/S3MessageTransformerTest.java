@@ -1,15 +1,15 @@
 package com.opencredo.integration.s3.transformer;
-
+ 
 import java.util.HashMap;
 import java.util.Map;
-
+ 
 import org.jets3t.service.model.S3Object;
 import static org.mockito.Mockito.*;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.springframework.integration.core.Message;
-
+ 
 public class S3MessageTransformerTest {
 	
      private S3MessageTransformer systemUnderTest;
@@ -33,5 +33,4 @@ public class S3MessageTransformerTest {
 		 assertNotNull(messageTransformed);
 		 assertEquals("not the expected key", "test.txt", messageTransformed.getPayload().getKey());
 	 }
-
 }

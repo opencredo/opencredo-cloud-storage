@@ -13,7 +13,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class PatternMatchingS3ObjectListFilterTests {
+public class PatternMatchingS3ObjectListFilterTest {
 
 	@Mock
 	S3Object s3ObjectMock;

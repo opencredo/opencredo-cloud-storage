@@ -13,9 +13,7 @@ import org.jets3t.service.impl.rest.httpclient.RestS3Service;
 import org.jets3t.service.model.S3Bucket;
 import org.jets3t.service.model.S3Object;
 import org.jets3t.service.security.AWSCredentials;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
-import org.apache.commons.lang.ArrayUtils;
 
 //TODO: Verify data transmission
 //TODO: Add support for Access control lists
@@ -29,6 +27,7 @@ public class S3Template implements S3Operations {
 	
 
 	private String defaultBucketName;
+	
 	/*
 	private String devPayUserToken;
 	private String devPayProductToken;
@@ -38,7 +37,7 @@ public class S3Template implements S3Operations {
 		
 	}
 	
-	public void send(String key, String stringToSend) throws S3CommunicationException {
+	public void send(String key, String stringToSend) {
 		Assert.notNull(this.defaultBucketName, "Default bucket name is not provided");
 		try {
 			s3Service.putObject(new S3Bucket(this.defaultBucketName), new S3Object(key, stringToSend));
@@ -51,7 +50,7 @@ public class S3Template implements S3Operations {
 		}
 	}
 	
-	public void send(String bucketName, String key, String stringToSend) throws S3CommunicationException {
+	public void send(String bucketName, String key, String stringToSend) {
 		Assert.notNull(bucketName, "Bucket name cannot be null");
 		try {
 			s3Service.putObject(new S3Bucket(bucketName), new S3Object(key, stringToSend));
@@ -118,7 +117,7 @@ public class S3Template implements S3Operations {
 		}	
 	}
 	
-	public String receiveAsString(String keyName) throws S3CommunicationException {
+	public String receiveAsString(String keyName) {
 		Assert.notNull(this.defaultBucketName, "Default bucket name is not provided");
 		try {
 			Assert.notNull(this.defaultBucketName, "Default bucket name is not provided");
@@ -137,7 +136,7 @@ public class S3Template implements S3Operations {
 		}
 	}
 	
-	public String receiveAsString(String bucketName, String keyName) throws S3CommunicationException {
+	public String receiveAsString(String bucketName, String keyName) {
 		Assert.notNull(bucketName, "Bucket name cannot be null");
 		try {
 			BufferedReader br = new BufferedReader(new InputStreamReader(s3Service.getObject(new S3Bucket(bucketName), keyName).getDataInputStream()));
@@ -191,7 +190,7 @@ public class S3Template implements S3Operations {
 		}
 	}
 	
-	public void createBucket(String bucketName){
+	public void createBucket(String bucketName) {
 		Assert.notNull(bucketName, "Bucket name cannot be null");
 		try {
 			s3Service.createBucket(new S3Bucket(bucketName));

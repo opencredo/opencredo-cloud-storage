@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.springframework.integration.core.MessageChannel;
 
 import com.opencredo.integration.s3.AcceptOnceS3ObjectListFilter;
@@ -25,10 +26,11 @@ import com.opencredo.integration.s3.S3Resource;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
-public class S3InboundChannelAdapterParserTests {
-
+public class S3InboundChannelAdapterParserTest {
+	
 	@Autowired(required = true)
 	private ApplicationContext context;
+	
 
 	@Autowired(required = true)
 	private S3ReadingMessageSource source;
@@ -37,6 +39,7 @@ public class S3InboundChannelAdapterParserTests {
 
 	@Before
 	public void init() throws S3ServiceException {
+		//context = new FileSystemXmlApplicationContext("S3InboundChannelAdapterParserTest-context.xml");
 		//S3Resource res = new S3Resource("oc-test");
 		//res.sendS3ObjectToS3(new S3Object("test"));
 		accessor = new DirectFieldAccessor(source);
@@ -54,9 +57,6 @@ public class S3InboundChannelAdapterParserTests {
 		String actualBucketName = ((S3Resource) accessor.getPropertyValue("s3Resource")).getS3Bucket().getName();
 		assertEquals("'inputDirectory' should be set", expectedBucketName, actualBucketName);
 	}
-	
-	
-	
 	
 	@Test
 	public void filter() throws Exception {

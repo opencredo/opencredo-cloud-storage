@@ -35,10 +35,7 @@ import com.opencredo.integration.s3.CompositeS3ObjectListFilter;
 import com.opencredo.integration.s3.PatternMatchingS3ObjectListFilter;
 import com.opencredo.integration.s3.S3ObjectListFilter;
 
-/**
- * @author Mark Fisher
- */
-public class S3ObjectListFilterFactoryBeanTests {
+public class S3ObjectListFilterFactoryBeanTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void customFilterAndFilenamePatternAreMutuallyExclusive() throws Exception {

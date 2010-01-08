@@ -6,7 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 
-public class AcceptOnceS3ObjectListFilterTests {
+public class AcceptOnceS3ObjectListFilterTest {
 
 	AcceptOnceS3ObjectListFilter sut;
 	

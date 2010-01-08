@@ -20,7 +20,7 @@ import com.opencredo.integration.s3.S3WritingMessageHandler;
 
 @ContextConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
-public class S3OutboundChannelAdapterParserTests {
+public class S3OutboundChannelAdapterParserTest {
 	@Autowired
 	@Qualifier("simpleAdapter")
 	EventDrivenConsumer simpleAdapter;

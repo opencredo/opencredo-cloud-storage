@@ -18,7 +18,7 @@ import org.springframework.util.Assert;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class S3ResourceTests {
+public class S3ResourceTest {
 	
 	S3Resource s3Resource;
 	String bucketName;

@@ -20,7 +20,7 @@ import static  org.jets3t.service.S3Service.*;
 
 @SuppressWarnings("unchecked")
 @RunWith(MockitoJUnitRunner.class)
-public class S3ReadingMessageSourceTests {
+public class S3ReadingMessageSourceTest {
 	
 	private S3ReadingMessageSource s3FileReadingMessageSource;
 	

@@ -10,17 +10,13 @@
 	        	http://www.opencredo.com/schema/integration/s3
 			http://www.opencredo.com/schema/integration/s3/spring-integration-s3-1.0.xsd">
 	
-	<channel id="inputS3Poller" />
-	<s3:inbound-channel-adapter bucket="oc-test" channel="inputS3Poller" filter="acceptOnceS3ObjectListFilter" comparator="testComparator">
-		<poller>
-			<interval-trigger interval="5000"/>
-		</poller>		
-	</s3:inbound-channel-adapter>
-
-
-	<beans:bean id="acceptOnceS3ObjectListFilter" class="com.opencredo.integration.s3.AcceptOnceS3ObjectListFilter"/>		
-
-	<beans:bean id="testComparator"
-		class="com.opencredo.integration.s3.config.S3InboundChannelAdapterParserTests$TestComparator" />
- 	
+	<channel id="testChannel" />
+	
+	<s3:outbound-channel-adapter id="simpleAdapter" bucket="oc-test" channel="testChannel"/>
+	
+	<s3:outbound-channel-adapter id="adapterWithCustomNameGenerator" bucket="oc-test" channel="testChannel" key-name-generator="customKeyNameGenerator"/>
+	
+	<beans:bean id="customKeyNameGenerator" class="com.opencredo.integration.s3.config.S3OutboundChannelAdapterParserTest$CustomKeyNameGenerator"/>
 </beans:beans>
+
+

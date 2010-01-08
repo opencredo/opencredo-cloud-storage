@@ -22,7 +22,7 @@ import com.opencredo.integration.s3.transformer.S3MessageTransformer;
  * expected behaviour.
  */
 
-public class MainAppTests {
+public class MainAppTest {
 	S3ReadingMessageSource messageSource;
 	S3MessageTransformer transformer;
 	S3WritingMessageHandler handler;

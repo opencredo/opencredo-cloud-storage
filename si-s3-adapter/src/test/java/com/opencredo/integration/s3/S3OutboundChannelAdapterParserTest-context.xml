@@ -16,7 +16,7 @@
 	
 	<s3:outbound-channel-adapter id="adapterWithCustomNameGenerator" bucket="oc-test" channel="testChannel" key-name-generator="customKeyNameGenerator"/>
 	
-	<beans:bean id="customKeyNameGenerator" class="com.opencredo.integration.s3.config.S3OutboundChannelAdapterParserTests$CustomKeyNameGenerator"/>
+	<beans:bean id="customKeyNameGenerator" class="com.opencredo.integration.s3.config.S3OutboundChannelAdapterParserTest$CustomKeyNameGenerator"/>
 </beans:beans>
 
 

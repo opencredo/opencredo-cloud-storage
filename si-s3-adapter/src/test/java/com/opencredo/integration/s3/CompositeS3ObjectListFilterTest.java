@@ -14,7 +14,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CompositeS3ObjectListFilterTests {
+public class CompositeS3ObjectListFilterTest {
 	
 	@Mock
 	private S3ObjectListFilter s3ObjectFilterMock1;

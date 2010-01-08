@@ -9,10 +9,10 @@ import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class S3TemplateTests {
+public class S3TemplateTest {
 
 	//Log log = LogFactory.getLog(this.getClass());
-	private final Log logger = LogFactory.getLog(S3TemplateTests.class);
+	private final Log logger = LogFactory.getLog(S3TemplateTest.class);
 	private S3Template s3Template;
 	
 	/*
