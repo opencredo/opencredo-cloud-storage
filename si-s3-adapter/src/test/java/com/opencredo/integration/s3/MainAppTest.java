@@ -15,7 +15,7 @@ import org.junit.Test;
 import org.springframework.integration.core.Message;
 import org.springframework.integration.message.MessageBuilder;
 
-import com.opencredo.integration.s3.transformer.S3MessageTransformer;
+import com.opencredo.integration.s3.transformer.S3ToStringTransformer;
 
 /*
  * Main application test class used to test if the adapter produces the 
@@ -24,7 +24,7 @@ import com.opencredo.integration.s3.transformer.S3MessageTransformer;
 
 public class MainAppTest {
 	S3ReadingMessageSource messageSource;
-	S3MessageTransformer transformer;
+	S3ToStringTransformer transformer;
 	S3WritingMessageHandler handler;
 	
 	String bucketName;
@@ -36,7 +36,7 @@ public class MainAppTest {
 		resource = new S3Resource(bucketName);
 		messageSource = new S3ReadingMessageSource();
 		messageSource.setS3Resource(resource);
-		transformer = new S3MessageTransformer();
+		transformer = new S3ToStringTransformer();
 		handler = new S3WritingMessageHandler(resource);
 	}
 	
@@ -52,27 +52,24 @@ public class MainAppTest {
 	public void testFileContentsReadFromS3AndUploadedToS3AsString() throws IOException, S3ServiceException {
 		String testString = new String("AppendedTestString");
 		Message<Map> receivedMessage = messageSource.receive();
-		Message<S3Object> transformedMessage = transformer.transform(receivedMessage);
+		Message<String> transformedMessage = transformer.transform(receivedMessage);
 		
-		S3Object payload = transformedMessage.getPayload();
-		InputStream is = payload.getDataInputStream();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-		StringBuilder sb = new StringBuilder();
-		String line = null;
-		while ((line = reader.readLine()) != null) { 
-			sb.append(line + "\n"); 
-		}
-		sb.append(testString);
-
-		S3Object updatedS3ObjectToSend = new S3Object(sb.toString());
+		String payload = transformedMessage.getPayload();
+		payload.concat("\nAppended Test String");
+		
+		S3Object updatedS3ObjectToSend = new S3Object(payload);
 		MessageBuilder<S3Object> builder = MessageBuilder.withPayload(updatedS3ObjectToSend);
 		handler.handleMessage(builder.build());
 		
 		S3Object newObject = resource.getS3Service().getObject(resource.getS3Bucket(), updatedS3ObjectToSend.getKey());
-		//Assert.assertEquals(sb.length(), new BufferedReader(new InputStreamReader(resource.getS3Service().getObject(resource.getS3Bucket(), receivedMessage.getPayload().get("key").toString()).getDataInputStream())).);
-		Assert.assertEquals(sb.toString(), newObject.getKey());
+		Assert.assertEquals(payload, newObject.getKey());
 	
-		reader.close();
+		
+	}
+	
+	@Test
+	public void testS3ObjectDeletedIfAdapterFlagIsSet() {
+		
 	}
 
 }

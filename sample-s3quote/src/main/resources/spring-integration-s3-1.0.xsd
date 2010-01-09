@@ -38,8 +38,7 @@
 			<xsd:attribute name="bucket" type="xsd:string" />
 			<xsd:attribute name="filter" type="xsd:string" use="optional">
 				<xsd:annotation>
-					<xsd:documentation>Reference to an S3ObjectListFilter . It is
-						optional,
+					<xsd:documentation>Reference to an S3ObjectListFilter . It is optional,
 						default filter is AcceptOnceS3ObjectListFilter.</xsd:documentation>
 					<xsd:appinfo>
 						<tool:annotation kind="ref">
@@ -61,6 +60,7 @@
 				message to S3 Bucket.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
+			<xsd:attribute name="id" type="xsd:ID" />
 			<xsd:attribute name="bucket" type="xsd:string" use="required" />
 			<xsd:attribute name="channel" type="xsd:string" use="required">
 				<xsd:annotation>

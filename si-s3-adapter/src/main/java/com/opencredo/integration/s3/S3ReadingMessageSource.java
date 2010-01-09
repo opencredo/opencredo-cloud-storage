@@ -28,7 +28,6 @@ import java.util.concurrent.PriorityBlockingQueue;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
 
-import org.jets3t.service.Constants;
 import org.jets3t.service.S3ObjectsChunk;
 import org.jets3t.service.S3ServiceException;
 import org.jets3t.service.model.S3Object;
@@ -38,7 +37,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.integration.message.MessageBuilder;
 import org.springframework.integration.message.MessageSource;
 import org.springframework.integration.core.Message;
-import org.springframework.integration.file.FileHeaders;
 import org.springframework.util.Assert;
 
 /** 
@@ -71,6 +69,7 @@ public class S3ReadingMessageSource implements MessageSource<Map>, InitializingB
 	private S3Resource s3Resource;
 	private volatile S3ObjectListFilter filter = new AcceptOnceS3ObjectListFilter();
 	private Comparator<S3Object> comparator;
+	private boolean deleteWhenReceived;
 	
     public S3ReadingMessageSource(){ 
 
@@ -96,16 +95,17 @@ public class S3ReadingMessageSource implements MessageSource<Map>, InitializingB
 				S3ObjectsChunk chunk = s3Resource.getS3Service().listObjectsChunked(s3Resource.getS3Bucket().getName(),
 			             null, null, DEFAULT_OBJECT_LIST_CHUNK_SIZE, null, true);
 				if (logger.isDebugEnabled()) logger.debug("chunk created: "+chunk);
-				List<S3Object> filteredS3Objects = addBucketInfo(this.filter.filterS3Objects(chunk.getObjects()));
-				if (logger.isDebugEnabled()) logger.debug("filteredS3Objects: "+filteredS3Objects);
-				Set<S3Object> newS3Objects = new HashSet<S3Object>(filteredS3Objects);
-				if (!newS3Objects.isEmpty()) 
-					toBeReceived.addAll(newS3Objects);
+				List<S3Object> filteredS3ObjectsList = addBucketInfo(this.filter.filterS3Objects(chunk.getObjects()));
+				//if (logger.isDebugEnabled()) logger.debug("filteredS3Objects: "+filteredS3Objects);
+				Set<S3Object> filteredS3ObjectsSet = new HashSet<S3Object>(filteredS3ObjectsList);
+				if (!filteredS3ObjectsSet.isEmpty()) 
+					toBeReceived.addAll(filteredS3ObjectsSet);
 				if (!toBeReceived.isEmpty()) {
 					Map metaDataMapPayload = toBeReceived.poll().getMetadataMap();
 					MessageBuilder<Map> builder = MessageBuilder.withPayload(metaDataMapPayload);
 					builder.setHeader(FILENAME, metaDataMapPayload.get("key"));
 					if (logger.isDebugEnabled()) logger.debug("metaDataMapPayload: "+metaDataMapPayload);
+					//if (deleteWhenReceived) s3Resource.deleteS3Object(metaDataMapPayload.);
 					return builder.build();
 				}
 				else return null;
@@ -132,7 +132,6 @@ public class S3ReadingMessageSource implements MessageSource<Map>, InitializingB
 		return filteredS3Objects;
 	}
 
-    
     public void setS3Resource(S3Resource s3Resource){
     	this.s3Resource = s3Resource;
     }
@@ -145,6 +144,10 @@ public class S3ReadingMessageSource implements MessageSource<Map>, InitializingB
 		Assert.notNull(filter, "'filter' should not be null");
 		this.filter = filter;
 	}
+	
+	public void setDeleteWhenReceived(boolean deleteWhenReceived) {
+		this.deleteWhenReceived = deleteWhenReceived;
+	}
 
 	public void afterPropertiesSet() {
 		Assert.isTrue(this.s3Resource.exists(),
@@ -152,5 +155,5 @@ public class S3ReadingMessageSource implements MessageSource<Map>, InitializingB
 		Assert.isTrue(this.s3Resource.isReadable(),
 				"Source directory [" + this.s3Resource + "] is not readable.");
 	}
-	        	          
+        	          
 }

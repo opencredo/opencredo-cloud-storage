@@ -13,13 +13,14 @@ public class S3AdapterParserUtils {
 	 static final String FILTER_ATTRIBUTE = "s3-filter";
 	 static final String FILTER_PROPERTY = "filter";
 	 
+	 static final String DELETE_WHEN_RECEIVED_ATTRIBUTE = "delete-when-received";
+	 static final String DELETE_WHEN_RECEIVED_PROPERTY = "deleteWhenReceived";
+	 
 	 static final String COMPARATOR_ATTRIBUTE = "comparator";
 	 static final String COMPARATOR_PROPERTY = "comparator";
 	 
 	 //Outbound Properties
 	 static final String KEY_NAME_GENERATOR_ATTRIBUTE = "key-name-generator";
 	 static final String KEY_NAME_GENERATOR_PROPERTY = "s3KeyNameGenerator";
-	 
-	 
-	 
+
 }

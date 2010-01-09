@@ -23,6 +23,8 @@ public class S3ReadingMessageSourceFactoryBean implements FactoryBean {
 	
 	private volatile Comparator<S3Object> comparator; 
 	
+	private volatile boolean deleteWhenReceived;
+	
 	private final Object initializationMonitor = new Object();
 	
 	
@@ -54,6 +56,10 @@ public class S3ReadingMessageSourceFactoryBean implements FactoryBean {
 		this.filter = filter;
 	}
 	
+	public void setDeleteWhenReceived (boolean deleteWhenReceived) {
+		this.deleteWhenReceived = deleteWhenReceived;
+	}
+	
 	private void initSource() {
 		synchronized (this.initializationMonitor) {
 			if (this.source != null) {
@@ -65,6 +71,8 @@ public class S3ReadingMessageSourceFactoryBean implements FactoryBean {
 			if (this.filter != null) {
 				this.source.setFilter(this.filter);
 			}
+			
+			this.source.setDeleteWhenReceived(this.deleteWhenReceived);
 			
 			this.source.afterPropertiesSet();
 		}
