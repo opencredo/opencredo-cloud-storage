@@ -64,7 +64,6 @@ public class MainAppTest {
 		S3Object newObject = resource.getS3Service().getObject(resource.getS3Bucket(), updatedS3ObjectToSend.getKey());
 		Assert.assertEquals(payload, newObject.getKey());
 	
-		
 	}
 	
 	@Test

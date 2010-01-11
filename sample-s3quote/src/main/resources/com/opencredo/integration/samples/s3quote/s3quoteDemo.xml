@@ -29,7 +29,7 @@
  	   	   ref="s3MessageTransformer" 
  	   	   method="transform" 
  	   	   output-channel="s3tickerMessageContents"/>   	   
- 	<beans:bean id="s3MessageTransformer" class="com.opencredo.integration.s3.transformer.S3MessageTransformer"/>
+ 	<beans:bean id="s3MessageTransformer" class="com.opencredo.integration.s3.transformer.S3ToStringTransformer"/>
  	
  	<service-activator input-channel="s3tickerMessageContents" 
  	   	   ref="s3quoteService" 

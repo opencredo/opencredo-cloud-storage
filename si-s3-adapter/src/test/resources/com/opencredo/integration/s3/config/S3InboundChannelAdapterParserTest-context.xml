@@ -11,13 +11,19 @@
 			http://www.opencredo.com/schema/integration/s3/spring-integration-s3-1.0.xsd">
 	
 	<channel id="inputS3Poller" />
-	<s3:inbound-channel-adapter bucket="oc-test" channel="inputS3Poller" filter="acceptOnceS3ObjectListFilter" comparator="testComparator" delete-when-received="false">
+	<s3:inbound-channel-adapter bucket="sibucket" channel="inputS3Poller" filter="acceptOnceS3ObjectListFilter" comparator="testComparator" delete-when-received="true">
 		<poller>
 			<interval-trigger interval="5000"/>
 		</poller>		
 	</s3:inbound-channel-adapter>
-
-
+	
+	<channel id="transformedStringMessages" />
+	<service-activator input-channel="inputS3Poller" 
+ 	   	   ref="s3ToStringTransformer" 
+ 	   	   method="transform" 
+ 	   	   output-channel="transformedStringMessages"/>   	   
+ 	<beans:bean id="s3ToStringTransformer" class="com.opencredo.integration.s3.transformer.S3ToStringTransformer"/>
+	
 	<beans:bean id="acceptOnceS3ObjectListFilter" class="com.opencredo.integration.s3.AcceptOnceS3ObjectListFilter"/>		
 
 	<beans:bean id="testComparator"

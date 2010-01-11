@@ -104,8 +104,8 @@ public class S3ReadingMessageSource implements MessageSource<Map>, InitializingB
 					Map metaDataMapPayload = toBeReceived.poll().getMetadataMap();
 					MessageBuilder<Map> builder = MessageBuilder.withPayload(metaDataMapPayload);
 					builder.setHeader(FILENAME, metaDataMapPayload.get("key"));
-					if (logger.isDebugEnabled()) logger.debug("metaDataMapPayload: "+metaDataMapPayload);
-					//if (deleteWhenReceived) s3Resource.deleteS3Object(metaDataMapPayload.);
+					//if (logger.isDebugEnabled()) logger.debug("metaDataMapPayload: "+metaDataMapPayload);
+					if (deleteWhenReceived) builder.setHeader("deleteWhenReceived", deleteWhenReceived);
 					return builder.build();
 				}
 				else return null;
