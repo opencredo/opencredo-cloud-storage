@@ -4,14 +4,13 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.opencredo.aws</groupId>
-    <artifactId>si-aws-poc</artifactId>
+    <artifactId>opencredo-aws</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
   <groupId>org.opencredo.aws</groupId>
   <artifactId>ec2-client </artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>${parent.project.version}</version>
   <name>OpenCredo EC2 Client</name>
-  <url>http://maven.apache.org</url>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
