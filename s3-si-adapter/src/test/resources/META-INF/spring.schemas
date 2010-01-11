@@ -1,0 +1,2 @@
+http\://www.opencredo.com/schema/integration/s3/spring-integration-s3-1.0.xsd=org/opencredo/aws/s3/config/spring-integration-s3-1.0.xsd
+http\://www.opencredo.com/schema/integration/s3/spring-integration-s3.xsd=org/opencredo/aws/s3/config/spring-integration-s3-1.0.xsd

@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.opencredo</groupId>
+    <groupId>org.opencredo.aws</groupId>
     <artifactId>si-aws-poc</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
@@ -148,11 +148,10 @@
     </dependencies>
 
     <modules>
-        <module>si-s3-adapter</module>
-        <module>si-ec2-adapter</module>
-        <module>si-sqs-adapter</module>
+    	<module>s3-client</module>
+        <module>s3-si-adapter</module>
+        <module>ec2-client</module>
         <module>sample-s3quote</module>
-        <module>s3-spring-support</module>
     </modules>
 
 </project>
