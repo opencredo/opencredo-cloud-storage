@@ -49,7 +49,7 @@
 			</xsd:attribute>
 			<xsd:attribute name="comparator" type="xsd:string" />
 			<xsd:attribute name="prevent-duplicates" type="xsd:string" use="optional" />
-			<xsd:attribute name="delete-when-received" type="xsd:boolean" use="optional" />
+			<xsd:attribute name="delete-when-received" type="xsd:string" use="optional" />
 		</xsd:complexType>
 	</xsd:element>
 

@@ -68,10 +68,5 @@ public class MainAppTest {
 		Assert.assertEquals(payload, newObject.getKey());
 	
 	}
-	
-	@Test
-	public void testS3ObjectDeletedIfAdapterFlagIsSet() {
-		
-	}
 
 }

@@ -29,7 +29,6 @@ public class S3InboundChannelAdapterParserTest {
 	@Autowired(required = true)
 	private ApplicationContext context;
 	
-
 	@Autowired(required = true)
 	private S3ReadingMessageSource source;
 
@@ -77,8 +76,8 @@ public class S3InboundChannelAdapterParserTest {
 	}
 	
 	@Test
-	public void deleteWhenReceived () {
-		
+	public void deleteWhenReceived () throws InterruptedException {
+		//Thread.sleep(180000);
 	}
 
 	static class TestComparator implements Comparator<S3Object> {

@@ -5,9 +5,9 @@
 	xmlns:s3="http://www.opencredo.com/schema/integration/s3"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
 			http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
- 	        	http://www.springframework.org/schema/integration
+ 	        http://www.springframework.org/schema/integration
 			http://www.springframework.org/schema/integration/spring-integration-1.0.xsd
-	        	http://www.opencredo.com/schema/integration/s3
+	        http://www.opencredo.com/schema/integration/s3
 			http://www.opencredo.com/schema/integration/s3/spring-integration-s3-1.0.xsd">
 	
 	<channel id="inputS3Poller" />
