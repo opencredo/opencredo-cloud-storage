@@ -20,7 +20,7 @@ package org.opencredo.aws.samples.s3quote;
 import java.math.BigDecimal;
 
 /**
- * @author Mark Fisher
+ * @author Eren Aykin (eren.aykin@opencredo.com)
  */
 public class Quote {
 

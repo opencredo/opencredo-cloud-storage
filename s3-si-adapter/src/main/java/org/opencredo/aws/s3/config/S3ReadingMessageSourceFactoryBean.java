@@ -24,8 +24,8 @@ import org.opencredo.aws.s3.S3ReadingMessageSource;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.util.Assert;
 
-/*
- * Resource dependency is exposed as bean property of type S3Resource. see: ResourceLoaderAware
+/**
+ * @author Eren Aykin (eren.aykin@opencredo.com)
  */
 public class S3ReadingMessageSourceFactoryBean implements FactoryBean {
 
@@ -37,7 +37,6 @@ public class S3ReadingMessageSourceFactoryBean implements FactoryBean {
 	private volatile Comparator<S3Object> comparator; 
 	private volatile String deleteWhenReceived;	
 	private final Object initializationMonitor = new Object();
-	
 	
 	public Object getObject() throws Exception {
 		if (this.source == null) {
@@ -54,11 +53,17 @@ public class S3ReadingMessageSourceFactoryBean implements FactoryBean {
 		return true;
 	}
 	
+	/**
+	 * @param bucketName
+	 */
 	public void setBucketName(String bucketName) {
 		Assert.hasText(bucketName, "bucket must not be empty");
 		this.bucketName = bucketName;
 	}
 
+	/**
+	 * @param comparator
+	 */
 	public void setComparator(Comparator<S3Object> comparator) {
 		this.comparator = comparator;
 	}

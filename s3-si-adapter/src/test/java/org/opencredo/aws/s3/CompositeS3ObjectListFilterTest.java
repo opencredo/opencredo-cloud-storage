@@ -30,6 +30,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.opencredo.aws.s3.CompositeS3ObjectListFilter;
 import org.opencredo.aws.s3.S3ObjectListFilter;
 
+/**
+ * @author Eren Aykin (eren.aykin@opencredo.com)
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class CompositeS3ObjectListFilterTest {
 	

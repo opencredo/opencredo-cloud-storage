@@ -40,7 +40,14 @@ import org.springframework.integration.core.Message;
 import org.springframework.util.Assert;
 
 /** 
- * MessageSource that creates messages containing meta-data maps of S3Objects
+ * {@link MessageSource} that creates messages containing meta-data maps of S3Objects.
+ * To prevent messages for certain s3 Objects, you may supply an {@link S3ObjectListFilter}.
+ * By default, an {@link AcceptOnceS3ObjectListFilter} is used. It ensures s3 objects are
+ * picked up only once from the directory.
+ * A {@link Comparator} can be used to ensure internal ordering of the S3 objects in
+ * a queue. 
+ * 
+ * @author Eren Aykin (eren.aykin@opencredo.com)
  */
 public class S3ReadingMessageSource implements MessageSource<Map>, InitializingBean {
 	
@@ -72,26 +79,44 @@ public class S3ReadingMessageSource implements MessageSource<Map>, InitializingB
 	private Comparator<S3Object> comparator;
 	private String deleteWhenReceived;
 	
+	/**
+	 * @param awsCredentials
+	 */
     public S3ReadingMessageSource(AWSCredentials awsCredentials){ 
     	this.s3Template = new S3Template(awsCredentials);
     	this.toBeReceived = new PriorityBlockingQueue<S3Object>(INTERNAL_QUEUE_CAPACITY, new S3ObjectLastModifiedDateComparator());
     }
     
+    /**
+     * @param awsCredentials
+     * @param receptionOrderComparator
+     */
 	public S3ReadingMessageSource(AWSCredentials awsCredentials, Comparator<S3Object> receptionOrderComparator) {
 		this.s3Template = new S3Template(awsCredentials);
 		this.toBeReceived = new PriorityBlockingQueue<S3Object>(INTERNAL_QUEUE_CAPACITY, receptionOrderComparator);
 	}
 	
+	/**
+	 * @param s3template
+	 */
 	public S3ReadingMessageSource(S3Template s3template){ 
     	this.s3Template = s3template;
     	this.toBeReceived = new PriorityBlockingQueue<S3Object>(INTERNAL_QUEUE_CAPACITY, new S3ObjectLastModifiedDateComparator());
     }
     
+	/**
+	 * @param s3template
+	 * @param receptionOrderComparator
+	 */
 	public S3ReadingMessageSource(S3Template s3template, Comparator<S3Object> receptionOrderComparator) {
 		this.s3Template = s3template;
 		this.toBeReceived = new PriorityBlockingQueue<S3Object>(INTERNAL_QUEUE_CAPACITY, receptionOrderComparator);
 	}
 	
+	/**
+	 * @param bucketName
+	 * @return 
+	 */
 	public Message<Map> receive(String bucketName){
 		Assert.notNull(s3Template, "S3Template cannot be null");
     	Assert.notNull(s3Template.getS3Service(), "S3Service cannot be null");
@@ -100,6 +125,9 @@ public class S3ReadingMessageSource implements MessageSource<Map>, InitializingB
 		return null; 
 	}
 
+	/**
+	 * 
+	 */
 	public Message<Map> receive(){ 
 		Assert.notNull(s3Template, "S3Template cannot be null");
     	Assert.notNull(s3Template.getS3Service(), "S3Service cannot be null");
@@ -134,9 +162,11 @@ public class S3ReadingMessageSource implements MessageSource<Map>, InitializingB
 		}		
 	}
 
-	/*
-	 * add bucket info to metadata so that the transformer knows where the original file is stored 
+	/**
+	 * Add bucket info to metadata so that the transformer knows where the original file is stored 
 	 * without injection
+	 * 
+	 * @param filteredS3Objects
 	 */
 	private List<S3Object> addBucketInfo(List<S3Object> filteredS3Objects) {
 		Iterator<S3Object> it = filteredS3Objects.iterator();
@@ -153,11 +183,20 @@ public class S3ReadingMessageSource implements MessageSource<Map>, InitializingB
 		return toBeReceived;
 	}
 	
+	/**
+	 * @param filter
+	 */
 	public void setFilter(S3ObjectListFilter filter) {
 		Assert.notNull(filter, "'filter' should not be null");
 		this.filter = filter;
 	}
 	
+	/**
+	 * Set to "true" if it is preferred that the s3 object should be removed from the
+	 * bucket after it is read.
+	 * 
+	 * @param deleteWhenReceived
+	 */
 	public void setDeleteWhenReceived(String deleteWhenReceived) {
 		this.deleteWhenReceived = deleteWhenReceived;
 	}
@@ -166,6 +205,9 @@ public class S3ReadingMessageSource implements MessageSource<Map>, InitializingB
 		Assert.isTrue(this.s3Template.getS3Service().isAuthenticatedConnection(), "Connection not authenticated.");
 	}
 	
+	/**
+	 * @param s3Template
+	 */
 	public void setS3Template(S3Template s3Template) {
 		this.s3Template = s3Template;
 	}
@@ -174,6 +216,9 @@ public class S3ReadingMessageSource implements MessageSource<Map>, InitializingB
 		return bucketName;
 	}
 
+	/**
+	 * @param bucketName
+	 */
 	public void setBucketName(String bucketName) {
 		this.bucketName = bucketName;
 	}

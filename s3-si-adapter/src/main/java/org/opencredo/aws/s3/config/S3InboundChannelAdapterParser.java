@@ -24,8 +24,15 @@ import org.springframework.integration.config.xml.IntegrationNamespaceUtils;
 import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
 
+/**
+ * @author Eren Aykin (eren.aykin@opencredo.com)
+ */
 public class S3InboundChannelAdapterParser extends AbstractPollingInboundChannelAdapterParser {
 	 
+	/**
+	 * @param element
+	 * @param parserContext
+	 */
 	@Override
 	protected String parseSource(Element element, ParserContext parserContext) {
 		 BeanDefinitionBuilder builder = BeanDefinitionBuilder.
@@ -41,6 +48,10 @@ public class S3InboundChannelAdapterParser extends AbstractPollingInboundChannel
 		 return BeanDefinitionReaderUtils.registerWithGeneratedName(builder.getBeanDefinition(), parserContext.getRegistry());
 	}
 	
+	/**
+	 * @param element
+	 * @param parserContext
+	 */
 	private String registerS3ListFilter(Element element, ParserContext parserContext) {
 		BeanDefinitionBuilder factoryBeanBuilder = BeanDefinitionBuilder.genericBeanDefinition(
 				"org.opencredo.aws.s3.config.S3ObjectListFilterFactoryBean");

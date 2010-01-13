@@ -29,6 +29,9 @@ import org.springframework.integration.message.MessageBuilder;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
+/**
+ * @author Eren Aykin (eren.aykin@opencredo.com)
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class S3WritingMessageHandlerTest {
 

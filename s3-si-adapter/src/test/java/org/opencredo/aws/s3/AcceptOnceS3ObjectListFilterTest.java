@@ -21,7 +21,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.opencredo.aws.s3.AcceptOnceS3ObjectListFilter;
 
-
+/**
+ * @author Eren Aykin (eren.aykin@opencredo.com)
+ */
 public class AcceptOnceS3ObjectListFilterTest {
 
 	AcceptOnceS3ObjectListFilter sut;

@@ -32,12 +32,18 @@ import org.springframework.util.Assert;
 
 //TODO: Verify data transmission
 //TODO: Add support for Access control lists
+/**
+ * @author Eren Aykin (eren.aykin@opencredo.com)
+ */
 public class S3Template implements S3Operations {
 
 	private S3Service s3Service;
 	
 	private String defaultBucketName;
 	
+	/**
+     * @param awsCredentials
+     */
 	public S3Template(AWSCredentials awsCredentials) {
 		try {
 			Assert.notNull(awsCredentials.getAccessKey(), "Access key is not provided");
@@ -50,6 +56,10 @@ public class S3Template implements S3Operations {
 		}
 	}
 	
+	/**
+     * @param key
+     * @param stringToSend
+     */
 	public void send(String key, String stringToSend) {
 		Assert.notNull(this.defaultBucketName, "Default bucket name is not provided");
 		try {
@@ -63,6 +73,11 @@ public class S3Template implements S3Operations {
 		}
 	}
 	
+	/**
+	 * @param bucketName
+	 * @param key
+	 * @param stringToSend
+	 */
 	public void send(String bucketName, String key, String stringToSend) {
 		Assert.notNull(bucketName, "Bucket name cannot be null");
 		try {
@@ -76,6 +91,9 @@ public class S3Template implements S3Operations {
 		}
 	}
 	
+	/**
+	 * @param fileToSend
+	 */
 	public void send(File fileToSend) {
 		Assert.notNull(this.defaultBucketName, "Default bucket name is not provided");
 		try {
@@ -89,6 +107,10 @@ public class S3Template implements S3Operations {
 		}
 	}
 	
+	/**
+	 * @param bucketName
+	 * @param fileToSend
+	 */
 	public void send(String bucketName, File fileToSend) {
 		Assert.notNull(bucketName, "Bucket name cannot be null");
 		try {
@@ -102,6 +124,10 @@ public class S3Template implements S3Operations {
 		}
 	}
 	
+	/**
+	 * @param key
+	 * @param is
+	 */
 	public void send(String key, InputStream is) {
 		Assert.notNull(this.defaultBucketName, "Default bucket name is not provided");
 		try {
@@ -116,6 +142,11 @@ public class S3Template implements S3Operations {
 		}	
 	}
 	
+	/**
+	 * @param key
+	 * @param bucketName
+	 * @param is
+	 */
 	public void send(String key, String bucketName, InputStream is) {
 		Assert.notNull(bucketName, "Bucket name cannot be null");
 		try {
@@ -130,6 +161,9 @@ public class S3Template implements S3Operations {
 		}	
 	}
 	
+	/**
+	 * @param keyName
+	 */
 	public String receiveAsString(String keyName) {
 		Assert.notNull(this.defaultBucketName, "Default bucket name is not provided");
 		try {
@@ -149,6 +183,10 @@ public class S3Template implements S3Operations {
 		}
 	}
 	
+	/**
+	 * @param bucketName
+	 * @param keyName
+	 */
 	public String receiveAsString(String bucketName, String keyName) {
 		Assert.notNull(bucketName, "Bucket name cannot be null");
 		try {
@@ -167,6 +205,9 @@ public class S3Template implements S3Operations {
 		}
 	}
 	
+	/**
+	 * @param key
+	 */
 	public File receiveAsFile(String key) {
 		Assert.notNull(this.defaultBucketName, "Default bucket name is not provided");
 		try {
@@ -176,6 +217,10 @@ public class S3Template implements S3Operations {
 		}
 	}
 	
+	/**
+	 * @param bucketName
+	 * @param key
+	 */
 	public File receiveAsFile(String bucketName, String key) {
 		Assert.notNull(bucketName, "Bucket name cannot be null");
 		try {
@@ -185,6 +230,9 @@ public class S3Template implements S3Operations {
 		}
 	}
 	
+	/**
+	 * param key
+	 */
 	public InputStream receiveAsInputStream(String key) {
 		Assert.notNull(this.defaultBucketName, "Default bucket name is not provided");
 		try {
@@ -194,6 +242,10 @@ public class S3Template implements S3Operations {
 		}	
 	}
 	
+	/**
+	 * @param bucketName
+	 * @param key
+	 */
 	public InputStream receiveAsInputStream(String bucketName, String key) {
 		Assert.notNull(bucketName, "Bucket name cannot be null");
 		try {
@@ -203,6 +255,9 @@ public class S3Template implements S3Operations {
 		}
 	}
 	
+	/**
+	 * @param bucketName
+	 */
 	public void createBucket(String bucketName) {
 		Assert.notNull(bucketName, "Bucket name cannot be null");
 		try {
@@ -212,6 +267,9 @@ public class S3Template implements S3Operations {
 		}
 	}
 	
+	/**
+	 * @param bucketName
+	 */
 	public void deleteBucket(String bucketName){
 		Assert.notNull(bucketName, "Bucket name cannot be null");
 		try {
@@ -232,6 +290,9 @@ public class S3Template implements S3Operations {
 		}
 	}
 	
+	/**
+	 * @param bucketName
+	 */
 	public void setDefaultBucketName(String bucketName) {
 		this.defaultBucketName = bucketName;
 	}
@@ -244,10 +305,16 @@ public class S3Template implements S3Operations {
 		return s3Service;
 	}
 
+	/**
+	 * @param s3Service
+	 */
 	public void setS3Service(S3Service s3Service) {
 		this.s3Service = s3Service;
 	}
 
+	/**
+	 * @param s3Object
+	 */
 	public void send(S3Object s3Object) {
 		Assert.notNull(this.defaultBucketName, "Default bucket name is not provided");
 		try {
@@ -256,7 +323,11 @@ public class S3Template implements S3Operations {
 			throw new S3CommunicationException("Bucket deletion problem", e);
 		}
 	}
-	
+
+	/**
+	 * @param bucketName
+	 * @param s3Object
+	 */
 	public void send(String bucketName, S3Object s3Object) {
 		try {
 			s3Service.putObject(new S3Bucket(bucketName), s3Object);

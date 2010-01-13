@@ -15,17 +15,17 @@
 
 package org.opencredo.aws.samples.s3quote;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Random;
 
 import org.jets3t.service.S3ServiceException;
-import org.jets3t.service.model.S3Object;
 import org.springframework.integration.core.Message;
 
+/**
+ * @author Eren Aykin (eren.aykin@opencredo.com)
+ */
 public class S3QuoteService {
 
 	public void lookupQuote(Message<String> s3TickerMessage) throws IOException, S3ServiceException {

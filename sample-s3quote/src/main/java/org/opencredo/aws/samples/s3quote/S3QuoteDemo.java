@@ -25,6 +25,9 @@ import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.integration.message.MessageBuilder;
 
+/**
+ * @author Eren Aykin (eren.aykin@opencredo.com)
+ */
 public class S3QuoteDemo {
 	
 	private final static Log logger = LogFactory.getLog(S3QuoteDemo.class);

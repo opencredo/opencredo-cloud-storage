@@ -35,7 +35,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.context.ApplicationContext;
 import org.springframework.integration.core.MessageChannel;
 
-
+/**
+ * @author Eren Aykin (eren.aykin@opencredo.com)
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
 public class S3InboundChannelAdapterParserTest {

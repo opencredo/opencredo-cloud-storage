@@ -35,7 +35,9 @@ import org.opencredo.aws.s3.transformer.S3ToFileTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.core.Message;
 
- 
+/**
+ * @author Eren Aykin (eren.aykin@opencredo.com)
+ */
 public class S3ToFileTransformerTest {
 
 	@Autowired(required = true)

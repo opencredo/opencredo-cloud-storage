@@ -24,6 +24,9 @@ import org.jets3t.service.model.S3Object;
 import org.springframework.integration.core.Message;
 import org.springframework.util.Assert;
 
+/**
+ * @author Eren Aykin (eren.aykin@opencredo.com)
+ */
 public class S3DefaultKeyNameGenerator implements S3KeyNameGenerator{
 	
 	private final Log logger = LogFactory.getLog(this.getClass());
@@ -34,6 +37,9 @@ public class S3DefaultKeyNameGenerator implements S3KeyNameGenerator{
 		this.defaultStringKeyInitial = defaultStringKeyInitial;
 	}
 
+	/**
+	 * @param message
+	 */
 	public String generateKeyName(Message<?> message) {
 		Assert.notNull(message, "message must not be null");
 		if (logger.isDebugEnabled()) logger.debug("message: "+message);

@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jets3t.service.S3ServiceException;
@@ -32,12 +31,18 @@ import org.opencredo.aws.s3.S3Template;
 import org.springframework.integration.core.Message;
 import org.springframework.integration.message.MessageBuilder;
 
-
+/**
+ * @author Eren Aykin (eren.aykin@opencredo.com)
+ */
 public class S3ToByteArrayTransformer {
 	private Log logger = LogFactory.getLog(this.getClass());
 
 	private AWSCredentials awsCredentials;
 	
+	/**
+	 * @param s3MetaDataMapMessage
+	 * @throws IOException
+	 */
 	@SuppressWarnings("unchecked")
 	public Message<byte[]> transform(Message<?> s3MetaDataMapMessage) throws IOException {
 		if (logger.isDebugEnabled()) logger.debug(s3MetaDataMapMessage.getPayload());

@@ -34,7 +34,9 @@ import org.opencredo.aws.s3.S3ObjectListFilter;
 import org.opencredo.aws.s3.config.S3ObjectListFilterFactoryBean;
 import org.springframework.beans.DirectFieldAccessor;
 
-
+/**
+ * @author Eren Aykin (eren.aykin@opencredo.com)
+ */
 public class S3ObjectListFilterFactoryBeanTest {
 
 	@Test(expected = IllegalArgumentException.class)

@@ -24,8 +24,15 @@ import org.springframework.integration.config.xml.IntegrationNamespaceUtils;
 import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
 
+/**
+ * @author Eren Aykin (eren.aykin@opencredo.com)
+ */
 public class S3OutboundChannelAdapterParser extends AbstractOutboundChannelAdapterParser { //implements BeanDefinitionParser {
 	 
+	/**
+	 * @param element
+	 * @param parserContext
+	 */
 	 @Override
 	 protected AbstractBeanDefinition parseConsumer(Element element, ParserContext parserContext) {
 		BeanDefinitionBuilder builder = BeanDefinitionBuilder.

@@ -16,20 +16,15 @@
 package org.opencredo.aws.s3;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
 import java.util.Queue;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.jets3t.service.model.S3Object;
 
-/*
+/**
  * Filters S3Objects based on key values
+ * @author Eren Aykin (eren.aykin@opencredo.com)
  */
 public class AcceptOnceS3ObjectListFilter implements S3ObjectListFilter{
 	
@@ -61,6 +56,9 @@ public class AcceptOnceS3ObjectListFilter implements S3ObjectListFilter{
 	private final Queue<String> seenKeys;
 	private final Object monitor = new Object();
 
+	/**
+	 * @param maxCapacity
+	 */
 	public AcceptOnceS3ObjectListFilter(int maxCapacity) {
 		this.seenKeys = new LinkedBlockingQueue<String>(maxCapacity);
 
@@ -69,7 +67,10 @@ public class AcceptOnceS3ObjectListFilter implements S3ObjectListFilter{
 	public AcceptOnceS3ObjectListFilter() {
 		this.seenKeys = new LinkedBlockingQueue<String>();
 	}
-
+	
+	/**
+	 * @param s3Objects
+	 */
 	public final List<S3Object> filterS3Objects(S3Object[] s3Objects) {
 		List<S3Object> accepted = new ArrayList<S3Object>();
 		if (s3Objects != null) {
@@ -82,6 +83,10 @@ public class AcceptOnceS3ObjectListFilter implements S3ObjectListFilter{
 		return accepted;
 	}
 
+	/**
+	 * @param s3Object
+	 * @return
+	 */
 	protected boolean accept(S3Object s3Object) {
 		synchronized (this.monitor) {
 			if (seenKeys.contains(s3Object.getKey())) {

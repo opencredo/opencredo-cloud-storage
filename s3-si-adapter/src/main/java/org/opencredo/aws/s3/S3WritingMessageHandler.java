@@ -31,6 +31,8 @@ import org.springframework.util.Assert;
  * payload into an S3Object. If the payload is string, the content is written to 
  * a default destination. If the payload is S3Object or File, it should have the
  * filename property in it's header. 
+ * 
+ * @author Eren Aykin (eren.aykin@opencredo.com)
  */
 public class S3WritingMessageHandler implements MessageHandler, InitializingBean {
 	
@@ -50,6 +52,8 @@ public class S3WritingMessageHandler implements MessageHandler, InitializingBean
 	/**
 	 * write the content of Message to S3 Bucket with handlers that convert the 
 	 * message payload to s3object.
+	 * 
+	 * @param message
 	 */
     public void handleMessage(Message<?> message){
     	Assert.notNull(message, "message must not be null");
@@ -87,6 +91,9 @@ public class S3WritingMessageHandler implements MessageHandler, InitializingBean
 		}	
 	}
     
+    /**
+     * @param fileNameGenerator
+     */
 	public void setS3KeyNameGenerator(S3KeyNameGenerator fileNameGenerator) {
 		Assert.notNull(fileNameGenerator, "FileNameGenerator must not be null");
 		this.s3KeyNameGenerator = fileNameGenerator;
@@ -96,6 +103,9 @@ public class S3WritingMessageHandler implements MessageHandler, InitializingBean
 		return bucketName;
 	}
 
+	/**
+	 * @param bucketName
+	 */
 	public void setBucketName(String bucketName) {
 		this.bucketName = bucketName;
 	}

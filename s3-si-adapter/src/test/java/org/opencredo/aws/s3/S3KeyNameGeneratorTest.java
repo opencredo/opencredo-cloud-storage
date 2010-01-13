@@ -29,6 +29,9 @@ import org.springframework.integration.core.Message;
 import org.springframework.integration.message.MessageBuilder;
 import org.springframework.util.Assert;
 
+/**
+ * @author Eren Aykin (eren.aykin@opencredo.com)
+ */
 public class S3KeyNameGeneratorTest {
 	
 	private final Log logger = LogFactory.getLog(S3KeyNameGeneratorTest.class);

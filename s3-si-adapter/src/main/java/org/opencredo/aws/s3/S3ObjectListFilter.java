@@ -18,8 +18,14 @@ package org.opencredo.aws.s3;
 import java.util.List;
 import org.jets3t.service.model.S3Object;
 
+/**
+ * @author Eren Aykin (eren.aykin@opencredo.com)
+ */
 public interface S3ObjectListFilter {
 
+	/**
+	 * @param s3Objects
+	 */
 	List<S3Object> filterS3Objects(S3Object[] s3Objects);
 	
 }

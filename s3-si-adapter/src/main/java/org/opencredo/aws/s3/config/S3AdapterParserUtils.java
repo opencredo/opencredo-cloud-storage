@@ -16,9 +16,9 @@
 package org.opencredo.aws.s3.config;
 
 /**
-* Utility methods and constants for S3 adapter parsers.
-*/
-
+ * Utility methods and constants for S3 adapter parsers.
+ * @author Eren Aykin (eren.aykin@opencredo.com)
+ */
 public class S3AdapterParserUtils {
 
 	 static final String BUCKET_NAME_ATTRIBUTE = "bucket";

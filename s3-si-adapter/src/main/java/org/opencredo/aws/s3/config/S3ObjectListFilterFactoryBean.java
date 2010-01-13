@@ -27,7 +27,9 @@ import org.opencredo.aws.s3.S3ObjectListFilter;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.integration.file.FileListFilter;
 
-
+/**
+ * @author Eren Aykin (eren.aykin@opencredo.com)
+ */
 public class S3ObjectListFilterFactoryBean implements FactoryBean {
 
 	private volatile S3ObjectListFilter s3ObjectListFilter;
@@ -40,15 +42,23 @@ public class S3ObjectListFilterFactoryBean implements FactoryBean {
 
 	private final Object monitor = new Object();
 
-
+	/**
+	 * @param filterReference
+	 */
 	public void setFilterReference(S3ObjectListFilter filterReference) {
 		this.filterReference = filterReference;
 	}
 
+	/**
+	 * @param keynamePattern
+	 */
 	public void setKeynamePattern(Pattern keynamePattern) {
 		this.keynamePattern = keynamePattern;
 	}
 
+	/**
+	 * @param preventDuplicates
+	 */
 	public void setPreventDuplicates(Boolean preventDuplicates) {
 		this.preventDuplicates = preventDuplicates;
 	}
@@ -111,6 +121,9 @@ public class S3ObjectListFilterFactoryBean implements FactoryBean {
 		this.s3ObjectListFilter = s3lf;
 	}
 	
+	/**
+	 * @param otherFilter
+	 */
 	private S3ObjectListFilter createCompositeWithAcceptOnceFilter(S3ObjectListFilter otherFilter) {
 		CompositeS3ObjectListFilter compositeFilter = new CompositeS3ObjectListFilter();
 		compositeFilter.addFilter(new AcceptOnceS3ObjectListFilter(), otherFilter);

@@ -32,7 +32,9 @@ import org.springframework.integration.endpoint.EventDrivenConsumer;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-
+/**
+ * @author Eren Aykin (eren.aykin@opencredo.com)
+ */
 @ContextConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
 public class S3OutboundChannelAdapterParserTest {

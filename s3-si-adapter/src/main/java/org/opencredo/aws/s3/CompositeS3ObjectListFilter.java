@@ -25,27 +25,45 @@ import java.util.Set;
 import org.jets3t.service.model.S3Object;
 import org.springframework.util.Assert;
 
+/**
+ * @author Eren Aykin (eren.aykin@opencredo.com)
+ */
 public class CompositeS3ObjectListFilter implements S3ObjectListFilter {
 
 	private final Set<S3ObjectListFilter> s3ObjectFilters;
 
+	/**
+	 * @param s3ObjectFilters
+	 */
 	public CompositeS3ObjectListFilter(S3ObjectListFilter... s3ObjectFilters) {
 		this.s3ObjectFilters = new LinkedHashSet<S3ObjectListFilter>(Arrays.asList(s3ObjectFilters));
 	}
 
+	/**
+	 * @param s3ObjectFilters
+	 */
 	public CompositeS3ObjectListFilter(Collection<S3ObjectListFilter> s3ObjectFilters) {
 		this.s3ObjectFilters = new LinkedHashSet<S3ObjectListFilter>(s3ObjectFilters);
 	}
 
+	/**
+	 * @param filters
+	 */
 	public CompositeS3ObjectListFilter addFilter(S3ObjectListFilter... filters) {
 		return addFilters(Arrays.asList(filters));
 	}
 
+	/**
+	 * @param filtersToAdd
+	 */
 	public CompositeS3ObjectListFilter addFilters(Collection<S3ObjectListFilter> filtersToAdd) {
 		this.s3ObjectFilters.addAll(filtersToAdd);
 		return this;
 	}
 
+	/**
+	 * @param s3Objects
+	 */
 	public List<S3Object> filterS3Objects(S3Object[] s3Objects) {
 		Assert.notNull(s3Objects, "'s3Objects' should not be null");
 		List<S3Object> leftOver = Arrays.asList(s3Objects);

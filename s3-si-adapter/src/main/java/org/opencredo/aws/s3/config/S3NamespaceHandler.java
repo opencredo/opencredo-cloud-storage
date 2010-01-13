@@ -17,6 +17,9 @@ package org.opencredo.aws.s3.config;
 
 import org.springframework.integration.config.xml.AbstractIntegrationNamespaceHandler;
 
+/**
+ * @author Eren Aykin (eren.aykin@opencredo.com)
+ */
 public class S3NamespaceHandler extends AbstractIntegrationNamespaceHandler {
 
 	 public void init() {

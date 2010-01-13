@@ -20,7 +20,9 @@ import org.opencredo.aws.s3.S3KeyNameGenerator;
 import org.opencredo.aws.s3.S3WritingMessageHandler;
 import org.springframework.beans.factory.FactoryBean;
 
-
+/**
+ * @author Eren Aykin (eren.aykin@opencredo.com)
+ */
 public class S3WritingMessageHandlerFactoryBean implements FactoryBean {
 
 	private volatile S3WritingMessageHandler handler;
@@ -33,14 +35,23 @@ public class S3WritingMessageHandlerFactoryBean implements FactoryBean {
 
 	private final Object initializationMonitor = new Object();
 
+	/**
+	 * @param awsCredentials
+	 */
 	public void setAwsCredentials(AWSCredentials awsCredentials) {
 		this.awsCredentials = awsCredentials;
 	}
 	
+	/**
+	 * @param bucketName
+	 */
 	public void setBucketName(String bucketName) {
 		this.bucketName = bucketName;
 	}
 
+	/**
+	 * @param s3KeyNameGenerator
+	 */
 	public void setS3KeyNameGenerator(S3KeyNameGenerator s3KeyNameGenerator) {
 		this.s3KeyNameGenerator = s3KeyNameGenerator;
 	}

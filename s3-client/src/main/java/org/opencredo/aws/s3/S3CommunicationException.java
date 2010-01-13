@@ -15,6 +15,9 @@
 
 package org.opencredo.aws.s3;
 
+/**
+ * @author Eren Aykin (eren.aykin@opencredo.com)
+ */
 public class S3CommunicationException extends S3Exception {
 
 	private static final long serialVersionUID = 8080789275931833330L;
@@ -23,14 +26,24 @@ public class S3CommunicationException extends S3Exception {
 		super();
 	}
 
+	/**
+     * @param message
+     * @param cause
+     */
 	public S3CommunicationException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
+	/**
+     * @param message
+     */
 	public S3CommunicationException(String message) {
 		super(message);
 	}
 
+	/**
+     * @param cause
+     */
 	public S3CommunicationException(Throwable cause) {
 		super(cause);
 	}

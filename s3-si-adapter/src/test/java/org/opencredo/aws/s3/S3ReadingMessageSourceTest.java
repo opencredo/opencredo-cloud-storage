@@ -35,6 +35,9 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.integration.core.Message;
 import static  org.jets3t.service.S3Service.*;
 
+/**
+ * @author Eren Aykin (eren.aykin@opencredo.com)
+ */
 @SuppressWarnings("unchecked")
 @RunWith(MockitoJUnitRunner.class)
 public class S3ReadingMessageSourceTest {

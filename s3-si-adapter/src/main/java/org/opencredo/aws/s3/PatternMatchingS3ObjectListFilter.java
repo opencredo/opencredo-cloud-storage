@@ -21,15 +21,24 @@ import java.util.regex.Pattern;
 import org.jets3t.service.model.S3Object;
 import org.springframework.util.Assert;
 
+/**
+ * @author Eren Aykin (eren.aykin@opencredo.com)
+ */
 public class PatternMatchingS3ObjectListFilter extends AbstractS3ObjectListFilter {
 
 	private final Pattern pattern;
 
+	/**
+	 * @param pattern
+	 */
 	public PatternMatchingS3ObjectListFilter(Pattern pattern) {
 		Assert.notNull(pattern, "pattern must not be null");
 		this.pattern = pattern;
 	}
 
+	/**
+	 * @param s3Object
+	 */
 	protected boolean accept(S3Object s3Object) {
 		return (s3Object != null) && (s3Object.getKey() != null) && this.pattern.matcher(s3Object.getKey()).matches();
 	}

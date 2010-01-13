@@ -28,13 +28,19 @@ import org.opencredo.aws.s3.S3Template;
 import org.springframework.integration.core.Message;
 import org.springframework.integration.message.MessageBuilder;
 
-
+/**
+ * @author Eren Aykin (eren.aykin@opencredo.com)
+ */
 public class S3ToFileTransformer {
 	//private static final int BUFFER_SIZE = 10000;
 	//private final Log logger = LogFactory.getLog(this.getClass());
 	
 	private AWSCredentials awsCredentials;
 	
+	/**
+	 * @param s3MetaDataMapMessage
+	 * @throws IOException
+	 */
 	@SuppressWarnings("unchecked")
 	public Message<File> transform(Message<?> s3MetaDataMapMessage) throws IOException {
 		//if (logger.isDebugEnabled()) logger.debug(s3MetaDataMapMessage.getPayload());

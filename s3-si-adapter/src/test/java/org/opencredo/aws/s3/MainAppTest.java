@@ -32,9 +32,11 @@ import org.springframework.integration.core.Message;
 import org.springframework.integration.message.MessageBuilder;
 
 
-/*
+/**
  * Main application test class used to test if the adapter produces the 
  * expected behaviour.
+ * 
+ * @author Eren Aykin (eren.aykin@opencredo.com)
  */
 
 public class MainAppTest {

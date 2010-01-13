@@ -15,11 +15,20 @@
 
 package org.opencredo.aws.s3;
 
+/**
+ * @author Eren Aykin (eren.aykin@opencredo.com)
+ */
 public class AWSCredentials {
 	
 	static String accessKey;
 	static String secretAccessKey;
 	
+	/**
+     * @param ak
+     * 		AWS Access Key
+     * @param sak
+     * 		AWS Secret Access Key
+     */
 	public AWSCredentials(String ak, String sak){
 		accessKey = ak;
 		secretAccessKey = sak;
@@ -28,7 +37,11 @@ public class AWSCredentials {
 	public String getAccessKey() {
 		return accessKey;
 	}
-
+	
+	/**
+     * @param ak
+     * 		AWS Access Key
+     */
 	public void setAccessKey(String ak) {
 		accessKey = ak;
 	}
@@ -37,6 +50,10 @@ public class AWSCredentials {
 		return secretAccessKey;
 	}
 
+	/**
+     * @param sak
+     * 		AWS Secret Access Key
+     */
 	public void setSecretAccessKey(String sak) {
 		secretAccessKey = sak;
 	}

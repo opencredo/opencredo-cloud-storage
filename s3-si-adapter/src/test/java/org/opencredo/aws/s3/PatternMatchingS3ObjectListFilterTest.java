@@ -28,6 +28,9 @@ import org.opencredo.aws.s3.PatternMatchingS3ObjectListFilter;
 
 import static org.mockito.Mockito.*;
 
+/**
+ * @author Eren Aykin (eren.aykin@opencredo.com)
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class PatternMatchingS3ObjectListFilterTest {
 

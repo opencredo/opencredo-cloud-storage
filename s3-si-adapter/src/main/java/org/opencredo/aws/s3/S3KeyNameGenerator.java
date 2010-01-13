@@ -17,8 +17,14 @@ package org.opencredo.aws.s3;
 
 import org.springframework.integration.core.Message;
 
+/**
+ * @author Eren Aykin (eren.aykin@opencredo.com)
+ */
 public interface S3KeyNameGenerator {
 
+	/**
+	 * @param message
+	 */
 	String generateKeyName(Message<?> message);
 
 }

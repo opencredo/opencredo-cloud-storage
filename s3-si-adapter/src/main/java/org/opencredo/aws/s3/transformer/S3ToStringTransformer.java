@@ -30,12 +30,17 @@ import org.opencredo.aws.s3.S3Template;
 import org.springframework.integration.core.Message;
 import org.springframework.integration.message.MessageBuilder;
 
-
+/**
+ * @author Eren Aykin (eren.aykin@opencredo.com)
+ */
 public class S3ToStringTransformer {
 	private final Log logger = LogFactory.getLog(this.getClass());
 	
 	private AWSCredentials awsCredentials;
 		
+		/**
+		 * @param s3MetaDataMapMessage
+		 */
 		@SuppressWarnings("unchecked")
 		public Message<String> transform(Message<?> s3MetaDataMapMessage) {
 			//Map<String, Object> metaDataMapHeaders = (Map<String, Object>) s3MetaDataMapMessage.getHeaders();

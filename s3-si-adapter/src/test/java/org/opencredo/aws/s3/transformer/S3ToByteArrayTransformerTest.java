@@ -38,7 +38,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.core.Message;
 import org.springframework.util.FileCopyUtils;
 
-
+/**
+ * @author Eren Aykin (eren.aykin@opencredo.com)
+ */
 public class S3ToByteArrayTransformerTest {
 	
 	@Autowired(required = true)

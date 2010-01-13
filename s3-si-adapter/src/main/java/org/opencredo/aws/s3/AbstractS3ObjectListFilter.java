@@ -21,8 +21,14 @@ import java.util.List;
 
 import org.jets3t.service.model.S3Object;
 
+/**
+ * @author Eren Aykin (eren.aykin@opencredo.com)
+ */
 public abstract class AbstractS3ObjectListFilter implements S3ObjectListFilter {
 
+	/**
+	 * @param s3Objects
+	 */
 	public final List<S3Object> filterS3Objects(S3Object[] s3Objects) {
 		List<S3Object> accepted = new ArrayList<S3Object>();
 		if (s3Objects != null) {
@@ -35,6 +41,9 @@ public abstract class AbstractS3ObjectListFilter implements S3ObjectListFilter {
 		return accepted;
 	}
 
+	/**
+	 * @param s3Object
+	 */
 	protected abstract boolean accept(S3Object s3Object);
 
 }

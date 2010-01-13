@@ -14,6 +14,9 @@
  */
 package org.opencredo.aws.s3;
 
+/**
+ * @author Eren Aykin (eren.aykin@opencredo.com)
+ */
 public class S3Exception extends RuntimeException {
 
 	/**
@@ -25,14 +28,24 @@ public class S3Exception extends RuntimeException {
 		super();
 	}
 
+	/**
+     * @param message
+     * @param cause
+     */
 	public S3Exception(String message, Throwable cause) {
 		super(message, cause);
 	}
 
+	/**
+     * @param message
+     */
 	public S3Exception(String message) {
 		super(message);
 	}
 
+	/**
+     * @param cause
+     */
 	public S3Exception(Throwable cause) {
 		super(cause);
 	}
