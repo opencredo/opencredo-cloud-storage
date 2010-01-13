@@ -10,8 +10,13 @@
 	        http://www.opencredo.com/schema/integration/s3
 			http://www.opencredo.com/schema/integration/s3/spring-integration-s3-1.0.xsd">
 	
+	<beans:bean id="awsCredentials" class="org.opencredo.aws.s3.AWSCredentials">
+        <beans:constructor-arg index="0" value="${settings.key}"/>
+        <beans:constructor-arg index="1" value="${settings.secretkey}"/>
+    </beans:bean>
+
 	<channel id="inputS3Poller" />
-	<s3:inbound-channel-adapter bucket="sibucket" channel="inputS3Poller" filter="acceptOnceS3ObjectListFilter" comparator="testComparator" delete-when-received="true">
+	<s3:inbound-channel-adapter credentials="awsCredentials" bucket="sibucket" channel="inputS3Poller" filter="acceptOnceS3ObjectListFilter" comparator="testComparator" delete-when-received="true">
 		<poller>
 			<interval-trigger interval="5000"/>
 		</poller>		

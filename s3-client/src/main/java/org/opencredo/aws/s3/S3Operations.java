@@ -1,4 +1,4 @@
-package org.opencredo.s3;
+package org.opencredo.aws.s3;
 
 import java.io.File;
 import java.io.InputStream;

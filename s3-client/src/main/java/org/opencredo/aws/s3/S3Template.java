@@ -1,4 +1,4 @@
-package org.opencredo.s3;
+package org.opencredo.aws.s3;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -12,7 +12,7 @@ import org.jets3t.service.S3ServiceException;
 import org.jets3t.service.impl.rest.httpclient.RestS3Service;
 import org.jets3t.service.model.S3Bucket;
 import org.jets3t.service.model.S3Object;
-import org.jets3t.service.security.AWSCredentials;
+import org.opencredo.aws.s3.AWSCredentials;
 import org.springframework.util.Assert;
 
 //TODO: Verify data transmission
@@ -21,20 +21,18 @@ public class S3Template implements S3Operations {
 
 	private S3Service s3Service;
 	
-	
-	private String accessKey;
-	private String secretAccessKey;
-	
-
 	private String defaultBucketName;
 	
-	/*
-	private String devPayUserToken;
-	private String devPayProductToken;
-	*/
-	
-	public S3Template() {
-		
+	public S3Template(AWSCredentials awsCredentials) {
+		try {
+			Assert.notNull(awsCredentials.getAccessKey(), "Access key is not provided");
+			Assert.notNull(awsCredentials.getSecretAccessKey(), "Secret access key is not provided");
+			s3Service = new RestS3Service(new org.jets3t.service.security.AWSCredentials(awsCredentials.getAccessKey(), 
+					awsCredentials.getSecretAccessKey()));	
+		} 
+		catch (S3ServiceException e) {
+			throw new S3CommunicationException(e);
+		}
 	}
 	
 	public void send(String key, String stringToSend) {
@@ -185,7 +183,7 @@ public class S3Template implements S3Operations {
 		Assert.notNull(bucketName, "Bucket name cannot be null");
 		try {
 			return s3Service.getObject(new S3Bucket(bucketName), key).getDataInputStream();
-		} catch (S3ServiceException e) {
+		} catch (S3ServiceException e) { 
 			throw new S3CommunicationException("Receiving input stream problem", e);
 		}
 	}
@@ -194,7 +192,7 @@ public class S3Template implements S3Operations {
 		Assert.notNull(bucketName, "Bucket name cannot be null");
 		try {
 			s3Service.createBucket(new S3Bucket(bucketName));
-		} catch (S3ServiceException e) {
+		} catch (S3ServiceException e) { 
 			throw new S3CommunicationException("Bucket creation problem", e);
 		}
 	}
@@ -219,16 +217,6 @@ public class S3Template implements S3Operations {
 		}
 	}
 	
-	public void connect() {
-		Assert.notNull(accessKey, "Access key must be provided.");
-		Assert.notNull(secretAccessKey, "Secret access key must be provided.");
-		try {
-			this.s3Service = new RestS3Service(new AWSCredentials(accessKey, secretAccessKey));
-		} catch (S3ServiceException e) {
-			throw new S3CommunicationException("Access key problem", e);
-		}
-	}
-	
 	public void setDefaultBucketName(String bucketName) {
 		this.defaultBucketName = bucketName;
 	}
@@ -237,38 +225,29 @@ public class S3Template implements S3Operations {
 		return this.defaultBucketName;
 	}
 	
-	public String getAccessKey() {
-		return accessKey;
+	public S3Service getS3Service() {
+		return s3Service;
 	}
 
-	public void setAccessKey(String accessKey) {
-		this.accessKey = accessKey;
+	public void setS3Service(S3Service s3Service) {
+		this.s3Service = s3Service;
+	}
+
+	public void send(S3Object s3Object) {
+		Assert.notNull(this.defaultBucketName, "Default bucket name is not provided");
+		try {
+			s3Service.putObject(new S3Bucket(this.defaultBucketName), s3Object);
+		} catch (S3ServiceException e) {
+			throw new S3CommunicationException("Bucket deletion problem", e);
+		}
 	}
 	
-	public String getSecretAccessKey() {
-		return secretAccessKey;
+	public void send(String bucketName, S3Object s3Object) {
+		try {
+			s3Service.putObject(new S3Bucket(bucketName), s3Object);
+		} catch (S3ServiceException e) {
+			throw new S3CommunicationException("Bucket deletion problem", e);
+		}
 	}
-
-	public void setSecretAccessKey(String secretAccessKey) {
-		this.secretAccessKey = secretAccessKey;
-	}
-	
-	/*
-    public void setDevPayUserToken(String userToken) {
-        this.devPayUserToken = userToken;
-    }
-    
-    public String getDevPayUserToken() {
-        return this.devPayUserToken;
-    }
-    
-    public void setDevPayProductToken(String productToken) {
-        this.devPayProductToken = productToken;
-    }
-
-    public String getDevPayProductToken() {
-        return this.devPayProductToken;
-    }
-    */
     
 }

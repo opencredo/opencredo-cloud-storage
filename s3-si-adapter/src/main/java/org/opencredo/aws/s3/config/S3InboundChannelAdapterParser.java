@@ -19,6 +19,7 @@ public class S3InboundChannelAdapterParser extends AbstractPollingInboundChannel
 		 IntegrationNamespaceUtils.setValueIfAttributeDefined(builder, element, S3AdapterParserUtils.BUCKET_NAME_ATTRIBUTE);
 		 IntegrationNamespaceUtils.setValueIfAttributeDefined(builder, element, S3AdapterParserUtils.DELETE_WHEN_RECEIVED_ATTRIBUTE);
 		 IntegrationNamespaceUtils.setReferenceIfAttributeDefined(builder, element, "comparator");
+		 IntegrationNamespaceUtils.setReferenceIfAttributeDefined(builder, element, "awsCredentials");
 		 String filterBeanName = this.registerS3ListFilter(element, parserContext);
 		 builder.addPropertyReference("filter", filterBeanName);
 		 

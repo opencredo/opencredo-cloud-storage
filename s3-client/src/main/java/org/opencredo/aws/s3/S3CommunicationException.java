@@ -1,4 +1,4 @@
-package org.opencredo.s3;
+package org.opencredo.aws.s3;
 
 public class S3CommunicationException extends S3Exception {
 

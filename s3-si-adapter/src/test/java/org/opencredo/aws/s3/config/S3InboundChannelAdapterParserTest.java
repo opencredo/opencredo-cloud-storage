@@ -10,9 +10,9 @@ import org.jets3t.service.model.S3Object;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.opencredo.aws.s3.AWSCredentials;
 import org.opencredo.aws.s3.AcceptOnceS3ObjectListFilter;
 import org.opencredo.aws.s3.S3ReadingMessageSource;
-import org.opencredo.aws.s3.S3Resource;
 import org.springframework.beans.DirectFieldAccessor;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -31,14 +31,19 @@ public class S3InboundChannelAdapterParserTest {
 	
 	@Autowired(required = true)
 	private S3ReadingMessageSource source;
+	
+	/*
+	@Autowired(required = true)
+	private AWSCredentials awsCredentials;
+	*/
 
 	private DirectFieldAccessor accessor;
+	
 	
 	private final String bucketName = "sibucket";
 
 	@Before
 	public void init() throws S3ServiceException {
-		//context = new FileSystemXmlApplicationContext("S3InboundChannelAdapterParserTest-context.xml");
 		accessor = new DirectFieldAccessor(source);
 	}
 
@@ -51,7 +56,7 @@ public class S3InboundChannelAdapterParserTest {
 	@Test
 	public void inputDirectorySet() {
 		String expectedBucketName = bucketName;
-		String actualBucketName = ((S3Resource) accessor.getPropertyValue("s3Resource")).getS3Bucket().getName();
+		String actualBucketName = accessor.getPropertyValue("bucketName").toString();
 		assertEquals("'inputDirectory' should be set", expectedBucketName, actualBucketName);
 	}
 	
@@ -72,12 +77,12 @@ public class S3InboundChannelAdapterParserTest {
 	
 	@Test
 	public void deleteWhenReceivedSet () {
-		assertTrue("'deleteWhenReceived' should be set", accessor.getPropertyValue("deleteWhenReceived") instanceof Boolean);
+		assertTrue("'deleteWhenReceived' should be set", accessor.getPropertyValue("deleteWhenReceived") instanceof String);
 	}
 	
 	@Test
-	public void deleteWhenReceived () throws InterruptedException {
-		//Thread.sleep(180000);
+	public void emptyService () {
+		
 	}
 
 	static class TestComparator implements Comparator<S3Object> {
@@ -85,7 +90,6 @@ public class S3InboundChannelAdapterParserTest {
 		public int compare(S3Object o1, S3Object o2) {
 			return 0;
 		}
-	
 	}
 
 }

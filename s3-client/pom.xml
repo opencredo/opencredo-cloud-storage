@@ -8,7 +8,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <groupId>org.opencredo.aws</groupId>
-    <artifactId>s3-template</artifactId>
+    <artifactId>s3-client</artifactId>
     <version>${project.parent.version}}</version>
     <name>OpenCredo S3 Client</name>
     <dependencies>

@@ -6,8 +6,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 	
+import org.opencredo.aws.s3.AWSCredentials;
 import org.opencredo.aws.s3.S3KeyNameGenerator;
-import org.opencredo.aws.s3.S3Resource;
 import org.opencredo.aws.s3.S3WritingMessageHandler;
 import org.springframework.beans.DirectFieldAccessor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +21,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
 public class S3OutboundChannelAdapterParserTest {
+	
+	@Autowired(required = true)
+	private AWSCredentials awsCredentials;
+	
 	@Autowired
 	@Qualifier("simpleAdapter")
 	EventDrivenConsumer simpleAdapter;
@@ -35,7 +39,7 @@ public class S3OutboundChannelAdapterParserTest {
 		S3WritingMessageHandler handler = (S3WritingMessageHandler) adapterAccessor.getPropertyValue("handler");
 		DirectFieldAccessor handlerAccessor = new DirectFieldAccessor(handler);
 		String expectedBucket = "oc-test";
-		String actualBucket = ((S3Resource) handlerAccessor.getPropertyValue("s3Resource")).getS3Bucket().getName();
+		String actualBucket = handlerAccessor.getPropertyValue("bucketName").toString();
 		assertEquals(expectedBucket, actualBucket);
 		assertTrue(handlerAccessor.getPropertyValue("s3KeyNameGenerator") instanceof S3KeyNameGenerator);
 	}
@@ -46,7 +50,7 @@ public class S3OutboundChannelAdapterParserTest {
 		S3WritingMessageHandler handler = (S3WritingMessageHandler) adapterAccessor.getPropertyValue("handler");
 		DirectFieldAccessor handlerAccessor = new DirectFieldAccessor(handler);
 		String expectedBucket = "oc-test";
-		String actualBucket = ((S3Resource) handlerAccessor.getPropertyValue("s3Resource")).getS3Bucket().getName();
+		String actualBucket = handlerAccessor.getPropertyValue("bucketName").toString();
 		assertEquals(expectedBucket, actualBucket);
 		assertTrue(handlerAccessor.getPropertyValue("s3KeyNameGenerator") instanceof CustomKeyNameGenerator);
 	}

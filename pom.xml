@@ -149,7 +149,6 @@
     <modules>
         <module>s3-client</module>
         <module>s3-si-adapter</module>
-        <module>ec2-client</module>
         <module>sample-s3quote</module>
     </modules>
 

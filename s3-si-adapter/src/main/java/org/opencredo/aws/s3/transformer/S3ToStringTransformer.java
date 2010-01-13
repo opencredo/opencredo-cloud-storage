@@ -8,26 +8,28 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jets3t.service.S3Service;
 import org.jets3t.service.S3ServiceException;
-import org.jets3t.service.impl.rest.httpclient.RestS3Service;
+import org.opencredo.aws.s3.AWSCredentials;
 import org.opencredo.aws.s3.S3IntegrationException;
-import org.opencredo.aws.s3.S3Resource;
+import org.opencredo.aws.s3.S3Template;
 import org.springframework.integration.core.Message;
 import org.springframework.integration.message.MessageBuilder;
 
 
 public class S3ToStringTransformer {
 	private final Log logger = LogFactory.getLog(this.getClass());
+	
+	private AWSCredentials awsCredentials;
 		
 		@SuppressWarnings("unchecked")
 		public Message<String> transform(Message<?> s3MetaDataMapMessage) {
-			Map<String, Object> metaDataMap = (Map<String, Object>) s3MetaDataMapMessage.getPayload();
+			//Map<String, Object> metaDataMapHeaders = (Map<String, Object>) s3MetaDataMapMessage.getHeaders();
+			Map<String, Object> metaDataMapMessagePayload = (Map<String, Object>) s3MetaDataMapMessage.getPayload();
 			//if (logger.isDebugEnabled()) logger.debug("metaDataMap: "+s3MetaDataMapMessage.getPayload());
 			try {
-				S3Service s3Service = new RestS3Service(S3Resource.awsCredentials);
+				S3Template s3Template = new S3Template(awsCredentials);
 
-				InputStream is = s3Service.getObject(s3Service.getBucket(metaDataMap.get("bucketName").toString()), metaDataMap.get("key").toString()).getDataInputStream();
+				InputStream is = s3Template.getS3Service().getObject(s3Template.getS3Service().getBucket(metaDataMapMessagePayload.get("bucketName").toString()), metaDataMapMessagePayload.get("key").toString()).getDataInputStream();
 
 				StringWriter writer = new StringWriter();
 				IOUtils.copy(is, writer);
@@ -35,8 +37,8 @@ public class S3ToStringTransformer {
 
 				MessageBuilder<String> builder = (MessageBuilder<String>) MessageBuilder.withPayload(transformedString);
 				Message<String> transformedMessage = builder.build();
-				if ( (metaDataMap.get("deleteWhenReceived") != null ) && (metaDataMap.get("deleteWhenReceived").toString().compareTo("true") == 0) ) {
-					s3Service.deleteObject(s3Service.getBucket(metaDataMap.get("bucketName").toString()), metaDataMap.get("key").toString());
+				if ( (metaDataMapMessagePayload.containsKey("deleteWhenReceived")) && (metaDataMapMessagePayload.get("deleteWhenReceived").toString().compareTo("true") == 0) ) {
+					s3Template.getS3Service().deleteObject(s3Template.getS3Service().getBucket(metaDataMapMessagePayload.get("bucketName").toString()), metaDataMapMessagePayload.get("key").toString());
 				}
 				return transformedMessage;
 			} 
@@ -44,6 +46,6 @@ public class S3ToStringTransformer {
 				throw new S3IntegrationException("Message Transform Error", e);
 			} catch (IOException e) {
 				throw new S3IntegrationException("Message Transform IO Error", e);
-			}				
+			}					
 		}
 	}

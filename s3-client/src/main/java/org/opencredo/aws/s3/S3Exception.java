@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.opencredo.s3;
+package org.opencredo.aws.s3;
 
 public class S3Exception extends RuntimeException {
 

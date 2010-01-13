@@ -16,9 +16,6 @@
 package org.opencredo.aws.s3;
 
 import java.io.File;
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jets3t.service.model.S3Object;
@@ -41,10 +38,13 @@ public class S3WritingMessageHandler implements MessageHandler, InitializingBean
 	
 	private volatile S3KeyNameGenerator s3KeyNameGenerator = new S3DefaultKeyNameGenerator();
 	
-	private S3Resource s3Resource;
-
-	public S3WritingMessageHandler(S3Resource s3resource){
-		this.s3Resource = s3resource;
+	//private AWSCredentials awsCredentials;
+	
+	private S3Template s3Template;
+	private String bucketName;
+	
+	public S3WritingMessageHandler(AWSCredentials awsCredentials){
+		this.s3Template = new S3Template(awsCredentials);
 	}
 
 	/**
@@ -64,26 +64,20 @@ public class S3WritingMessageHandler implements MessageHandler, InitializingBean
 			key = s3KeyNameGenerator.generateKeyName(message);
 		}
 		
-		//String generatedKeyName = s3KeyNameGenerator.generateKeyName(message);
-		
-		S3Object objectToSend = null;
 		try {
-			if (payload instanceof File) {
-				objectToSend = fileToS3Handler((File) payload);
+			if ( (payload instanceof File) ){
+				s3Template.send(bucketName, (File) payload);
 			}
 			else if(payload instanceof String){
-				objectToSend = stringToS3Handler((String) payload, key);
+				s3Template.send(bucketName, key, (String) payload);
 			}
 			else if(payload instanceof S3Object){
-				objectToSend = (S3Object) payload;
-				objectToSend.setKey(key);
+				s3Template.send(bucketName, (S3Object) payload);
 			}
 			else {
 				throw new IllegalArgumentException(
 						"unsupported Message payload type [" + payload.getClass().getName() + "]");
 			}
-			s3Resource.setS3Object(objectToSend);
-			s3Resource.sendS3ObjectToS3();
 		}
 		catch (IllegalArgumentException e) {
 			throw new S3IntegrationException("Illegal Argument", e);
@@ -93,48 +87,22 @@ public class S3WritingMessageHandler implements MessageHandler, InitializingBean
 		}	
 	}
     
-    private S3Object fileToS3Handler(File fileInput){
-    	try {
-			return new S3Object(fileInput);
-		} 
-    	catch (NoSuchAlgorithmException e) {
-    		throw new S3IntegrationException("fileToS3Handler, No Such Algorithm", e);
-		} 
-    	catch (IOException e) {
-    		throw new S3IntegrationException("fileToS3Handler, IO Problem", e);
-		}
-    }
-    
-    private S3Object stringToS3Handler(String stringInput, String generatedKeyName){ 
-    	try {
-			return new S3Object(generatedKeyName, stringInput);
-		} 
-    	catch (NoSuchAlgorithmException e) {
-    		throw new S3IntegrationException("stringToS3Handler, No Such Algorithm", e);
-		} 
-    	catch (IOException e) {
-    		throw new S3IntegrationException("stringToS3Handler, IO Problem", e);
-		}
-    }
-    
 	public void setS3KeyNameGenerator(S3KeyNameGenerator fileNameGenerator) {
 		Assert.notNull(fileNameGenerator, "FileNameGenerator must not be null");
 		this.s3KeyNameGenerator = fileNameGenerator;
 	}
 		
-	public S3Resource getS3Resource() {
-		return s3Resource;
+	public String getBucketName() {
+		return bucketName;
 	}
 
-	public void setS3Resource(S3Resource s3Resource) {
-		this.s3Resource = s3Resource;
+	public void setBucketName(String bucketName) {
+		this.bucketName = bucketName;
 	}
 
 	public void afterPropertiesSet() throws Exception {
-		Assert.isTrue(this.s3Resource.exists(),
-				"Source directory [" + s3Resource + "] does not exist.");
-		Assert.isTrue(this.s3Resource.isReadable(),
-				"Source directory [" + this.s3Resource + "] is not readable.");
+		Assert.isTrue(this.s3Template.getS3Service().isBucketAccessible(bucketName),
+				"Bucket is not accessible to "+ this.getClass().getName());
 	}
     
 }

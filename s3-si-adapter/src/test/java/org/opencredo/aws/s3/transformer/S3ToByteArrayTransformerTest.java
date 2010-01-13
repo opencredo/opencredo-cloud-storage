@@ -12,20 +12,25 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jets3t.service.S3ServiceException;
-import org.jets3t.service.impl.rest.httpclient.RestS3Service;
 import org.jets3t.service.model.S3Object;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.opencredo.aws.s3.S3Resource;
+import org.opencredo.aws.s3.AWSCredentials;
+import org.opencredo.aws.s3.S3Template;
 import org.opencredo.aws.s3.transformer.S3ToByteArrayTransformer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.core.Message;
 import org.springframework.util.FileCopyUtils;
 
 
 public class S3ToByteArrayTransformerTest {
+	
+	@Autowired(required = true)
+	private AWSCredentials awsCredentials;
 
 	private S3ToByteArrayTransformer systemUnderTest;
+	private S3Template s3Template;
 	
 	private final String bucketName = "oc-test";
 	private final String key = "testFile.test";
@@ -36,7 +41,7 @@ public class S3ToByteArrayTransformerTest {
     public void init() throws S3ServiceException, IOException { 
         systemUnderTest = new S3ToByteArrayTransformer();
 
-        RestS3Service service = new RestS3Service(S3Resource.awsCredentials);
+        s3Template = new S3Template(awsCredentials);
 		ClassLoader cl = this.getClass().getClassLoader();
 		URL urlFileToUpload = this.getClass().getResource(key);
 		File fileToUpload = new File (urlFileToUpload.getPath());
@@ -44,7 +49,7 @@ public class S3ToByteArrayTransformerTest {
 		fileToUploadByteArrayLength = b.length;
 		S3Object s3ObjectToUpload = new S3Object(fileToUpload.getName());
 		s3ObjectToUpload.setDataInputFile(fileToUpload);
-		service.putObject(bucketName, s3ObjectToUpload); 
+		s3Template.getS3Service().putObject(bucketName, s3ObjectToUpload); 
     }
 	
 	@Test
@@ -64,7 +69,6 @@ public class S3ToByteArrayTransformerTest {
 	
 	 @After
 	 public void after() throws S3ServiceException{
-		 RestS3Service service = new RestS3Service(S3Resource.awsCredentials);
-		 service.deleteObject(bucketName, key);
+		 s3Template.getS3Service().deleteObject(bucketName, key);
 	 }
 }

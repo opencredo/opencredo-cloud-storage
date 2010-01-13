@@ -60,39 +60,56 @@ public class S3ReadingMessageSource implements MessageSource<Map>, InitializingB
 	}
 	
 	private static final int INTERNAL_QUEUE_CAPACITY = 5;
-	private static final String FILENAME = "filename";
+	private static final String FILENAME = "filename"; 
 	private static final int DEFAULT_OBJECT_LIST_CHUNK_SIZE = 1000;
 	
 	private final Log logger = LogFactory.getLog(this.getClass());
 	private final Queue<S3Object> toBeReceived;
 	
-	private S3Resource s3Resource;
+	private S3Template s3Template;
+	private String bucketName;
 	private volatile S3ObjectListFilter filter = new AcceptOnceS3ObjectListFilter();
 	private Comparator<S3Object> comparator;
-	private boolean deleteWhenReceived;
+	private String deleteWhenReceived;
 	
-    public S3ReadingMessageSource(){ 
-
+    public S3ReadingMessageSource(AWSCredentials awsCredentials){ 
+    	this.s3Template = new S3Template(awsCredentials);
     	this.toBeReceived = new PriorityBlockingQueue<S3Object>(INTERNAL_QUEUE_CAPACITY, new S3ObjectLastModifiedDateComparator());
     }
     
-	public S3ReadingMessageSource(Comparator<S3Object> receptionOrderComparator) {
+	public S3ReadingMessageSource(AWSCredentials awsCredentials, Comparator<S3Object> receptionOrderComparator) {
+		this.s3Template = new S3Template(awsCredentials);
 		this.toBeReceived = new PriorityBlockingQueue<S3Object>(INTERNAL_QUEUE_CAPACITY, receptionOrderComparator);
 	}
+	
+	public S3ReadingMessageSource(S3Template s3template){ 
+    	this.s3Template = s3template;
+    	this.toBeReceived = new PriorityBlockingQueue<S3Object>(INTERNAL_QUEUE_CAPACITY, new S3ObjectLastModifiedDateComparator());
+    }
+    
+	public S3ReadingMessageSource(S3Template s3template, Comparator<S3Object> receptionOrderComparator) {
+		this.s3Template = s3template;
+		this.toBeReceived = new PriorityBlockingQueue<S3Object>(INTERNAL_QUEUE_CAPACITY, receptionOrderComparator);
+	}
+	
+	public Message<Map> receive(String bucketName){
+		Assert.notNull(s3Template, "S3Template cannot be null");
+    	Assert.notNull(s3Template.getS3Service(), "S3Service cannot be null");
+    	if (s3Template.getDefaultBucketName() != null) receive();
+		
+		return null; 
+	}
 
-	public Message<Map> receive(){
-		if (logger.isDebugEnabled()) logger.debug("receive() call received");
-		
-		Assert.notNull(s3Resource, "S3Resource cannot be null");
-    	Assert.notNull(s3Resource.getS3Service(), "S3Service cannot be null");
-    	Assert.notNull(s3Resource.getS3Bucket(), "S3Bucket cannot be null");
-		
+	public Message<Map> receive(){ 
+		Assert.notNull(s3Template, "S3Template cannot be null");
+    	Assert.notNull(s3Template.getS3Service(), "S3Service cannot be null");
+
 		try {
-			if (s3Resource.getS3Service().checkBucketStatus(s3Resource.getS3Bucket().getName()) == BUCKET_STATUS__MY_BUCKET){
+			if (s3Template.getS3Service().checkBucketStatus(bucketName) == BUCKET_STATUS__MY_BUCKET){
 	
 				//typical info contained in a list: key, lastmodified, etag, size, owner, storageclass
 				//Because the completeListing parameter is true, follow-up requests will be sent to provide a complete S3Object listing
-				S3ObjectsChunk chunk = s3Resource.getS3Service().listObjectsChunked(s3Resource.getS3Bucket().getName(),
+				S3ObjectsChunk chunk = s3Template.getS3Service().listObjectsChunked(bucketName,
 			             null, null, DEFAULT_OBJECT_LIST_CHUNK_SIZE, null, true);
 				if (logger.isDebugEnabled()) logger.debug("chunk created: "+chunk);
 				List<S3Object> filteredS3ObjectsList = addBucketInfo(this.filter.filterS3Objects(chunk.getObjects()));
@@ -102,10 +119,10 @@ public class S3ReadingMessageSource implements MessageSource<Map>, InitializingB
 					toBeReceived.addAll(filteredS3ObjectsSet);
 				if (!toBeReceived.isEmpty()) {
 					Map metaDataMapPayload = toBeReceived.poll().getMetadataMap();
+					if ( (deleteWhenReceived != null) && (deleteWhenReceived.compareTo("true") == 0) ) metaDataMapPayload.put("deleteWhenReceived", "true");
 					MessageBuilder<Map> builder = MessageBuilder.withPayload(metaDataMapPayload);
 					builder.setHeader(FILENAME, metaDataMapPayload.get("key"));
 					//if (logger.isDebugEnabled()) logger.debug("metaDataMapPayload: "+metaDataMapPayload);
-					if (deleteWhenReceived) builder.setHeader("deleteWhenReceived", deleteWhenReceived);
 					return builder.build();
 				}
 				else return null;
@@ -126,15 +143,11 @@ public class S3ReadingMessageSource implements MessageSource<Map>, InitializingB
 		S3Object tempS3Object;
 		while(it.hasNext()){
 			tempS3Object = it.next();
-			tempS3Object.addMetadata("bucketName", s3Resource.getS3Bucket().getName());
+			tempS3Object.addMetadata("bucketName", bucketName);
 			tempS3Object.addMetadata("key", tempS3Object.getKey());
 		}
 		return filteredS3Objects;
 	}
-
-    public void setS3Resource(S3Resource s3Resource){
-    	this.s3Resource = s3Resource;
-    }
     
 	public Queue<S3Object> getQueueToBeReceived(){
 		return toBeReceived;
@@ -145,15 +158,24 @@ public class S3ReadingMessageSource implements MessageSource<Map>, InitializingB
 		this.filter = filter;
 	}
 	
-	public void setDeleteWhenReceived(boolean deleteWhenReceived) {
+	public void setDeleteWhenReceived(String deleteWhenReceived) {
 		this.deleteWhenReceived = deleteWhenReceived;
 	}
 
 	public void afterPropertiesSet() {
-		Assert.isTrue(this.s3Resource.exists(),
-				"Source directory [" + s3Resource + "] does not exist.");
-		Assert.isTrue(this.s3Resource.isReadable(),
-				"Source directory [" + this.s3Resource + "] is not readable.");
+		Assert.isTrue(this.s3Template.getS3Service().isAuthenticatedConnection(), "Connection not authenticated.");
+	}
+	
+	public void setS3Template(S3Template s3Template) {
+		this.s3Template = s3Template;
+	}
+
+	public String getBucketName() {
+		return bucketName;
+	}
+
+	public void setBucketName(String bucketName) {
+		this.bucketName = bucketName;
 	}
         	          
 }

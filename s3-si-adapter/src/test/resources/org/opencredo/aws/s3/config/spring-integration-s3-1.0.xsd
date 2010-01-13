@@ -34,6 +34,16 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:attribute>
+			<xsd:attribute name="credentials" type="xsd:string">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<tool:annotation kind="ref">
+							<tool:expected-type
+								type="org.opencredo.aws.s3.AWSCredentials" />
+						</tool:annotation>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:attribute>
 			<xsd:attribute name="bucket" type="xsd:string" />
 			<xsd:attribute name="filter" type="xsd:string" use="optional">
 				<xsd:annotation>
@@ -60,6 +70,16 @@
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:attribute name="id" type="xsd:ID" />
+			<xsd:attribute name="credentials" type="xsd:string">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<tool:annotation kind="ref">
+							<tool:expected-type
+								type="org.opencredo.aws.s3.AWSCredentials" />
+						</tool:annotation>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:attribute>
 			<xsd:attribute name="bucket" type="xsd:string" use="required" />
 			<xsd:attribute name="channel" type="xsd:string" use="required">
 				<xsd:annotation>

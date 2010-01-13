@@ -7,7 +7,7 @@ package org.opencredo.aws.s3.config;
 public class S3AdapterParserUtils {
 
 	 static final String BUCKET_NAME_ATTRIBUTE = "bucket";
-	 static final String BUCKET_NAME_PROPERTY = "bucket";
+	 static final String BUCKET_NAME_PROPERTY = "bucketName";
 	 
 	 //Inbound Properties
 	 static final String FILTER_ATTRIBUTE = "s3-filter";

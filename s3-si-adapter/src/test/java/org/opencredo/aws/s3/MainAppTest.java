@@ -1,19 +1,16 @@
 package org.opencredo.aws.s3;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Map;
 
 import junit.framework.Assert;
 
 import org.jets3t.service.S3ServiceException;
+import org.jets3t.service.model.S3Bucket;
 import org.jets3t.service.model.S3Object;
 import org.junit.Before;
 import org.junit.Test;
 import org.opencredo.aws.s3.S3ReadingMessageSource;
-import org.opencredo.aws.s3.S3Resource;
 import org.opencredo.aws.s3.S3WritingMessageHandler;
 import org.opencredo.aws.s3.transformer.S3ToStringTransformer;
 import org.springframework.integration.core.Message;
@@ -30,17 +27,18 @@ public class MainAppTest {
 	S3ToStringTransformer transformer;
 	S3WritingMessageHandler handler;
 	
+	AWSCredentials awsCredentials;
+	
 	String bucketName;
-	S3Resource resource;
+	S3Template template;
 	
 	@Before
 	public void init() throws IOException, S3ServiceException{
 		bucketName = new String("sibucket");
-		resource = new S3Resource(bucketName);
-		messageSource = new S3ReadingMessageSource();
-		messageSource.setS3Resource(resource);
+		template = new S3Template(awsCredentials);
+		messageSource = new S3ReadingMessageSource(awsCredentials);
 		transformer = new S3ToStringTransformer();
-		handler = new S3WritingMessageHandler(resource);
+		handler = new S3WritingMessageHandler(awsCredentials);
 	}
 	
 	/*
@@ -64,7 +62,7 @@ public class MainAppTest {
 		MessageBuilder<S3Object> builder = MessageBuilder.withPayload(updatedS3ObjectToSend);
 		handler.handleMessage(builder.build());
 		
-		S3Object newObject = resource.getS3Service().getObject(resource.getS3Bucket(), updatedS3ObjectToSend.getKey());
+		S3Object newObject = template.getS3Service().getObject(new S3Bucket(bucketName), updatedS3ObjectToSend.getKey());
 		Assert.assertEquals(payload, newObject.getKey());
 	
 	}
