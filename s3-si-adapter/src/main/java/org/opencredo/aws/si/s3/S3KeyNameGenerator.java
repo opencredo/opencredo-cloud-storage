@@ -13,27 +13,18 @@
  * limitations under the License.
  */
 
-package org.opencredo.aws.samples.s3quote;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.Random;
+package org.opencredo.aws.si.s3;
 
 import org.springframework.integration.core.Message;
 
 /**
  * @author Eren Aykin (eren.aykin@opencredo.com)
  */
-public class S3QuoteService {
+public interface S3KeyNameGenerator {
 
-	public void lookupQuote(Message<String> s3TickerMessage) {
-		BigDecimal price = new BigDecimal(new Random().nextDouble() * 100);	
-		/*
-		BufferedReader br = new BufferedReader(new InputStreamReader(s3TickerMessage.getPayload().getDataInputStream()));
-		Quote quote = new Quote(br.readLine(), price.setScale(2, RoundingMode.HALF_EVEN));
-		*/
-		Quote quote = new Quote(s3TickerMessage.getPayload(), price.setScale(2, RoundingMode.HALF_EVEN));
-		System.out.println("Quote Update... "+quote);
-	}
+	/**
+	 * @param message
+	 */
+	String generateKeyName(Message<?> message);
 
 }

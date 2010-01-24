@@ -15,25 +15,15 @@
 
 package org.opencredo.aws.samples.s3quote;
 
-import java.io.IOException;
-import java.util.Random;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.jets3t.service.S3ServiceException;
-import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.integration.message.MessageBuilder;
 
 /**
  * @author Eren Aykin (eren.aykin@opencredo.com)
  */
 public class S3QuoteDemo {
 	
-	private final static Log logger = LogFactory.getLog(S3QuoteDemo.class);
-
-	public static void main(String[] args) throws IOException, S3ServiceException {
-		AbstractApplicationContext context = new ClassPathXmlApplicationContext("s3quoteDemo.xml", S3QuoteDemo.class);
+	public static void main(String[] args) {
+		new ClassPathXmlApplicationContext("s3quoteDemo.xml", S3QuoteDemo.class);
 		
 		/*
 		S3TickerUploader tickerUploader = (S3TickerUploader) context.getBean("s3TickerUploader");

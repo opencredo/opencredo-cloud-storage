@@ -10,10 +10,7 @@
 	        http://www.opencredo.com/schema/integration/s3
 			http://www.opencredo.com/schema/integration/s3/spring-integration-s3-1.0.xsd">
 	
-	<beans:bean id="awsCredentials" class="org.opencredo.aws.s3.AWSCredentials">
-        <beans:constructor-arg index="0" value="${settings.key}"/>
-        <beans:constructor-arg index="1" value="${settings.secretkey}"/>
-    </beans:bean>
+	<beans:import resource="../credentials-context.xml" />
 	
 	<channel id="testChannel" />
 	

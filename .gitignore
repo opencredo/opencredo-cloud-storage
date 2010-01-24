@@ -4,3 +4,7 @@
 target/
 .classpath
 .settings
+.project
+s3-client/.project
+s3-si-adapter/.project
+sample-s3quote/.project
