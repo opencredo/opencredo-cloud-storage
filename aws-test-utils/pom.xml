@@ -9,7 +9,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.opencredo.aws</groupId>
 	<artifactId>aws-test-utils</artifactId>
-	<name>aws-test-utils</name>
+	<name>OpenCredo AWS test utils</name>
 	<version>${project.parent.version}</version>
 	<dependencies>
 		<dependency>

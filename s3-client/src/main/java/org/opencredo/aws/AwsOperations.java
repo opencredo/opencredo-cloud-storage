@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 
-import org.opencredo.aws.s3.BucketObject;
 import org.opencredo.aws.s3.BucketStatus;
 
 /**
@@ -78,7 +77,7 @@ public interface AwsOperations {
      * @return
      * @throws AwsCommunicationException
      */
-    public List<BucketObject> listBucketObjects(String bucketName) throws AwsCommunicationException;
+    public List<BlobObject> listBucketObjects(String bucketName) throws AwsCommunicationException;
 
     // **********************************
     // SEND/RECEIVE

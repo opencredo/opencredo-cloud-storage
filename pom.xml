@@ -135,6 +135,19 @@
 			<version>1.4</version>
 		</dependency>
 	</dependencies>
+	<profiles>
+		<profile>
+			<id>Dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<awsKey>test-awsKey</awsKey>
+				<awsSecretKey>test-awsSecretKey</awsSecretKey>
+				<awsS3DefaultBucketName>test-awsS3DefaultBucketName</awsS3DefaultBucketName>
+			</properties>
+		</profile>
+	</profiles>
 
 	<modules>
 		<module>aws-test-utils</module>

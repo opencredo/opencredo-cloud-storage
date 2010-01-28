@@ -33,6 +33,7 @@ import org.opencredo.aws.AwsCommunicationException;
 import org.opencredo.aws.AwsCredentials;
 import org.opencredo.aws.AwsException;
 import org.opencredo.aws.AwsOperations;
+import org.opencredo.aws.BlobObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
@@ -177,13 +178,13 @@ public class S3Template implements AwsOperations {
      * @throws AwsCommunicationException
      * @see org.opencredo.aws.AwsOperations#listBucketObjects(java.lang.String)
      */
-    public List<BucketObject> listBucketObjects(String bucketName) throws AwsCommunicationException {
+    public List<BlobObject> listBucketObjects(String bucketName) throws AwsCommunicationException {
         LOG.debug("Get objects list for bucket '{}'", bucketName);
         try {
             S3Object[] s3Objects = this.s3Service.listObjects(new S3Bucket(bucketName));
-            List<BucketObject> keys = new ArrayList<BucketObject>(s3Objects.length);
+            List<BlobObject> keys = new ArrayList<BlobObject>(s3Objects.length);
             for (S3Object s : s3Objects) {
-                keys.add(new BucketObject(s));
+                keys.add(new BlobObject(s));
             }
             return keys;
         } catch (S3ServiceException e) {

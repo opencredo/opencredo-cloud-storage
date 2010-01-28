@@ -47,6 +47,7 @@ import org.opencredo.aws.AwsCommunicationException;
 import org.opencredo.aws.AwsCredentials;
 import org.opencredo.aws.AwsException;
 import org.opencredo.aws.AwsOperations;
+import org.opencredo.aws.BlobObject;
 import org.springframework.beans.DirectFieldAccessor;
 
 /**
@@ -278,7 +279,7 @@ public class S3TemplateTest {
         }
 
         doReturn(objs).when(s3Service).listObjects(argThat(S3_BUCKET_NAME_MATCHER));
-        List<BucketObject> bucketObjects = template.listBucketObjects(BUCKET_NAME);
+        List<BlobObject> bucketObjects = template.listBucketObjects(BUCKET_NAME);
         verify(s3Service).listObjects(argThat(S3_BUCKET_NAME_MATCHER));
         assertEquals(objs.length, bucketObjects.size());
 

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/integration"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:aws="http://www.opencredo.com/schema/si/aws"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+ 	        http://www.springframework.org/schema/integration
+			http://www.springframework.org/schema/integration/spring-integration-1.0.xsd
+	        http://www.opencredo.com/schema/si/aws
+			http://www.opencredo.com/schema/si/aws/opencredo-si-aws.xsd">
+	<beans:import resource="../../common-context.xml" />
+	
+	<!--  SI config -->
+	<channel id="inputChannel" />
+
+	<!-- Inbound adapter -->
+	<beans:bean id="testComparator" class="org.opencredo.aws.si.adapter.config.InboundChannelAdapterParserTest$MockBlobObjectComparator" />
+	
+	<aws:inbound-channel-adapter id="inbound-adapter"
+		channel="inputChannel" template="mockTemplate" bucket="${awsS3DefaultBucketName}" comparator="testComparator">
+		<poller>
+			<interval-trigger interval="5000" />
+		</poller>
+	</aws:inbound-channel-adapter>
+
+
+</beans:beans>

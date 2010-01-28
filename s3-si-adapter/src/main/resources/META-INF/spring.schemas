@@ -1,0 +1,2 @@
+http\://www.opencredo.com/schema/si/aws/opencredo-si-aws-1.0.xsd=org/opencredo/aws/si/config/opencredo-si-aws-1.0.xsd
+http\://www.opencredo.com/schema/si/aws/opencredo-si-aws.xsd=org/opencredo/aws/si/config/opencredo-si-aws-1.0.xsd
