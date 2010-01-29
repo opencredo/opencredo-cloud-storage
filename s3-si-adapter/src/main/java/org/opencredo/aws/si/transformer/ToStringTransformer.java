@@ -17,7 +17,7 @@ package org.opencredo.aws.si.transformer;
 
 import static org.opencredo.aws.si.Constants.BUCKET_NAME;
 import static org.opencredo.aws.si.Constants.DELETE_WHEN_RECEIVED;
-import static org.opencredo.aws.si.Constants.KEY;
+import static org.opencredo.aws.si.Constants.ID;
 
 import java.util.Map;
 
@@ -65,9 +65,9 @@ public class ToStringTransformer {
         Map<String, Object> payload = message.getPayload();
 
         Assert.notNull(payload.get(BUCKET_NAME), "Bucket name must be specified in the header");
-        Assert.notNull(payload.get(KEY), "Bucket name must be specified in the header");
+        Assert.notNull(payload.get(ID), "Bucket name must be specified in the header");
 
-        String transformedString = template.receiveAsString(payload.get(BUCKET_NAME).toString(), payload.get(KEY)
+        String transformedString = template.receiveAsString(payload.get(BUCKET_NAME).toString(), payload.get(ID)
                 .toString());
 
         MessageBuilder<String> builder = (MessageBuilder<String>) MessageBuilder.withPayload(transformedString);
@@ -75,7 +75,7 @@ public class ToStringTransformer {
 
         Boolean delete = (Boolean) payload.get(DELETE_WHEN_RECEIVED);
         if (delete != null && delete == true) {
-            template.deleteObject(payload.get(BUCKET_NAME).toString(), payload.get(KEY).toString());
+            template.deleteObject(payload.get(BUCKET_NAME).toString(), payload.get(ID).toString());
         }
         return transformedMessage;
 

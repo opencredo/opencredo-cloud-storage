@@ -15,58 +15,99 @@
 
 package org.opencredo.aws.si.adapter;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.anyString;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
-import org.jets3t.service.S3ServiceException;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.opencredo.aws.AwsOperations;
 import org.opencredo.aws.BlobObject;
-import org.opencredo.aws.s3.BucketStatus;
-import org.opencredo.aws.s3.S3Template;
-import org.opencredo.aws.si.adapter.ReadingMessageSource;
+import org.opencredo.aws.s3.TestPropertiesAccessor;
+import org.opencredo.aws.si.Constants;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.integration.channel.PollableChannel;
 import org.springframework.integration.core.Message;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * @author Eren Aykin (eren.aykin@opencredo.com)
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration
 public class ReadingMessageSourceTest {
 
-    private ReadingMessageSource inboundAdaper;
+    private static final String BUCKET_NAME_PREFIX = "bucketName-";
+    private static final String ID_PREFIX = "id-";
+    private static final String E_TAG_PREFIX = "eTag-";
 
-    private final String bucketName = "sibucket";
-    private BlobObject[] bucketObjects = new BlobObject[] { new BlobObject(bucketName, "test.txt", null, new Date(
-            System.currentTimeMillis())) };
+    private final String bucketName = TestPropertiesAccessor.getS3DefaultBucketName();
 
-    @Mock
-    private S3Template template;
+    private BlobObject[] blobObjs;
+    private long currentTime;
 
+    private int msgCount = 4;
+
+    @Autowired
+    @Qualifier("mockTemplate")
+    private AwsOperations template;
+
+    @Autowired
+    @Qualifier("inputChannel")
+    PollableChannel inputChannel;
+
+    @Before
+    public void setUp() {
+        currentTime = System.currentTimeMillis();
+        long dayInMils = 24 * 60 * 60 * 1000;
+
+        blobObjs = new BlobObject[msgCount];
+
+        for (int i = 0; i < msgCount; i++) {
+            blobObjs[i] = new BlobObject(BUCKET_NAME_PREFIX + i, ID_PREFIX + i, E_TAG_PREFIX + i, new Date(currentTime
+                    - (dayInMils * (i + 1))));
+        }
+    }
+
+    @SuppressWarnings("unchecked")
     @Test
-    public void testReceiveMessage() throws S3ServiceException {
-	    List<BlobObject> l = Arrays.asList(bucketObjects);
-	    
-    	when(template.getBucketStatus(anyString())).thenReturn(BucketStatus.MINE);    	
-    	when(template.listBucketObjects(anyString())).thenReturn(l);
-    	
-    	inboundAdaper = new ReadingMessageSource(template, bucketName);
-    	
-    	Message<Map<String, Object>> message = inboundAdaper.receive();
-    	
-    	assertNotNull("Queue should not be empty at this point.", inboundAdaper.getQueueToBeReceived());
-    	
-    	assertEquals("unexpected message content", bucketName, message.getPayload().get("bucketName"));
-    	assertEquals("unexpected key", "test.txt", message.getPayload().get("key"));
+    public void testReceiveMessage() throws InterruptedException {
+        assertNotNull(template);
+        assertNotNull(inputChannel);
+
+        when(template.listBucketObjects(bucketName)).thenReturn(Arrays.asList(blobObjs));
+
+        Thread.sleep(3000);
+
+        Message<Map<String, Object>> msg;
+        Map<String, Object> payload;
+        for (int i = 0; i < msgCount; i++) {
+            msg = (Message<Map<String, Object>>) inputChannel.receive(2000);
+            System.out.println("Message from channel: " + msg);
+            assertNotNull("Message expected", msg);
+
+            payload = msg.getPayload();
+            assertNotNull("Message map should contain: " + Constants.BUCKET_NAME, payload.get(Constants.BUCKET_NAME));
+            assertTrue("Message bucket name should start with prefix: " + BUCKET_NAME_PREFIX, payload.get(
+                    Constants.BUCKET_NAME).toString().startsWith(BUCKET_NAME_PREFIX));
+
+            assertNotNull("Message map should contain: " + Constants.ID, payload.get(Constants.ID));
+            assertTrue("Message id should start with prefix: " + ID_PREFIX, payload.get(Constants.ID).toString()
+                    .startsWith(ID_PREFIX));
+
+            assertNotNull("Message map should contain: " + Constants.DELETE_WHEN_RECEIVED, payload
+                    .get(Constants.DELETE_WHEN_RECEIVED));
+            assertFalse((Boolean) payload.get(Constants.DELETE_WHEN_RECEIVED));
+        }
+
     }
 }

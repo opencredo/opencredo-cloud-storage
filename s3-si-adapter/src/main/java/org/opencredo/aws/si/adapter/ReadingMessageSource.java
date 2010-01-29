@@ -17,7 +17,7 @@ package org.opencredo.aws.si.adapter;
 
 import static org.opencredo.aws.si.Constants.BUCKET_NAME;
 import static org.opencredo.aws.si.Constants.DELETE_WHEN_RECEIVED;
-import static org.opencredo.aws.si.Constants.KEY;
+import static org.opencredo.aws.si.Constants.ID;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -56,7 +56,7 @@ import org.springframework.util.Assert;
 public class ReadingMessageSource implements MessageSource<Map<String, Object>>, InitializingBean {
     private final static Logger LOG = LoggerFactory.getLogger(ReadingMessageSource.class);
 
-    private static final int INTERNAL_QUEUE_CAPACITY = 5;
+   private static final int INTERNAL_QUEUE_CAPACITY = 5;
 
     private final AwsOperations template;
     private final String bucketName;
@@ -121,7 +121,7 @@ public class ReadingMessageSource implements MessageSource<Map<String, Object>>,
             BlobObject obj = toBeReceived.poll();
             Map<String, Object> map = new HashMap<String, Object>(3);
             map.put(BUCKET_NAME, obj.getBucketName());
-            map.put(KEY, obj.getKey());
+            map.put(ID, obj.getId());
             map.put(DELETE_WHEN_RECEIVED, deleteWhenReceived);
 
             MessageBuilder<Map<String, Object>> builder = MessageBuilder.withPayload(map);

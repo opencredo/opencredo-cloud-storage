@@ -37,7 +37,7 @@ import org.springframework.integration.core.Message;
 public class OutboundChannelAdapterParserTest {
 
     @Test
-    public void outboundAdapterWithMinimumSettings() {
+    public void testOutboundAdapterLoadWithMinimumSettings() {
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
                 "OutboundChannelAdapterParserTest-context.xml", this.getClass());
 
@@ -59,7 +59,7 @@ public class OutboundChannelAdapterParserTest {
     }
     
     @Test
-    public void outboundAdapterWithFullSettings() {
+    public void testOutboundAdapterLoadWithFullSettings() {
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
                 "OutboundChannelAdapterParserTest-full-context.xml", this.getClass());
         
@@ -81,7 +81,7 @@ public class OutboundChannelAdapterParserTest {
     }
 
     @Test(expected = BeanDefinitionStoreException.class)
-    public void outboundAdapterNoTemplate() {
+    public void testOutboundAdapterLoadNoTemplate() {
         try {
             new ClassPathXmlApplicationContext("OutboundChannelAdapterParserTest-noTemplate-context.xml", this
                     .getClass());
@@ -93,7 +93,7 @@ public class OutboundChannelAdapterParserTest {
     }
 
     @Test(expected = BeanDefinitionStoreException.class)
-    public void outboundAdapterNoBucket() {
+    public void testOutboundAdapterLoadNoBucket() {
         try {
             new ClassPathXmlApplicationContext("OutboundChannelAdapterParserTest-noBucket-context.xml", this.getClass());
             fail("Context load should fail");

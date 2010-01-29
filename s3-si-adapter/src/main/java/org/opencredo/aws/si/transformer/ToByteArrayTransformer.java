@@ -17,7 +17,7 @@ package org.opencredo.aws.si.transformer;
 
 import static org.opencredo.aws.si.Constants.BUCKET_NAME;
 import static org.opencredo.aws.si.Constants.DELETE_WHEN_RECEIVED;
-import static org.opencredo.aws.si.Constants.KEY;
+import static org.opencredo.aws.si.Constants.ID;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -64,7 +64,7 @@ public class ToByteArrayTransformer {
         Map<String, Object> payload = message.getPayload();
 
         MessageBuilder<byte[]> builder;
-        String key = payload.get(KEY).toString();
+        String key = payload.get(ID).toString();
         String bucketName = payload.get(BUCKET_NAME).toString();
         InputStream input = template.receiveAsInputStream(bucketName, key);
         ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -75,7 +75,7 @@ public class ToByteArrayTransformer {
 
         Boolean delete = (Boolean) payload.get(DELETE_WHEN_RECEIVED);
         if (delete != null && delete == true) {
-            template.deleteObject(payload.get(BUCKET_NAME).toString(), payload.get(KEY).toString());
+            template.deleteObject(payload.get(BUCKET_NAME).toString(), payload.get(ID).toString());
         }
 
         return transformedMessage;

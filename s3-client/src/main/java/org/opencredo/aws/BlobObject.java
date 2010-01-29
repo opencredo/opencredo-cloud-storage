@@ -26,7 +26,7 @@ public class BlobObject {
 
     private final String bucketName;
 
-    private final String key;
+    private final String id;
 
     private final String eTag;
 
@@ -41,14 +41,14 @@ public class BlobObject {
 
     /**
      * @param bucketName
-     * @param key
+     * @param id
      * @param eTag
      * @param lastModified
      */
-    public BlobObject(String bucketName, String key, String eTag, Date lastModified) {
+    public BlobObject(String bucketName, String id, String eTag, Date lastModified) {
         super();
         this.bucketName = bucketName;
-        this.key = key;
+        this.id = id;
         this.eTag = eTag;
         this.lastModified = lastModified;
     }
@@ -63,8 +63,8 @@ public class BlobObject {
     /**
      * @return the key
      */
-    public String getKey() {
-        return key;
+    public String getId() {
+        return id;
     }
 
     /**

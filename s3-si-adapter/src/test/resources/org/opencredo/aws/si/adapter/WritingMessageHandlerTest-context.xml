@@ -8,24 +8,16 @@
 			http://www.springframework.org/schema/integration/spring-integration-1.0.xsd
 	        http://www.opencredo.com/schema/si/aws
 			http://www.opencredo.com/schema/si/aws/opencredo-si-aws.xsd">
-	<beans:import resource="../../common-context.xml" />
+
+	<beans:import resource="../common-context.xml" />
 
 	<!--  SI config -->
-	<channel id="inputChannel" />
+	<channel id="outputChannel" />
 
 	<!-- Inbound adapter -->
-	<beans:bean id="testFilter"
-		class="org.opencredo.aws.si.filter.internal.PatternMatchingBlobObjectIdFilter">
-		<beans:constructor-arg value="object*" />
-	</beans:bean>
-
-	<aws:inbound-channel-adapter id="inbound-adapter"
-		channel="inputChannel" template="mockTemplate" bucket="${awsS3DefaultBucketName}"
-		filter="testFilter">
-		<poller>
-			<interval-trigger interval="5000" />
-		</poller>
-	</aws:inbound-channel-adapter>
-
+	<aws:outbound-channel-adapter id="outbound-adapter"
+		template="mockTemplate" bucket="${awsS3DefaultBucketName}" channel="outputChannel" />
 
 </beans:beans>
+
+

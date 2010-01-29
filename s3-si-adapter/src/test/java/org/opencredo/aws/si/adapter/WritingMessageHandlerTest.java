@@ -15,53 +15,68 @@
 
 package org.opencredo.aws.si.adapter;
 
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.times;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.opencredo.aws.AwsOperations;
 import org.opencredo.aws.s3.TestPropertiesAccessor;
-import org.opencredo.aws.si.adapter.WritingMessageHandler;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.integration.core.MessageChannel;
 import org.springframework.integration.message.MessageBuilder;
+import org.springframework.integration.message.MessageHandlingException;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * @author Eren Aykin (eren.aykin@opencredo.com)
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration
 public class WritingMessageHandlerTest {
 
-    private WritingMessageHandler outboundAdapter;
+    @Autowired
+    @Qualifier("mockTemplate")
+    private AwsOperations template;
 
-    @Mock
-    private AwsOperations mockTemplate;
+    @Autowired
+    @Qualifier("outputChannel")
+    MessageChannel outputChannel;
 
-    private MessageBuilder<File> messageBuilder;
+    @Test
+    public void testSendString() {
+        String payload = "test-payload-" + System.currentTimeMillis();
+        MessageBuilder<String> mb = MessageBuilder.withPayload(payload);
 
-    private String bucketName = TestPropertiesAccessor.getS3DefaultBucketName();
+        boolean send = outputChannel.send(mb.build(), 3000);
+        assertTrue("Message should be sent", send);
 
-    @Before
-    public void init() throws IOException {
-        outboundAdapter = new WritingMessageHandler(mockTemplate, bucketName);
-
-        File testHandlerFile = File.createTempFile("testHandler", "tmp");
-        testHandlerFile.deleteOnExit();
-
-        messageBuilder = MessageBuilder.withPayload(testHandlerFile);
+        verify(template).send(eq(TestPropertiesAccessor.getS3DefaultBucketName()), anyString(), eq(payload));
     }
 
     @Test
-    public void testSetS3ObjectCalled() {
-        outboundAdapter.handleMessage(messageBuilder.build());
+    public void testSendFile() throws IOException {
+        File payload = File.createTempFile("test_file_to_send", null);
+        payload.deleteOnExit();
+        MessageBuilder<File> mb = MessageBuilder.withPayload(payload);
 
-        verify(mockTemplate, times(1)).send(anyString(), anyString(), any(File.class));
+        boolean send = outputChannel.send(mb.build(), 3000);
+        assertTrue("Message should be sent", send);
+
+        verify(template).send(eq(TestPropertiesAccessor.getS3DefaultBucketName()), anyString(), eq(payload));
     }
 
+    @Test(expected = MessageHandlingException.class)
+    public void testSendObject() throws IOException {
+        MessageBuilder<Integer> mb = MessageBuilder.withPayload(new Integer(100));
+        boolean send = outputChannel.send(mb.build(), 3000);
+        assertTrue("Message should be sent", send);
+    }
 }

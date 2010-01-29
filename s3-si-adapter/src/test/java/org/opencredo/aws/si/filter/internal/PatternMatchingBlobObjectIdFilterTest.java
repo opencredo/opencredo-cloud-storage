@@ -32,7 +32,7 @@ import org.opencredo.aws.BlobObject;
  * @author Eren Aykin (eren.aykin@opencredo.com)
  */
 @RunWith(MockitoJUnitRunner.class)
-public class PatternMatchingS3ObjectListFilterTest {
+public class PatternMatchingBlobObjectIdFilterTest {
 
     @Mock
     S3Object s3ObjectMock;
@@ -44,7 +44,7 @@ public class PatternMatchingS3ObjectListFilterTest {
         when(s3ObjectMock.getKey()).thenReturn(testKey);
 
         BlobObject[] s3Objects = new BlobObject[] { new BlobObject(s3ObjectMock) };
-        PatternMatchingBlobObjectFilter filter = new PatternMatchingBlobObjectFilter(testKey);
+        PatternMatchingBlobObjectIdFilter filter = new PatternMatchingBlobObjectIdFilter(testKey);
         List<BlobObject> accepted = filter.filter(Arrays.asList(s3Objects));
 
         assertEquals(1, accepted.size());
@@ -56,7 +56,7 @@ public class PatternMatchingS3ObjectListFilterTest {
 
         BlobObject[] s3Objects = new BlobObject[] { new BlobObject(s3ObjectMock),
                 new BlobObject(new S3Object()) };
-        PatternMatchingBlobObjectFilter filter = new PatternMatchingBlobObjectFilter(testKey);
+        PatternMatchingBlobObjectIdFilter filter = new PatternMatchingBlobObjectIdFilter(testKey);
         List<BlobObject> accepted = filter.filter(Arrays.asList(s3Objects));
 
         assertEquals(1, accepted.size());
@@ -64,7 +64,7 @@ public class PatternMatchingS3ObjectListFilterTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void nullPattern() {
-        new PatternMatchingBlobObjectFilter(null);
+        new PatternMatchingBlobObjectIdFilter(null);
     }
 
 }

@@ -284,7 +284,7 @@ public class S3TemplateTest {
         assertEquals(objs.length, bucketObjects.size());
 
         for (int i = 0; i < objs.length; i++) {
-            assertEquals(objs[i].getKey(), bucketObjects.get(i).getKey());
+            assertEquals(objs[i].getKey(), bucketObjects.get(i).getId());
             assertEquals(objs[i].getETag(), bucketObjects.get(i).getETag());
             assertEquals(objs[i].getLastModifiedDate(), bucketObjects.get(i).getLastModified());
         }

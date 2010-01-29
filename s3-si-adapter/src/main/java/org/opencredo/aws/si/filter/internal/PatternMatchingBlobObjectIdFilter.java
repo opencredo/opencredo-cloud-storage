@@ -25,23 +25,23 @@ import org.springframework.util.Assert;
 /**
  * @author Eren Aykin (eren.aykin@opencredo.com)
  */
-public class PatternMatchingBlobObjectFilter extends AbstractBucketObjectFilter {
+public class PatternMatchingBlobObjectIdFilter extends AbstractBucketObjectFilter {
 
 	private final Pattern pattern;
 
 	/**
 	 * @param pattern
 	 */
-	public PatternMatchingBlobObjectFilter(String regex) {
+	public PatternMatchingBlobObjectIdFilter(String regex) {
 		Assert.hasText(regex, "'regex' must not be null");
 		this.pattern = Pattern.compile(regex);
 	}
 
 	/**
-	 * @param s3Object
+	 * @param obj
 	 */
-	protected boolean accept(BlobObject s3Object) {
-		return (s3Object != null) && (s3Object.getKey() != null) && this.pattern.matcher(s3Object.getKey()).matches();
+	protected boolean accept(BlobObject obj) {
+		return (obj != null) && (obj.getId() != null) && this.pattern.matcher(obj.getId()).matches();
 	}
 
 }

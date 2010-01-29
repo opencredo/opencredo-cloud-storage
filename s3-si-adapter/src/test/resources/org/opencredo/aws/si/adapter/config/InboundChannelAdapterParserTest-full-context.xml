@@ -15,7 +15,7 @@
 
 	<!-- Inbound adapter -->
 	<beans:bean id="testFilter"
-		class="org.opencredo.aws.si.filter.internal.PatternMatchingBlobObjectFilter">
+		class="org.opencredo.aws.si.filter.internal.PatternMatchingBlobObjectIdFilter">
 		<beans:constructor-arg value="object*" />
 	</beans:bean>
 

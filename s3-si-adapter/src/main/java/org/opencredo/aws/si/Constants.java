@@ -20,6 +20,6 @@ package org.opencredo.aws.si;
  */
 public interface Constants {
     public static final String BUCKET_NAME = "bucketName";
-    public static final String KEY = "key";
+    public static final String ID = "key";
     public static final String DELETE_WHEN_RECEIVED = "deleteWhenReceived";
 }

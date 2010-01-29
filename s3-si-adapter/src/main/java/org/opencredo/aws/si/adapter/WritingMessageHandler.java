@@ -77,24 +77,18 @@ public class WritingMessageHandler implements MessageHandler, InitializingBean {
     public void handleMessage(Message<?> message) {
         Assert.notNull(message, "message must not be null");
         Assert.notNull(message.getPayload(), "message payload must not be null");
-
         Object payload = message.getPayload();
 
-        LOG.debug("Message to send: {}", message);
-
         String blobObjectId = idGenerator.generateBlobObjectId(message);
+        LOG.debug("Message to send '{}' with id '{}'", message, blobObjectId);
 
-        try {
-            if ((payload instanceof File)) {
-                template.send(bucketName, blobObjectId, (File) payload);
-            } else if (payload instanceof String) {
-                template.send(bucketName, blobObjectId, (String) payload);
-            } else {
-                throw new MessageHandlingException(message, "unsupported Message payload type ["
-                        + payload.getClass().getName() + "]");
-            }
-        } catch (Exception e) {
-            throw new MessageHandlingException(message, "failed to write Message payload to file", e);
+        if ((payload instanceof File)) {
+            template.send(bucketName, blobObjectId, (File) payload);
+        } else if (payload instanceof String) {
+            template.send(bucketName, blobObjectId, (String) payload);
+        } else {
+            throw new MessageHandlingException(message, "unsupported Message payload type ["
+                    + payload.getClass().getName() + "]");
         }
     }
 
