@@ -13,4 +13,12 @@
 	<artifactId>s3quote</artifactId>
 	<version>${parent.project.version}</version>
 	<name>OpenCredo AWS samples</name>
+	<dependencies>
+		<dependency>
+			<groupId>org.opencredo.aws</groupId>
+			<artifactId>s3-si-adapter</artifactId>
+			<version>${parent.project.version}</version>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
 </project>

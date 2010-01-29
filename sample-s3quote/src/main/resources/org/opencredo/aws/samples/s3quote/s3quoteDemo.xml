@@ -1,40 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans:beans xmlns="http://www.springframework.org/schema/integration"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:beans="http://www.springframework.org/schema/beans"
-	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:file="http://www.springframework.org/schema/integration/file"
-	xmlns:s3="http://www.opencredo.com/schema/integration/s3"
+	xmlns:aws="http://www.opencredo.com/schema/si/aws"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
 			http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 			http://www.springframework.org/schema/integration
 			http://www.springframework.org/schema/integration/spring-integration-1.0.xsd
-			http://www.opencredo.com/schema/integration/s3
-			http://www.opencredo.com/schema/integration/s3/spring-integration-s3-1.0.xsd">
+			http://www.opencredo.com/schema/si/aws
+			http://www.opencredo.com/schema/si/aws/opencredo-si-aws.xsd">
 
-	<channel id="tickers" /> 
-	<gateway id="s3TickerUploader" service-interface="com.opencredo.integration.samples.s3quote.S3TickerUploader" default-request-channel="tickers"/>                             
+	<beans:bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<beans:property name="locations">
+			<beans:value>classpath:org/opencredo/aws/samples/s3quote/aws.properties
+			</beans:value>
+		</beans:property>
+	</beans:bean>
 
-	<s3:outbound-channel-adapter bucket="s3quotes" channel="tickers" />
-	
+	<beans:bean id="awsCredentials" class="org.opencredo.aws.AwsCredentials">
+		<beans:constructor-arg value="${awsKey}" />
+		<beans:constructor-arg value="${awsSecretKey}" />
+	</beans:bean>
+
+	<beans:bean id="s3Template" class="org.opencredo.aws.s3.S3Template">
+		<beans:constructor-arg ref="awsCredentials" />
+		<beans:constructor-arg value="${awsS3QuoteBucketName}" />
+	</beans:bean>
+
+	<channel id="tickers" />
+	<gateway id="s3TickerUploader"
+		service-interface="org.opencredo.aws.samples.s3quote.S3TickerUploader"
+		default-request-channel="tickers" />
+
+	<aws:outbound-channel-adapter bucket="${awsS3QuoteBucketName}"
+		template="s3Template" channel="tickers" />
+
 	<channel id="s3tickers" />
-	<s3:inbound-channel-adapter bucket="s3quotes" channel="s3tickers" filter="acceptOnceS3ObjectListFilter">
+	<aws:inbound-channel-adapter bucket="${awsS3QuoteBucketName}"
+		template="s3Template" channel="s3tickers" filter="acceptOnceS3ObjectListFilter">
 		<poller>
-			<interval-trigger interval="5000"/>
-		</poller>		
-	</s3:inbound-channel-adapter>
-	
-	<channel id="s3tickerMessageContents" />
-	<service-activator input-channel="s3tickers" 
- 	   	   ref="s3MessageTransformer" 
- 	   	   method="transform" 
- 	   	   output-channel="s3tickerMessageContents"/>   	   
- 	<beans:bean id="s3MessageTransformer" class="com.opencredo.integration.s3.transformer.S3ToStringTransformer"/>
- 	
- 	<service-activator input-channel="s3tickerMessageContents" 
- 	   	   ref="s3quoteService" 
- 	   	   method="lookupQuote" />
-	<beans:bean id="s3quoteService" class="com.opencredo.integration.samples.s3quote.S3QuoteService"/>
+			<interval-trigger interval="5000" />
+		</poller>
+	</aws:inbound-channel-adapter>
 
-	<beans:bean id="acceptOnceS3ObjectListFilter" class="com.opencredo.integration.s3.AcceptOnceS3ObjectListFilter"/>
+	<channel id="s3tickerMessageContents" />
+	<service-activator input-channel="s3tickers"
+		ref="s3MessageTransformer" method="transform" output-channel="s3tickerMessageContents" />
+
+	<beans:bean id="s3MessageTransformer"
+		class="org.opencredo.aws.si.transformer.ToStringTransformer">
+		<beans:constructor-arg ref="s3Template" />
+	</beans:bean>
+
+	<service-activator input-channel="s3tickerMessageContents"
+		ref="s3quoteService" method="lookupQuote" />
+	<beans:bean id="s3quoteService"
+		class="org.opencredo.aws.samples.s3quote.S3QuoteService" />
+
+	<beans:bean id="acceptOnceS3ObjectListFilter"
+		class="org.opencredo.aws.si.filter.internal.AcceptOnceBlobObjectFilter" />
 </beans:beans>
