@@ -2,11 +2,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.opencredo.aws</groupId>
-	<artifactId>opencredo-aws</artifactId>
+	<groupId>org.opencredo.storage</groupId>
+	<artifactId>opencredo-storage-parent</artifactId>
 	<packaging>pom</packaging>
 	<version>1.0-SNAPSHOT</version>
-	<name>OpenCredo AWS</name>
+	<name>OpenCredo Cloud Storage</name>
 	<reporting>
 		<plugins>
 			<plugin>
@@ -150,10 +150,11 @@
 	</profiles>
 
 	<modules>
-		<module>aws-test-utils</module>
-		<module>s3-client</module>
-		<module>s3-si-adapter</module>
-		<module>sample-s3quote</module>
+		<module>storage-test-utils</module>
+		<module>storage-template-s3</module>
+		<module>storage-spring-integration-support</module>
+		<module>storage-samples</module>
+		<module>storage-template</module>
 	</modules>
 
 </project>
