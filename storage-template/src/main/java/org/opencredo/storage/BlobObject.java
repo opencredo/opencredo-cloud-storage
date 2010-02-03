@@ -22,48 +22,40 @@ import java.util.Date;
  */
 public class BlobObject {
 
-    private final String bucketName;
+    private final String containerName;
 
-    private final String id;
+    private final String name;
 
     private final String eTag;
 
     private final Date lastModified;
 
-    // /**
-    // * @param s
-    // */
-    // public BlobObject(S3Object s) {
-    // this(s.getBucketName(), s.getKey(), s.getETag(),
-    // s.getLastModifiedDate());
-    // }
-
     /**
-     * @param bucketName
-     * @param id
+     * @param containerName
+     * @param name
      * @param eTag
      * @param lastModified
      */
-    public BlobObject(String bucketName, String id, String eTag, Date lastModified) {
+    public BlobObject(String containerName, String name, String eTag, Date lastModified) {
         super();
-        this.bucketName = bucketName;
-        this.id = id;
+        this.containerName = containerName;
+        this.name = name;
         this.eTag = eTag;
         this.lastModified = lastModified;
     }
 
     /**
-     * @return the bucketName
+     * @return the containerName
      */
-    public String getBucketName() {
-        return bucketName;
+    public String getContainerName() {
+        return containerName;
     }
 
     /**
-     * @return the key
+     * @return the name
      */
-    public String getId() {
-        return id;
+    public String getName() {
+        return name;
     }
 
     /**

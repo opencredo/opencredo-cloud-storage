@@ -132,9 +132,9 @@ public class S3Template implements S3Operations {
     /**
      * @return
      * @throws StorageCommunicationException
-     * @see org.opencredo.aws.S3Operations#listBuckets()
+     * @see org.opencredo.aws.S3Operations#listContainers()
      */
-    public String[] listBuckets() throws StorageCommunicationException {
+    public String[] listContainers() throws StorageCommunicationException {
         LOG.debug("List buckets");
         try {
             S3Bucket[] s3buckets = s3Service.listAllBuckets();
@@ -176,9 +176,9 @@ public class S3Template implements S3Operations {
      * @param bucketName
      * @return
      * @throws StorageCommunicationException
-     * @see org.opencredo.aws.S3Operations#listBucketObjects(java.lang.String)
+     * @see org.opencredo.aws.S3Operations#listContainerObjects(java.lang.String)
      */
-    public List<BlobObject> listBucketObjects(String bucketName) throws StorageCommunicationException {
+    public List<BlobObject> listContainerObjects(String bucketName) throws StorageCommunicationException {
         LOG.debug("Get objects list for bucket '{}'", bucketName);
         try {
             S3Object[] s3Objects = this.s3Service.listObjects(new S3Bucket(bucketName));

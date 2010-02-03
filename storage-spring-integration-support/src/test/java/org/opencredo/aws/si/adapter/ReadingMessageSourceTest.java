@@ -84,7 +84,7 @@ public class ReadingMessageSourceTest {
         assertNotNull(template);
         assertNotNull(inputChannel);
 
-        when(template.listBucketObjects(bucketName)).thenReturn(Arrays.asList(blobObjs));
+        when(template.listContainerObjects(bucketName)).thenReturn(Arrays.asList(blobObjs));
 
         Thread.sleep(3000);
 

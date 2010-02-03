@@ -41,7 +41,7 @@ public class PatternMatchingBlobObjectIdFilter extends AbstractBucketObjectFilte
      * @param obj
      */
     protected boolean accept(BlobObject obj) {
-        return (obj != null) && (obj.getId() != null) && this.pattern.matcher(obj.getId()).matches();
+        return (obj != null) && (obj.getName() != null) && this.pattern.matcher(obj.getName()).matches();
     }
 
 }

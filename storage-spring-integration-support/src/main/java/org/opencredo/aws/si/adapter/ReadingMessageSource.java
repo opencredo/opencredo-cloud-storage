@@ -120,8 +120,8 @@ public class ReadingMessageSource implements MessageSource<Map<String, Object>>,
         if (!toBeReceived.isEmpty()) {
             BlobObject obj = toBeReceived.poll();
             Map<String, Object> map = new HashMap<String, Object>(3);
-            map.put(BUCKET_NAME, obj.getBucketName());
-            map.put(ID, obj.getId());
+            map.put(BUCKET_NAME, obj.getContainerName());
+            map.put(ID, obj.getName());
             map.put(DELETE_WHEN_RECEIVED, deleteWhenReceived);
 
             MessageBuilder<Map<String, Object>> builder = MessageBuilder.withPayload(map);
@@ -139,7 +139,7 @@ public class ReadingMessageSource implements MessageSource<Map<String, Object>>,
     public void doReceive() {
         LOG.debug("Receive objects from bucket '{}'", bucketName);
 
-        List<BlobObject> bucketObjects = template.listBucketObjects(bucketName);
+        List<BlobObject> bucketObjects = template.listContainerObjects(bucketName);
 
         if (filter != null) {
             // Filter bucket objects with provided filter

@@ -25,47 +25,51 @@ import java.util.List;
 public interface StorageOperations {
 
     /**
-     * List all buckets.
+     * List all containers in the cloud storage.
      * 
      * @return
      * @throws StorageCommunicationException
      */
-    public String[] listBuckets() throws StorageCommunicationException;
+    public String[] listContainers() throws StorageCommunicationException;
 
     /**
+     * List all objects in the cloud storage container.
      * 
-     * @param bucketName
+     * @param containerName
      * @return
      * @throws StorageCommunicationException
      */
-    public List<BlobObject> listBucketObjects(String bucketName) throws StorageCommunicationException;
+    public List<BlobObject> listContainerObjects(String containerName) throws StorageCommunicationException;
 
     // **********************************
     // SEND/RECEIVE
     // **********************************
 
     /**
-     * Send string data to s3 bucket. Default bucket name must be provided in
-     * the template.
+     * Send string data to the cloud storage container. Default container name
+     * must be provided in the template.
      * 
-     * @param key
+     * @param objectName
+     *            The name of object in the cloud storage container.
      * @param stringToSend
      */
-    public void send(String key, String stringToSend) throws StorageCommunicationException;
+    public void send(String objectName, String stringToSend) throws StorageCommunicationException;
 
     /**
-     * Send string data to s3 bucket.
+     * Send string data to the cloud storage container.
      * 
-     * @param bucketName
-     * @param key
+     * @param containerName
+     *            The name of the cloud storage container.
+     * @param objectName
+     *            The name of object in the cloud storage container.
      * @param stringToSend
      * @throws StorageCommunicationException
      */
-    public void send(String bucketName, String key, String stringToSend) throws StorageCommunicationException;
+    public void send(String containerName, String objectName, String stringToSend) throws StorageCommunicationException;
 
     /**
-     * Send File to s3 bucket. Default bucket name must be provided in the
-     * template.
+     * Send File to the cloud storage container. Default container name must be
+     * provided in the template.
      * 
      * @param fileToSend
      * @throws StorageCommunicationException
@@ -73,102 +77,124 @@ public interface StorageOperations {
     public void send(File fileToSend) throws StorageCommunicationException;
 
     /**
-     * Send File to s3 bucket.
+     * Send File to the cloud storage container.
      * 
-     * @param bucketName
+     * @param containerName
+     *            The name of the cloud storage container.
      * @param fileToSend
      * @throws StorageCommunicationException
      */
-    public void send(String bucketName, File fileToSend) throws StorageCommunicationException;
+    public void send(String containerName, File fileToSend) throws StorageCommunicationException;
 
     /**
-     * Send File to s3 bucket with provided key.
+     * Send File to the cloud storage container.
      * 
-     * @param bucketName
-     * @param key
+     * @param containerName
+     *            The name of the cloud storage container.
+     * @param objectName
+     *            The name of object in the cloud storage container.
      * @param fileToSend
      * @throws StorageCommunicationException
      */
-    public void send(String bucketName, String key, File fileToSend) throws StorageCommunicationException;
+    public void send(String containerName, String objectName, File fileToSend) throws StorageCommunicationException;
 
     /**
-     * Send InputStream to s3 bucket. Default bucket name must be provided in
-     * the template.
+     * Send InputStream to the cloud storage container. Default container name
+     * must be provided in the template.
      * 
-     * @param key
+     * @param objectName
+     *            The name of object in default container.
      * @param is
      * @throws StorageCommunicationException
      */
-    public void send(String key, InputStream is) throws StorageCommunicationException;
+    public void send(String objectName, InputStream is) throws StorageCommunicationException;
 
     /**
-     * Send InputStream to s3 bucket.
+     * Send InputStream to the cloud storage container.
      * 
-     * @param bucketName
-     * @param key
+     * @param containerName
+     *            The name of the cloud storage container.
+     * @param objectName
+     *            The name of object in the cloud storage container.
      * @param is
      * 
      * @throws StorageCommunicationException
      */
-    public void send(String bucketName, String key, InputStream is) throws StorageCommunicationException;
+    public void send(String containerName, String objectName, InputStream is) throws StorageCommunicationException;
 
     /**
-     * Receive the s3 object as String. Default bucket name must be provided in
-     * the template.
+     * Receive the object as String from cloud storage container. Default bucket
+     * name must be provided in the template.
      * 
-     * @param keyName
+     * @param objectName
+     *            The name of object in the cloud storage container to be
+     *            received.
      * @return
      * @throws StorageCommunicationException
      */
-    public String receiveAsString(String keyName) throws StorageCommunicationException;
+    public String receiveAsString(String objectName) throws StorageCommunicationException;
 
     /**
-     * Receive the s3 object as String.
+     * Receive the object as String from cloud storage container.
      * 
-     * @param bucketName
-     * @param keyName
+     * @param containerName
+     *            The name of the cloud storage container.
+     * @param objectName
+     *            The name of object in the cloud storage container to be
+     *            received.
      * @return
      * @throws StorageCommunicationException
      */
-    public String receiveAsString(String bucketName, String keyName) throws StorageCommunicationException;
+    public String receiveAsString(String containerName, String objectName) throws StorageCommunicationException;
 
     /**
-     * Receive the s3 object as File. Default bucket name must be provided in
-     * the template.
+     * Receive the object as File from cloud storage container. Default bucket
+     * name must be provided in the template.
      * 
-     * @param key
+     * @param objectName
+     *            The name of object in the cloud storage container to be
+     *            received.
      * @return
      * @throws StorageCommunicationException
      */
-    public File receiveAsFile(String key) throws StorageCommunicationException;
+    public File receiveAsFile(String objectName) throws StorageCommunicationException;
 
     /**
-     * Receive the s3 object as File.
+     * Receive the object as File from cloud storage container.
      * 
-     * @param bucketName
-     * @param key
+     * @param containerName
+     *            The name of the cloud storage container.
+     * @param objectName
+     *            The name of object in the cloud storage container to be
+     *            received.
      * @return
      * @throws StorageCommunicationException
      */
-    public File receiveAsFile(String bucketName, String key) throws StorageCommunicationException;
+    public File receiveAsFile(String containerName, String objectName) throws StorageCommunicationException;
 
     /**
-     * Receive the s3 object as InputStream. Default bucket name must be
-     * provided in the template.
+     * Receive the object as InputStream from cloud storage container. Default
+     * bucket name must be provided in the template.
      * 
-     * @param key
+     * @param objectName
+     *            The name of object in the cloud storage container to be
+     *            received.
      * @return
      * @throws StorageCommunicationException
      */
-    public InputStream receiveAsInputStream(String key) throws StorageCommunicationException;
+    public InputStream receiveAsInputStream(String objectName) throws StorageCommunicationException;
 
     /**
-     * Receive the s3 object as InputStream.
+     * Receive the object as InputStream from cloud storage container.
      * 
-     * @param bucketName
-     * @param key
+     * @param containerName
+     *            The name of the cloud storage container.
+     * @param objectName
+     *            The name of object in the cloud storage container to be
+     *            received.
      * @return
      * @throws StorageCommunicationException
      */
-    public InputStream receiveAsInputStream(String bucketName, String key) throws StorageCommunicationException;
+    public InputStream receiveAsInputStream(String containerName, String objectName)
+            throws StorageCommunicationException;
 }

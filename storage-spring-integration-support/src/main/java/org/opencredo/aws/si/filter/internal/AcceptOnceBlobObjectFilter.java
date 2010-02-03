@@ -43,11 +43,11 @@ public class AcceptOnceBlobObjectFilter extends AbstractBucketObjectFilter {
      */
     protected boolean accept(BlobObject obj) {
         synchronized (this.monitor) {
-            if (seenKeys.contains(obj.getId())) {
+            if (seenKeys.contains(obj.getName())) {
                 return false;
             }
 
-            seenKeys.add(obj.getId());
+            seenKeys.add(obj.getName());
             return true;
         }
     }
