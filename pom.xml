@@ -149,13 +149,11 @@
 	</profiles>
 
 	<modules>
-		<module>windowsazure4j</module>
-		<module>windowsazure4j-sample</module>		
-		<module>storage-test-utils</module>
-		<module>storage-template-s3</module>
-		<module>storage-spring-integration-support</module>
-		<module>storage-samples</module>
-		<module>storage-template</module>
+    <module>storage-test-utils</module>
+    <module>storage-template-s3</module>
+    <module>storage-spring-integration-support</module>
+    <module>storage-samples</module>
+    <module>storage-template</module>
     <module>storage-template-azure</module>
   </modules>
 
