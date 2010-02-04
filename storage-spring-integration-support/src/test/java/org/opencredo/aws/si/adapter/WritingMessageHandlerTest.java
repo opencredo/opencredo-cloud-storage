@@ -25,8 +25,8 @@ import java.io.IOException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.opencredo.aws.S3Operations;
 import org.opencredo.aws.s3.TestPropertiesAccessor;
+import org.opencredo.storage.StorageOperations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.integration.core.MessageChannel;
@@ -44,7 +44,7 @@ public class WritingMessageHandlerTest {
 
     @Autowired
     @Qualifier("mockTemplate")
-    private S3Operations template;
+    private StorageOperations template;
 
     @Autowired
     @Qualifier("outputChannel")

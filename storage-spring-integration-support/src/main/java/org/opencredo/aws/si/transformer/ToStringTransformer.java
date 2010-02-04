@@ -21,9 +21,7 @@ import static org.opencredo.aws.si.Constants.ID;
 
 import java.util.Map;
 
-import org.opencredo.aws.AwsCredentials;
-import org.opencredo.aws.S3Operations;
-import org.opencredo.aws.s3.S3Template;
+import org.opencredo.storage.StorageOperations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.integration.core.Message;
@@ -38,20 +36,13 @@ public class ToStringTransformer {
 
     private final static Logger LOG = LoggerFactory.getLogger(ToStringTransformer.class);
 
-    private final S3Operations template;
+    private final StorageOperations template;
 
     /**
      * @param template
      */
-    public ToStringTransformer(S3Operations template) {
+    public ToStringTransformer(StorageOperations template) {
         this.template = template;
-    }
-
-    /**
-     * @param awsCredentials
-     */
-    public ToStringTransformer(AwsCredentials awsCredentials) {
-        this(new S3Template(awsCredentials));
     }
 
     /**

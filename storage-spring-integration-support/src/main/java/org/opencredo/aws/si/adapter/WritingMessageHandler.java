@@ -17,10 +17,10 @@ package org.opencredo.aws.si.adapter;
 
 import java.io.File;
 
-import org.opencredo.aws.S3Operations;
-import org.opencredo.aws.s3.BucketStatus;
 import org.opencredo.aws.si.BlobObjectIdGenerator;
 import org.opencredo.aws.si.internal.DefaultBlobObjectIdGenerator;
+import org.opencredo.storage.ContainerStatus;
+import org.opencredo.storage.StorageOperations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -42,7 +42,7 @@ import org.springframework.util.Assert;
 public class WritingMessageHandler implements MessageHandler, InitializingBean {
     private final static Logger LOG = LoggerFactory.getLogger(WritingMessageHandler.class);
 
-    private final S3Operations template;
+    private final StorageOperations template;
     private final String bucketName;
     private final BlobObjectIdGenerator idGenerator;
 
@@ -50,7 +50,7 @@ public class WritingMessageHandler implements MessageHandler, InitializingBean {
      * @param template
      * @param bucketName
      */
-    public WritingMessageHandler(S3Operations template, String bucketName) {
+    public WritingMessageHandler(StorageOperations template, String bucketName) {
         this(template, bucketName, new DefaultBlobObjectIdGenerator());
     }
 
@@ -59,7 +59,7 @@ public class WritingMessageHandler implements MessageHandler, InitializingBean {
      * @param bucketName
      * @param idGenerator
      */
-    public WritingMessageHandler(S3Operations template, String bucketName, BlobObjectIdGenerator idGenerator) {
+    public WritingMessageHandler(StorageOperations template, String bucketName, BlobObjectIdGenerator idGenerator) {
         super();
         Assert.notNull(template, "'template' should not be null");
         Assert.notNull(idGenerator, "'idGenerator' should not be null");
@@ -97,7 +97,7 @@ public class WritingMessageHandler implements MessageHandler, InitializingBean {
     }
 
     public void afterPropertiesSet() throws Exception {
-        Assert.isTrue(template.getBucketStatus(bucketName) == BucketStatus.MINE, "Bucket '" + bucketName
+        Assert.isTrue(template.checkContainerStatus(bucketName) == ContainerStatus.MINE, "Bucket '" + bucketName
                 + "' is not accessible.");
     }
 

@@ -46,6 +46,7 @@ import org.mockito.ArgumentMatcher;
 import org.opencredo.aws.AwsCredentials;
 import org.opencredo.aws.S3Operations;
 import org.opencredo.storage.BlobObject;
+import org.opencredo.storage.ContainerStatus;
 import org.opencredo.storage.StorageCommunicationException;
 import org.opencredo.storage.StorageException;
 import org.springframework.beans.DirectFieldAccessor;
@@ -197,7 +198,7 @@ public class S3TemplateTest {
 
     /**
      * Test method for
-     * {@link org.opencredo.aws.s3.S3Template#getBucketStatus(java.lang.String)}
+     * {@link org.opencredo.aws.s3.S3Template#checkContainerStatus(java.lang.String)}
      * .
      * 
      * @throws S3ServiceException
@@ -205,12 +206,12 @@ public class S3TemplateTest {
     @Test(expected = StorageCommunicationException.class)
     public void testGetBucketStatusCauseS3CommunicationException() throws S3ServiceException {
         doThrow(new S3ServiceException()).when(s3Service).checkBucketStatus(eq(BUCKET_NAME));
-        template.getBucketStatus(BUCKET_NAME);
+        template.checkContainerStatus(BUCKET_NAME);
     }
 
     /**
      * Test method for
-     * {@link org.opencredo.aws.s3.S3Template#getBucketStatus(java.lang.String)}
+     * {@link org.opencredo.aws.s3.S3Template#checkContainerStatus(java.lang.String)}
      * .
      * 
      * @throws S3ServiceException
@@ -218,31 +219,31 @@ public class S3TemplateTest {
     @Test(expected = StorageException.class)
     public void testGetBucketStatusCauseS3Exception() throws S3ServiceException {
         doReturn(-1).when(s3Service).checkBucketStatus(eq(BUCKET_NAME));
-        template.getBucketStatus(BUCKET_NAME);
+        template.checkContainerStatus(BUCKET_NAME);
     }
 
     /**
      * Test method for
-     * {@link org.opencredo.aws.s3.S3Template#getBucketStatus(java.lang.String)}
+     * {@link org.opencredo.aws.s3.S3Template#checkContainerStatus(java.lang.String)}
      * .
      * 
      * @throws S3ServiceException
      */
     @Test
     public void testGetBucketStatus() throws S3ServiceException {
-        BucketStatus bucketStatus;
+        ContainerStatus bucketStatus;
 
         doReturn(S3Service.BUCKET_STATUS__MY_BUCKET).when(s3Service).checkBucketStatus(eq(BUCKET_NAME));
-        bucketStatus = template.getBucketStatus(BUCKET_NAME);
-        assertEquals(BucketStatus.MINE, bucketStatus);
+        bucketStatus = template.checkContainerStatus(BUCKET_NAME);
+        assertEquals(ContainerStatus.MINE, bucketStatus);
 
         doReturn(S3Service.BUCKET_STATUS__DOES_NOT_EXIST).when(s3Service).checkBucketStatus(eq(BUCKET_NAME));
-        bucketStatus = template.getBucketStatus(BUCKET_NAME);
-        assertEquals(BucketStatus.DOES_NOT_EXIST, bucketStatus);
+        bucketStatus = template.checkContainerStatus(BUCKET_NAME);
+        assertEquals(ContainerStatus.DOES_NOT_EXIST, bucketStatus);
 
         doReturn(S3Service.BUCKET_STATUS__ALREADY_CLAIMED).when(s3Service).checkBucketStatus(eq(BUCKET_NAME));
-        bucketStatus = template.getBucketStatus(BUCKET_NAME);
-        assertEquals(BucketStatus.ALREADY_CLAIMED, bucketStatus);
+        bucketStatus = template.checkContainerStatus(BUCKET_NAME);
+        assertEquals(ContainerStatus.ALREADY_CLAIMED, bucketStatus);
 
         verify(s3Service, times(3)).checkBucketStatus(eq(BUCKET_NAME));
     }

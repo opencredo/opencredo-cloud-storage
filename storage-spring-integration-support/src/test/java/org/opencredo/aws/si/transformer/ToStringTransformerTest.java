@@ -20,18 +20,16 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jets3t.service.S3ServiceException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.opencredo.aws.s3.S3Template;
 import org.opencredo.aws.s3.TestPropertiesAccessor;
+import org.opencredo.storage.StorageOperations;
 import org.springframework.integration.core.Message;
 import org.springframework.integration.message.MessageBuilder;
 
@@ -45,14 +43,14 @@ public class ToStringTransformerTest {
     private ToStringTransformer transformer;
 
     @Mock
-    private S3Template s3Template;
+    private StorageOperations s3Template;
     private final String bucketName = TestPropertiesAccessor.getS3DefaultBucketName();
     private final String key = "testStringTransformer";
     private final String text = "String Transformer Test";
     private final Boolean deleteWhenReceived = true;
 
     @Before
-    public void init() throws S3ServiceException, IOException, NoSuchAlgorithmException {
+    public void init() {
         transformer = new ToStringTransformer(s3Template);
 
         when(s3Template.receiveAsString(bucketName, key)).thenReturn(text);

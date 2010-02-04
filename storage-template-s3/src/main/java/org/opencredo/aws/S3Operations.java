@@ -15,7 +15,6 @@
 
 package org.opencredo.aws;
 
-import org.opencredo.aws.s3.BucketStatus;
 import org.opencredo.storage.StorageCommunicationException;
 import org.opencredo.storage.StorageOperations;
 
@@ -43,22 +42,4 @@ public interface S3Operations extends StorageOperations {
      * @throws StorageCommunicationException
      */
     public void deleteBucket(String bucketName) throws StorageCommunicationException;
-
-    /**
-     * Delete the s3 bucket with the provided bucket name
-     * 
-     * @param bucketName
-     * @param key
-     * @throws StorageCommunicationException
-     */
-    public void deleteObject(String bucketName, String key) throws StorageCommunicationException;
-
-    /**
-     * Get the status of the bucket.
-     * 
-     * @param bucketName
-     * @return
-     */
-    public BucketStatus getBucketStatus(String bucketName) throws StorageCommunicationException;
-
 }

@@ -18,8 +18,8 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.opencredo.aws.S3Operations;
-import org.opencredo.aws.s3.BucketStatus;
+import org.opencredo.storage.ContainerStatus;
+import org.opencredo.storage.StorageOperations;
 import org.springframework.beans.factory.FactoryBean;
 
 /**
@@ -28,14 +28,14 @@ import org.springframework.beans.factory.FactoryBean;
  */
 public class MockTemplateFactory implements FactoryBean {
 
-    private S3Operations template;
+    private StorageOperations template;
 
     /**
      * 
      */
     public MockTemplateFactory() {
-        template = mock(S3Operations.class);
-        when(template.getBucketStatus(anyString())).thenReturn(BucketStatus.MINE);
+        template = mock(StorageOperations.class);
+        when(template.checkContainerStatus(anyString())).thenReturn(ContainerStatus.MINE);
     }
 
     /**
@@ -53,7 +53,7 @@ public class MockTemplateFactory implements FactoryBean {
      */
     @SuppressWarnings("unchecked")
     public Class getObjectType() {
-        return S3Operations.class;
+        return StorageOperations.class;
     }
 
     /**
@@ -67,7 +67,7 @@ public class MockTemplateFactory implements FactoryBean {
     /**
      * @return the template
      */
-    public S3Operations getTemplate() {
+    public StorageOperations getTemplate() {
         return template;
     }
 }

@@ -12,19 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.opencredo.aws.si;
-
-import org.opencredo.aws.AwsCredentials;
-import org.opencredo.aws.s3.TestPropertiesAccessor;
+package org.opencredo.storage;
 
 /**
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  * 
  */
-public class AwsCredentialsFactory {
+public enum ContainerStatus {
 
-    public static AwsCredentials createCredentials() {
-        return new AwsCredentials(TestPropertiesAccessor.getDefaultTestAwsKey(), TestPropertiesAccessor
-                .getDefaultTestAwsSecretKey());
-    }
+    MINE, DOES_NOT_EXIST, ALREADY_CLAIMED
+
 }

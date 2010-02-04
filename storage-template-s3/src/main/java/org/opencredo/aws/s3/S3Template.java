@@ -32,6 +32,7 @@ import org.jets3t.service.model.S3Object;
 import org.opencredo.aws.AwsCredentials;
 import org.opencredo.aws.S3Operations;
 import org.opencredo.storage.BlobObject;
+import org.opencredo.storage.ContainerStatus;
 import org.opencredo.storage.StorageCommunicationException;
 import org.opencredo.storage.StorageException;
 import org.slf4j.Logger;
@@ -151,19 +152,19 @@ public class S3Template implements S3Operations {
      * @param bucketName
      * @return
      * @throws StorageCommunicationException
-     * @see org.opencredo.aws.S3Operations#getBucketStatus(java.lang.String)
+     * @see org.opencredo.aws.S3Operations#checkContainerStatus(java.lang.String)
      */
-    public BucketStatus getBucketStatus(String bucketName) throws StorageCommunicationException {
+    public ContainerStatus checkContainerStatus(String bucketName) throws StorageCommunicationException {
         LOG.debug("Get bucket '{}' status", bucketName);
         try {
             int bucketStatus = this.s3Service.checkBucketStatus(bucketName);
             switch (bucketStatus) {
             case S3Service.BUCKET_STATUS__MY_BUCKET:
-                return BucketStatus.MINE;
+                return ContainerStatus.MINE;
             case S3Service.BUCKET_STATUS__DOES_NOT_EXIST:
-                return BucketStatus.DOES_NOT_EXIST;
+                return ContainerStatus.DOES_NOT_EXIST;
             case S3Service.BUCKET_STATUS__ALREADY_CLAIMED:
-                return BucketStatus.ALREADY_CLAIMED;
+                return ContainerStatus.ALREADY_CLAIMED;
             default:
                 throw new StorageException("Unrecognised bucket status: " + bucketStatus);
             }

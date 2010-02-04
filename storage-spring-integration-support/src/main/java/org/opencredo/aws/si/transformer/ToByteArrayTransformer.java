@@ -25,8 +25,7 @@ import java.io.InputStream;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
-import org.opencredo.aws.AwsCredentials;
-import org.opencredo.aws.s3.S3Template;
+import org.opencredo.storage.StorageOperations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.integration.core.Message;
@@ -40,16 +39,9 @@ public class ToByteArrayTransformer {
 
     private final static Logger LOG = LoggerFactory.getLogger(ToByteArrayTransformer.class);
 
-    private S3Template template;
+    private StorageOperations template;
 
-    /**
-     * @param awsCredentials
-     */
-    public ToByteArrayTransformer(AwsCredentials awsCredentials) {
-        this(new S3Template(awsCredentials));
-    }
-
-    public ToByteArrayTransformer(S3Template s3Template) {
+    public ToByteArrayTransformer(StorageOperations s3Template) {
         this.template = s3Template;
     }
 

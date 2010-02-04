@@ -22,7 +22,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.opencredo.storage</groupId>
-			<artifactId>storage-template-s3</artifactId>
+			<artifactId>storage-template</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>

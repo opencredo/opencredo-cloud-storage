@@ -41,6 +41,14 @@ public interface StorageOperations {
      */
     public List<BlobObject> listContainerObjects(String containerName) throws StorageCommunicationException;
 
+    /**
+     * Get the status of the bucket.
+     * 
+     * @param containerName
+     * @return
+     */
+    public ContainerStatus checkContainerStatus(String containerName) throws StorageCommunicationException;
+
     // **********************************
     // SEND/RECEIVE
     // **********************************
@@ -197,4 +205,16 @@ public interface StorageOperations {
      */
     public InputStream receiveAsInputStream(String containerName, String objectName)
             throws StorageCommunicationException;
+
+    /**
+     * Delete the object from cloud storage container.
+     * 
+     * @param containerName
+     *            The name of the cloud storage container.
+     * @param objectName
+     *            The name of object in the cloud storage container to be
+     *            received.
+     * @throws StorageCommunicationException
+     */
+    public void deleteObject(String containerName, String objectName) throws StorageCommunicationException;
 }

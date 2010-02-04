@@ -26,14 +26,14 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.PriorityBlockingQueue;
 
-import org.opencredo.aws.S3Operations;
-import org.opencredo.aws.s3.BucketStatus;
 import org.opencredo.aws.si.comparator.BlobObjectComparator;
 import org.opencredo.aws.si.comparator.internal.BlobObjectLastModifiedDateComparator;
 import org.opencredo.aws.si.filter.BlobObjectFilter;
 import org.opencredo.aws.si.filter.internal.AcceptOnceBlobObjectFilter;
 import org.opencredo.storage.BlobObject;
+import org.opencredo.storage.ContainerStatus;
 import org.opencredo.storage.StorageException;
+import org.opencredo.storage.StorageOperations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -58,7 +58,7 @@ public class ReadingMessageSource implements MessageSource<Map<String, Object>>,
 
     private static final int INTERNAL_QUEUE_CAPACITY = 5;
 
-    private final S3Operations template;
+    private final StorageOperations template;
     private final String bucketName;
     private final BlobObjectFilter filter;
 
@@ -71,15 +71,15 @@ public class ReadingMessageSource implements MessageSource<Map<String, Object>>,
      * @param template
      * @param bucketName
      */
-    public ReadingMessageSource(final S3Operations template, String bucketName) {
+    public ReadingMessageSource(final StorageOperations template, String bucketName) {
         this(template, bucketName, new AcceptOnceBlobObjectFilter());
     }
 
-    public ReadingMessageSource(final S3Operations template, String bucketName, final BlobObjectFilter filter) {
+    public ReadingMessageSource(final StorageOperations template, String bucketName, final BlobObjectFilter filter) {
         this(template, bucketName, filter, new BlobObjectLastModifiedDateComparator());
     }
 
-    public ReadingMessageSource(final S3Operations template, String bucketName, final BlobObjectComparator comparator) {
+    public ReadingMessageSource(final StorageOperations template, String bucketName, final BlobObjectComparator comparator) {
         this(template, bucketName, new AcceptOnceBlobObjectFilter(), comparator);
     }
 
@@ -90,7 +90,7 @@ public class ReadingMessageSource implements MessageSource<Map<String, Object>>,
      * @param filter
      * @param comparator
      */
-    public ReadingMessageSource(final S3Operations template, String bucketName, final BlobObjectFilter filter,
+    public ReadingMessageSource(final StorageOperations template, String bucketName, final BlobObjectFilter filter,
                                 final BlobObjectComparator comparator) {
         Assert.notNull(template, "'template' should not be null");
         Assert.notNull(filter, "'filter' should not be null");
@@ -104,7 +104,7 @@ public class ReadingMessageSource implements MessageSource<Map<String, Object>>,
     }
 
     public void afterPropertiesSet() {
-        Assert.isTrue(template.getBucketStatus(bucketName) == BucketStatus.MINE, "Bucket '" + bucketName
+        Assert.isTrue(template.checkContainerStatus(bucketName) == ContainerStatus.MINE, "Bucket '" + bucketName
                 + "' is not accessible.");
     }
 

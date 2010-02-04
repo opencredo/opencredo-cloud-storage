@@ -24,14 +24,13 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jets3t.service.S3ServiceException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.opencredo.aws.s3.S3Template;
+import org.opencredo.storage.StorageOperations;
 import org.springframework.integration.core.Message;
 import org.springframework.integration.message.MessageBuilder;
 
@@ -44,7 +43,7 @@ public class ToByteArrayTransformerTest {
     private ToByteArrayTransformer transformer;
 
     @Mock
-    private S3Template s3Template;
+    private StorageOperations template;
 
     private final String bucketName = "testBucket";
     private final String key = "testFile.test";
@@ -52,10 +51,10 @@ public class ToByteArrayTransformerTest {
     String testData = "some test data";
 
     @Before
-    public void init() throws S3ServiceException, IOException {
-        transformer = new ToByteArrayTransformer(s3Template);
+    public void init() throws IOException {
+        transformer = new ToByteArrayTransformer(template);
 
-        when(s3Template.receiveAsInputStream(bucketName, key)).thenReturn(
+        when(template.receiveAsInputStream(bucketName, key)).thenReturn(
                 new ByteArrayInputStream(testData.getBytes("UTF-8")));
     }
 
@@ -74,6 +73,6 @@ public class ToByteArrayTransformerTest {
 
     @After
     public void after() {
-        s3Template.deleteObject(bucketName, key);
+        template.deleteObject(bucketName, key);
     }
 }
