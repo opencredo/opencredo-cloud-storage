@@ -15,6 +15,7 @@
 package org.opencredo.storage.azure;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.opencredo.aws.s3.TestPropertiesAccessor;
 
@@ -22,6 +23,7 @@ import org.opencredo.aws.s3.TestPropertiesAccessor;
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  * 
  */
+@Ignore
 public class AzureTemplateTest {
 
     private AzureCredentials credentials = new AzureCredentials(TestPropertiesAccessor.getAzureDefaultAccountName(),
