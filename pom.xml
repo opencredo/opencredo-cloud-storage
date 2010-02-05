@@ -138,12 +138,14 @@
 		<profile>
 			<id>Dev</id>
 			<activation>
-				<activeByDefault>false</activeByDefault>
+				<activeByDefault>true</activeByDefault>
 			</activation>
 			<properties>
 				<awsKey>test-awsKey</awsKey>
 				<awsSecretKey>test-awsSecretKey</awsSecretKey>
 				<awsS3DefaultBucketName>test-awsS3DefaultBucketName</awsS3DefaultBucketName>
+				<azureAccountName>test-azureAccountName</azureAccountName>
+				<azureSecretKey>test-azureSecretKey</azureSecretKey>
 			</properties>
 		</profile>
 	</profiles>
