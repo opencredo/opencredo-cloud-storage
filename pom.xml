@@ -138,7 +138,7 @@
 		<profile>
 			<id>Dev</id>
 			<activation>
-				<activeByDefault>true</activeByDefault>
+				<activeByDefault>false</activeByDefault>
 			</activation>
 			<properties>
 				<awsKey>test-awsKey</awsKey>

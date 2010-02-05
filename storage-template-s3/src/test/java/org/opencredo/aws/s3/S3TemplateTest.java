@@ -44,11 +44,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
 import org.opencredo.aws.AwsCredentials;
-import org.opencredo.aws.S3Operations;
 import org.opencredo.storage.BlobObject;
 import org.opencredo.storage.ContainerStatus;
 import org.opencredo.storage.StorageCommunicationException;
 import org.opencredo.storage.StorageException;
+import org.opencredo.storage.StorageOperations;
 import org.springframework.beans.DirectFieldAccessor;
 
 /**
@@ -78,7 +78,7 @@ public class S3TemplateTest {
     }
 
     private S3Service s3Service;
-    private S3Operations template = null;
+    private StorageOperations template = null;
 
     @Before
     public void before() {
@@ -92,7 +92,7 @@ public class S3TemplateTest {
 
     /**
      * Test method for
-     * {@link org.opencredo.aws.s3.S3Template#createBucket(java.lang.String)}.
+     * {@link org.opencredo.aws.s3.S3Template#createContainer(java.lang.String)}.
      * 
      * @throws S3ServiceException
      */
@@ -100,44 +100,44 @@ public class S3TemplateTest {
     public void testCreateBucketCauseS3CommunicationException() throws S3ServiceException {
 
         when(s3Service.createBucket(argThat(S3_BUCKET_NAME_MATCHER))).thenThrow(new S3ServiceException());
-        template.createBucket(BUCKET_NAME);
+        template.createContainer(BUCKET_NAME);
     }
 
     /**
      * Test method for
-     * {@link org.opencredo.aws.s3.S3Template#createBucket(java.lang.String)}.
+     * {@link org.opencredo.aws.s3.S3Template#createContainer(java.lang.String)}.
      * 
      * @throws S3ServiceException
      */
     @Test
     public void testCreateBucket() throws S3ServiceException {
         when(s3Service.createBucket(argThat(S3_BUCKET_NAME_MATCHER))).thenReturn(null);
-        template.createBucket(BUCKET_NAME);
+        template.createContainer(BUCKET_NAME);
         verify(s3Service).createBucket(argThat(S3_BUCKET_NAME_MATCHER));
     }
 
     /**
      * Test method for
-     * {@link org.opencredo.aws.s3.S3Template#deleteBucket(java.lang.String)}.
+     * {@link org.opencredo.aws.s3.S3Template#deleteContainer(java.lang.String)}.
      * 
      * @throws S3ServiceException
      */
     @Test(expected = StorageCommunicationException.class)
     public void testDeleteBucketCauseS3CommunicationException() throws S3ServiceException {
         doThrow(new S3ServiceException()).when(s3Service).deleteBucket(argThat(S3_BUCKET_NAME_MATCHER));
-        template.deleteBucket(BUCKET_NAME);
+        template.deleteContainer(BUCKET_NAME);
     }
 
     /**
      * Test method for
-     * {@link org.opencredo.aws.s3.S3Template#deleteBucket(java.lang.String)}.
+     * {@link org.opencredo.aws.s3.S3Template#deleteContainer(java.lang.String)}.
      * 
      * @throws S3ServiceException
      */
     @Test
     public void testDeleteBucket() throws S3ServiceException {
         doNothing().when(s3Service).deleteBucket(argThat(S3_BUCKET_NAME_MATCHER));
-        template.deleteBucket(BUCKET_NAME);
+        template.deleteContainer(BUCKET_NAME);
         verify(s3Service).deleteBucket(argThat(S3_BUCKET_NAME_MATCHER));
     }
 

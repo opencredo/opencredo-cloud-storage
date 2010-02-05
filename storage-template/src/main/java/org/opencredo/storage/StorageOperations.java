@@ -24,6 +24,10 @@ import java.util.List;
  */
 public interface StorageOperations {
 
+    // **********************************
+    // CONFIGURATION
+    // **********************************
+
     /**
      * List all containers in the cloud storage.
      * 
@@ -48,6 +52,22 @@ public interface StorageOperations {
      * @return
      */
     public ContainerStatus checkContainerStatus(String containerName) throws StorageCommunicationException;
+
+    /**
+     * Create a new container with the provided container name.
+     * 
+     * @param containerName
+     * @throws StorageCommunicationException
+     */
+    public void createContainer(String containerName) throws StorageCommunicationException;
+
+    /**
+     * Delete the container with the provided container name.
+     * 
+     * @param containerName
+     * @throws StorageCommunicationException
+     */
+    public void deleteContainer(String containerName) throws StorageCommunicationException;
 
     // **********************************
     // SEND/RECEIVE

@@ -30,11 +30,11 @@ import org.jets3t.service.impl.rest.httpclient.RestS3Service;
 import org.jets3t.service.model.S3Bucket;
 import org.jets3t.service.model.S3Object;
 import org.opencredo.aws.AwsCredentials;
-import org.opencredo.aws.S3Operations;
 import org.opencredo.storage.BlobObject;
 import org.opencredo.storage.ContainerStatus;
 import org.opencredo.storage.StorageCommunicationException;
 import org.opencredo.storage.StorageException;
+import org.opencredo.storage.StorageOperations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
@@ -45,7 +45,7 @@ import org.springframework.util.Assert;
  * @author Eren Aykin (eren.aykin@opencredo.com)
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  */
-public class S3Template implements S3Operations {
+public class S3Template implements StorageOperations {
     private final static Logger LOG = LoggerFactory.getLogger(S3Template.class);
 
     private final S3Service s3Service;
@@ -87,9 +87,9 @@ public class S3Template implements S3Operations {
     /**
      * @param bucketName
      * @throws StorageCommunicationException
-     * @see org.opencredo.aws.S3Operations#createBucket(java.lang.String)
+     * @see org.opencredo.aws.S3Operations#createContainer(java.lang.String)
      */
-    public void createBucket(String bucketName) throws StorageCommunicationException {
+    public void createContainer(String bucketName) throws StorageCommunicationException {
         Assert.notNull(bucketName, "Bucket name cannot be null");
         try {
             s3Service.createBucket(new S3Bucket(bucketName));
@@ -101,9 +101,9 @@ public class S3Template implements S3Operations {
     /**
      * @param bucketName
      * @throws StorageCommunicationException
-     * @see org.opencredo.aws.S3Operations#deleteBucket(java.lang.String)
+     * @see org.opencredo.aws.S3Operations#deleteContainer(java.lang.String)
      */
-    public void deleteBucket(String bucketName) throws StorageCommunicationException {
+    public void deleteContainer(String bucketName) throws StorageCommunicationException {
         Assert.notNull(bucketName, "Bucket name cannot be null");
         LOG.debug("Delete bucket '{}'", bucketName);
         try {
