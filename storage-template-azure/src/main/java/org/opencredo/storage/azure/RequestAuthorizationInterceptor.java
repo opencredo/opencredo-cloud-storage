@@ -14,15 +14,16 @@
  */
 package org.opencredo.storage.azure;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -30,12 +31,11 @@ import javax.crypto.spec.SecretKeySpec;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.HttpException;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.protocol.HTTP;
+import org.apache.http.protocol.HttpContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,21 +43,23 @@ import org.slf4j.LoggerFactory;
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  * 
  */
-public class HttpRequestFactory {
-
-    private final static Logger LOG = LoggerFactory.getLogger(HttpRequestFactory.class);
-
-    private static final String X_MS_DATE = "x-ms-date";
-    private static final String X_MS_VERSION = "x-ms-version";
+public class RequestAuthorizationInterceptor implements HttpRequestInterceptor {
+    private final static Logger LOG = LoggerFactory.getLogger(RequestAuthorizationInterceptor.class);
 
     private static final String DEFAULT_STORAGE_VERSION = "2009-09-19";
+    private static final String RFC1123_DATE_PATTERN = "EEE, dd MMM yyyy HH:mm:ss z";
 
-    private static final String RFC1123_PATTERN = "EEE, dd MMM yyyy HH:mm:ss z";
+    private enum MandatoryHeader {
+        X_MS_DATE("x-ms-date"), X_MS_VERSION("x-ms-version");
 
-    private HeadersComparator headersComparator;
-    private String urlTemplate = "http://%s.blob.core.windows.net/%s";
+        String headerName;
 
-    private String[] standardHeaders = { HTTP.CONTENT_ENCODING,// 
+        private MandatoryHeader(String headerName) {
+            this.headerName = headerName;
+        }
+    }
+
+    private final String[] standardHeaders = { HTTP.CONTENT_ENCODING,// 
             "Content-Language", //
             HTTP.CONTENT_LEN,//
             "Content-MD5",//
@@ -69,110 +71,51 @@ public class HttpRequestFactory {
             "If-Unmodified-Since",//
             "Range" };
 
-    private static HttpRequestFactory instance = new HttpRequestFactory();
+    private final AzureCredentials credentials;
+    private final HeadersComparator headersComparator;
 
-    private HttpRequestFactory() {
+    /**
+     * 
+     */
+    public RequestAuthorizationInterceptor(AzureCredentials credentials) {
+        super();
+        this.credentials = credentials;
         headersComparator = new HeadersComparator();
     }
 
     /**
-     * @return the instance
-     */
-    public static HttpRequestFactory getInstance() {
-        return instance;
-    }
-
-    /**
-     * 
-     * @param credentials
-     * @param urlSufix
-     * @return
-     */
-    public HttpGet createGetHttpRequest(AzureCredentials credentials, String urlSufix) {
-        HttpGet req = new HttpGet(String.format(urlTemplate, credentials.getAccountName(), urlSufix));
-
-        prepareHttpRequest(credentials, req);
-
-        return req;
-    }
-
-    /**
-     * 
-     * @param credentials
-     * @param urlSufix
-     * @return
-     */
-    public HttpPut createPutHttpRequest(AzureCredentials credentials, String urlSufix, HttpEntity entity) {
-        return createPutHttpRequest(credentials, urlSufix, entity, null);
-    }
-
-    public HttpPut createPutHttpRequest(AzureCredentials credentials, String urlSufix, HttpEntity entity,
-            Map<String, String> headers) {
-        HttpPut req = new HttpPut(String.format(urlTemplate, credentials.getAccountName(), urlSufix));
-
-        if (headers != null) {
-            for (Map.Entry<String, String> entry : headers.entrySet()) {
-                req.addHeader(entry.getKey(), entry.getValue());
-            }
-        }
-
-        if (entity != null) {
-            // "Content-Length" is required to construct proper signature
-            // string.
-            req.addHeader(HTTP.CONTENT_LEN, String.valueOf(entity.getContentLength()));
-            req.addHeader(entity.getContentType());
-        } else {
-            req.addHeader(HTTP.CONTENT_LEN, "0");
-        }
-
-        prepareHttpRequest(credentials, req);
-
-        // "Content-Length" should be removed and recalculated by
-        // httpclient. If it is not removed - exception will be thrown.
-        req.removeHeaders(HTTP.CONTENT_LEN);
-
-        return req;
-    }
-
-    /**
-     * 
-     * @param credentials
-     * @param urlSufix
-     * @return
-     */
-    public HttpDelete createDeleteHttpRequest(AzureCredentials credentials, String urlSufix) {
-        HttpDelete req = new HttpDelete(String.format(urlTemplate, credentials.getAccountName(), urlSufix));
-
-        prepareHttpRequest(credentials, req);
-
-        return req;
-    }
-
-    /**
-     * 
-     * @param credentials
      * @param req
-     * @throws RequestCreationException
+     * @param context
+     * @throws HttpException
+     * @throws IOException
+     * @see org.apache.http.HttpRequestInterceptor#process(org.apache.http.HttpRequest,
+     *      org.apache.http.protocol.HttpContext)
      */
-    public void prepareHttpRequest(AzureCredentials credentials, HttpUriRequest req) throws RequestCreationException {
-        addAzureHeaders(req);
-        String signatureString = constructSignatureString(credentials, req);
+    public void process(HttpRequest req, HttpContext context) throws HttpException, IOException {
+        
+        addMandatoryHeaders(req);
+        
+        String signatureString = constructSignatureString(req);
         LOG.debug("signatureString: '{}'", signatureString);
 
-        signatureString = createSignature(credentials, signatureString);
+        signatureString = createSignature(signatureString);
         LOG.debug("signature: '{}'", signatureString);
 
+        // Add authorization header
         req.addHeader("Authorization", "SharedKey " + credentials.getAccountName() + ":" + signatureString);
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Request: \n{}\n{}", req.getRequestLine(), getHeadersAsString(req));
+        }
     }
 
     /**
      * 
-     * @param credentials
+     * 
      * @param signatureString
      * @return
      */
-    private String createSignature(AzureCredentials credentials, String signatureString)
-            throws RequestCreationException {
+    private String createSignature(String signatureString) throws RequestCreationException {
         String encoding = "UTF-8";
         String encryptionAlgorithm = "HmacSHA256";
         try {
@@ -197,25 +140,15 @@ public class HttpRequestFactory {
 
     /**
      * 
-     * @param req
-     */
-    private void addAzureHeaders(HttpUriRequest req) {
-        req.addHeader(X_MS_DATE, DateFormatUtils.formatUTC(System.currentTimeMillis(), RFC1123_PATTERN));
-        req.addHeader(X_MS_VERSION, DEFAULT_STORAGE_VERSION);
-    }
-
-    /**
      * 
-     * @param credentials
      * @param req
      * @return
      * @throws RequestCreationException
      */
-    private String constructSignatureString(AzureCredentials credentials, HttpUriRequest req)
-            throws RequestCreationException {
+    private String constructSignatureString(HttpRequest req) throws RequestCreationException {
         StringBuilder sb = new StringBuilder();
         // VERB
-        sb.append(req.getMethod().toUpperCase()).append("\n");
+        sb.append(req.getRequestLine().getMethod().toUpperCase()).append("\n");
 
         // Standard Headers String
         constructStandartHeaderString(req, sb);
@@ -224,7 +157,7 @@ public class HttpRequestFactory {
         constructCanonicalizedHeadersString(req, sb);
 
         // Canonicalized Resource String
-        constructCanonicalizedResourceString(credentials, req, sb);
+        constructCanonicalizedResourceString(req, sb);
 
         return sb.toString();
     }
@@ -233,9 +166,10 @@ public class HttpRequestFactory {
      * 
      * @param req
      * @param sb
+     *            Signature string.
      * @throws RequestCreationException
      */
-    private void constructStandartHeaderString(HttpUriRequest req, StringBuilder sb) throws RequestCreationException {
+    private void constructStandartHeaderString(HttpRequest req, StringBuilder sb) throws RequestCreationException {
         String standartHeader;
         Header[] headers;
         for (int i = 0; i < standardHeaders.length; i++) {
@@ -257,14 +191,16 @@ public class HttpRequestFactory {
      * 
      * @param req
      * @param sb
+     *            Signature string.
      */
-    private void constructCanonicalizedHeadersString(HttpUriRequest req, StringBuilder sb) {
+    private void constructCanonicalizedHeadersString(HttpRequest req, StringBuilder sb) {
 
         // Get all x-ms-... headers and sort them.
         Header[] allHeaders = req.getAllHeaders();
 
         List<Header> list = new ArrayList<Header>(allHeaders.length);
 
+        // FIXME: Need to ensure that headers does not repeat.
         for (Header header : allHeaders) {
             if (header.getName().startsWith("x-ms-")) {
                 list.add(header);
@@ -273,6 +209,9 @@ public class HttpRequestFactory {
 
         Collections.sort(list, headersComparator);
 
+        // Append all x-ms-... headers to signatureString
+        // FIXME: Unfold the string by replacing any breaking white space with a
+        // single space.
         for (Header header : list) {
             sb.append(header.getName().toLowerCase()).append(":").append(header.getValue().trim());
             sb.append("\n");
@@ -281,19 +220,32 @@ public class HttpRequestFactory {
 
     /**
      * 
-     * @param credentials
      * @param req
      * @param sb
+     *            Signature string.
      */
-    private void constructCanonicalizedResourceString(AzureCredentials credentials, HttpUriRequest req, StringBuilder sb) {
-        URI uri = req.getURI();
+    private void constructCanonicalizedResourceString(HttpRequest req, StringBuilder sb) {
+        URI uri;
+        try {
+            uri = new URI(req.getRequestLine().getUri());
+        } catch (URISyntaxException e) {
+            throw new RequestCreationException("Failed to create uri from request line: "
+                    + req.getRequestLine().getUri(), e);
+        }
+
+        // Account name
         sb.append("/").append(credentials.getAccountName());
+
+        // URI path
         sb.append(uri.getPath());
 
+        // If query exists, all query params in alphabetical way.
         String queryStr = uri.getQuery();
         if (queryStr != null) {
             List<String> queryItems = Arrays.asList(queryStr.split("&"));
             Collections.sort(queryItems);
+            // FIXME: If in query two params are the same, their values should
+            // be separated by comma and appear in single line.
             for (String query : queryItems) {
                 sb.append("\n");
                 sb.append(query.replace('=', ':'));
@@ -301,4 +253,29 @@ public class HttpRequestFactory {
         }
     }
 
+    /**
+     * 
+     * @param req
+     * @return
+     */
+    private String getHeadersAsString(HttpRequest req) {
+        StringBuilder sb = new StringBuilder();
+        Header[] allHeaders = req.getAllHeaders();
+
+        for (Header header : allHeaders) {
+            sb.append(header.getName()).append(": ").append(header.getValue()).append("\n");
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * 
+     * @param req
+     */
+    private void addMandatoryHeaders(HttpRequest req) {
+        req.addHeader(MandatoryHeader.X_MS_DATE.headerName, DateFormatUtils.formatUTC(System.currentTimeMillis(),
+                RFC1123_DATE_PATTERN));
+        req.addHeader(MandatoryHeader.X_MS_VERSION.headerName, DEFAULT_STORAGE_VERSION);
+    }
 }

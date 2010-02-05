@@ -15,7 +15,6 @@
 package org.opencredo.storage.azure;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.opencredo.aws.s3.TestPropertiesAccessor;
 
@@ -23,7 +22,6 @@ import org.opencredo.aws.s3.TestPropertiesAccessor;
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  * 
  */
-@Ignore
 public class AzureTemplateTest {
 
     private AzureCredentials credentials = new AzureCredentials(TestPropertiesAccessor.getAzureDefaultAccountName(),
@@ -38,13 +36,19 @@ public class AzureTemplateTest {
     @Test
     public void testAll() throws Exception {
         String containerName = "template-test-1";
+        String objectName = "string-1";
+        
         template.createContainer(containerName);
         System.out.println("---------------------------------------------");
         template.listContainerObjects(containerName);
         System.out.println("---------------------------------------------");
-        template.send(containerName, "string-1", "testString");
+        template.send(containerName, objectName, "testString");
         System.out.println("---------------------------------------------");
-        template.receiveAsString(containerName, "string-1");
+        template.receiveAsString(containerName, objectName);
+        System.out.println("---------------------------------------------");
+        template.listContainerObjects(containerName);
+        System.out.println("---------------------------------------------");
+        template.deleteObject(containerName, objectName);
         System.out.println("---------------------------------------------");
         template.listContainerObjects(containerName);
         System.out.println("---------------------------------------------");

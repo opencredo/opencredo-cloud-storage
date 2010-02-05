@@ -27,6 +27,25 @@ public class StorageCommunicationException extends StorageException {
     }
 
     /**
+     * 
+     * @param messageFormat
+     * @param params
+     */
+    public StorageCommunicationException(String messageFormat, Object... params) {
+        super(String.format(messageFormat, params));
+    }
+    
+    /**
+     * 
+     * @param cause
+     * @param messageFormat
+     * @param params
+     */
+    public StorageCommunicationException(Throwable cause, String messageFormat, Object... params) {
+        this(String.format(messageFormat, params), cause);
+    }
+    
+    /**
      * @param message
      * @param cause
      */

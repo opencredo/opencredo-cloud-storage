@@ -18,9 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -46,16 +44,17 @@ import org.slf4j.LoggerFactory;
 public class AzureTemplate implements StorageOperations {
     private final static Logger LOG = LoggerFactory.getLogger(AzureTemplate.class);
 
-    private final AzureCredentials credentials;
+    private String blobUrlFormat = "http://%s.blob.core.windows.net/%s";
 
-    private final HttpRequestFactory factory = HttpRequestFactory.getInstance();
+    private final AzureCredentials credentials;
+    private final RequestAuthorizationInterceptor authorizationInterceptor;
 
     /**
      * 
      */
     public AzureTemplate(AzureCredentials credentials) {
-
         this.credentials = credentials;
+        authorizationInterceptor = new RequestAuthorizationInterceptor(credentials);
     }
 
     /**
@@ -76,7 +75,23 @@ public class AzureTemplate implements StorageOperations {
      *      java.lang.String)
      */
     public void deleteObject(String containerName, String objectName) throws StorageCommunicationException {
-        throw new RuntimeException("Not implementated");
+        LOG.debug("Delete Azure blob '{}' to container '{}' from string", objectName, containerName);
+
+        HttpClient client = createClient();
+        HttpDelete req = new HttpDelete(String.format(blobUrlFormat, credentials.getAccountName(), containerName + "/"
+                + objectName));
+
+        try {
+            HttpResponse response = client.execute(req);
+            LOG.debug("Response status: '{}'", response.getStatusLine());
+            response.getEntity().writeTo(System.out);
+        } catch (ClientProtocolException e) {
+            throw new StorageCommunicationException(e, "Delete blob '%s' from container '%s' problem", objectName,
+                    containerName);
+        } catch (IOException e) {
+            throw new StorageCommunicationException(e, "Delete blob '%s' from container '%s' IO problem", objectName,
+                    containerName);
+        }
 
     }
 
@@ -90,12 +105,8 @@ public class AzureTemplate implements StorageOperations {
         LOG.debug("List objects in Azure container '{}'", containerName);
 
         HttpClient client = createClient();
-        HttpGet req = factory.createGetHttpRequest(credentials, containerName + "?restype=container&comp=list");
-
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Request: '{}'", req.getRequestLine());
-            LOG.debug("Headers: '{}' '{}' '{}' ...", req.getAllHeaders());
-        }
+        HttpGet req = new HttpGet(String.format(blobUrlFormat, credentials.getAccountName(), containerName
+                + "?restype=container&comp=list"));
 
         try {
             HttpResponse response = client.execute(req);
@@ -104,9 +115,9 @@ public class AzureTemplate implements StorageOperations {
 
             response.getEntity().writeTo(System.out);
         } catch (ClientProtocolException e) {
-            throw new StorageCommunicationException("List objects in container '" + containerName + "' problem", e);
+            throw new StorageCommunicationException(e, "List objects in container '%s' problem", containerName);
         } catch (IOException e) {
-            throw new StorageCommunicationException("List objects in container '" + containerName + "' IO problem", e);
+            throw new StorageCommunicationException(e, "List objects in container '%s' IO problem", containerName);
         }
 
         return null;
@@ -121,12 +132,7 @@ public class AzureTemplate implements StorageOperations {
         LOG.debug("List Azure containers");
 
         HttpClient client = createClient();
-        HttpGet req = factory.createGetHttpRequest(credentials, "?comp=list");
-
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Request: '{}'", req.getRequestLine());
-            LOG.debug("Headers: '{}' '{}' '{}' ...", req.getAllHeaders());
-        }
+        HttpGet req = new HttpGet(String.format(blobUrlFormat, credentials.getAccountName(), "?comp=list"));
 
         try {
             HttpResponse response = client.execute(req);
@@ -152,12 +158,8 @@ public class AzureTemplate implements StorageOperations {
         LOG.debug("Create Azure container '{}'", containerName);
 
         HttpClient client = createClient();
-        HttpPut req = factory.createPutHttpRequest(credentials, containerName + "?restype=container", null);
-
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Request: '{}'", req.getRequestLine());
-            LOG.debug("Headers: '{}' '{}' '{}' ...", req.getAllHeaders());
-        }
+        HttpPut req = new HttpPut(String.format(blobUrlFormat, credentials.getAccountName(), containerName
+                + "?restype=container"));
 
         try {
             HttpResponse response = client.execute(req);
@@ -167,9 +169,9 @@ public class AzureTemplate implements StorageOperations {
                 LOG.warn("The specified container '" + containerName + "' already exists.");
             }
         } catch (ClientProtocolException e) {
-            throw new StorageCommunicationException("Create container '" + containerName + "' problem", e);
+            throw new StorageCommunicationException(e, "Create container '%s' problem", containerName);
         } catch (IOException e) {
-            throw new StorageCommunicationException("Create container '" + containerName + "' IO problem", e);
+            throw new StorageCommunicationException(e, "Create container '%s' IO problem", containerName);
         }
     }
 
@@ -182,23 +184,18 @@ public class AzureTemplate implements StorageOperations {
         LOG.debug("Delete Azure container '{}'", containerName);
 
         HttpClient client = createClient();
-        HttpDelete req = factory.createDeleteHttpRequest(credentials, containerName + "?restype=container");
-
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Request: '{}'", req.getRequestLine());
-            LOG.debug("Headers: '{}' '{}' '{}' ...", req.getAllHeaders());
-        }
+        HttpDelete req = new HttpDelete(String.format(blobUrlFormat, credentials.getAccountName(), containerName
+                + "?restype=container"));
 
         try {
             HttpResponse response = client.execute(req);
             LOG.debug("Response status: '{}'", response.getStatusLine());
             response.getEntity().writeTo(System.out);
         } catch (ClientProtocolException e) {
-            throw new StorageCommunicationException("Delete container '" + containerName + "' problem", e);
+            throw new StorageCommunicationException(e, "Delete container '%s' problem", containerName);
         } catch (IOException e) {
-            throw new StorageCommunicationException("Delete container '" + containerName + "' IO problem", e);
+            throw new StorageCommunicationException(e, "Delete container '%s' IO problem", containerName);
         }
-
     }
 
     /**
@@ -267,29 +264,24 @@ public class AzureTemplate implements StorageOperations {
     public String receiveAsString(String containerName, String objectName) throws StorageCommunicationException {
         LOG.debug("Get Azure blob '{}' to container '{}' as string", objectName, containerName);
 
-        Map<String, String> map = new HashMap<String, String>(2);
-        map.put("x-ms-blob-type", "BlockBlob");
-        
         HttpClient client = createClient();
-        HttpGet req = factory.createGetHttpRequest(credentials, containerName + "/" + objectName);
+        HttpGet req = new HttpGet(String.format(blobUrlFormat, credentials.getAccountName(), containerName + "/"
+                + objectName));
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Request: '{}'", req.getRequestLine());
-            LOG.debug("Headers: '{}' '{}' '{}' ...", req.getAllHeaders());
-        }
+        req.addHeader("x-ms-blob-type", "BlockBlob");
 
         try {
             HttpResponse response = client.execute(req);
             LOG.debug("Response status: '{}'", response.getStatusLine());
             response.getEntity().writeTo(System.out);
         } catch (ClientProtocolException e) {
-            throw new StorageCommunicationException("Add blob '" + objectName + "' to container '" + containerName
-                    + "' problem", e);
+            throw new StorageCommunicationException(e, "Receive blob '%s' from container '%s' problem", objectName,
+                    containerName);
         } catch (IOException e) {
-            throw new StorageCommunicationException("Add blob '" + objectName + "' to  '" + containerName
-                    + "' IO problem", e);
+            throw new StorageCommunicationException(e, "Receive blob '%s' from container '%s' IO problem", objectName,
+                    containerName);
         }
-        
+
         return null;
     }
 
@@ -324,28 +316,23 @@ public class AzureTemplate implements StorageOperations {
                     + containerName + "' as blob '" + objectName + "'.", e);
         }
 
-        Map<String, String> map = new HashMap<String, String>(2);
-        map.put("x-ms-blob-type", "BlockBlob");
-        
         HttpClient client = createClient();
-        HttpPut req = factory.createPutHttpRequest(credentials, containerName + "/" + objectName, entity, map);
-        req.setEntity(entity);
+        HttpPut req = new HttpPut(String.format(blobUrlFormat, credentials.getAccountName(), containerName + "/"
+                + objectName, entity));
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Request: '{}'", req.getRequestLine());
-            LOG.debug("Headers: '{}' '{}' '{}' ...", req.getAllHeaders());
-        }
+        req.addHeader("x-ms-blob-type", "BlockBlob");
+        req.setEntity(entity);
 
         try {
             HttpResponse response = client.execute(req);
             LOG.debug("Response status: '{}'", response.getStatusLine());
             response.getEntity().writeTo(System.out);
         } catch (ClientProtocolException e) {
-            throw new StorageCommunicationException("Add blob '" + objectName + "' to container '" + containerName
-                    + "' problem", e);
+            throw new StorageCommunicationException(e, "Add blob '%s' to container '%s' problem", objectName,
+                    containerName);
         } catch (IOException e) {
-            throw new StorageCommunicationException("Add blob '" + objectName + "' to  '" + containerName
-                    + "' IO problem", e);
+            throw new StorageCommunicationException(e, "Add blob '%s' to container '%s' IO problem", objectName,
+                    containerName);
         }
 
     }
@@ -415,6 +402,8 @@ public class AzureTemplate implements StorageOperations {
      * @return
      */
     private HttpClient createClient() {
-        return new DefaultHttpClient();
+        DefaultHttpClient httpClient = new DefaultHttpClient();
+        httpClient.addRequestInterceptor(authorizationInterceptor);
+        return httpClient;
     }
 }
