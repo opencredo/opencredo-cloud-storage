@@ -12,29 +12,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.opencredo.storage.azure;
+package org.opencredo.storage.azure.rest;
 
-import org.opencredo.storage.StorageException;
+import org.opencredo.storage.StorageCommunicationException;
 
 /**
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  * 
  */
-public class RequestCreationException extends StorageException {
+public class AzureRestServiceException extends StorageCommunicationException {
 
-    private static final long serialVersionUID = -7464153324139255021L;
+    private static final long serialVersionUID = -276354276775535652L;
 
     /**
      * 
      */
-    public RequestCreationException() {
+    public AzureRestServiceException() {
         super();
     }
 
     /**
      * @param message
      */
-    public RequestCreationException(String message) {
+    public AzureRestServiceException(String message) {
         super(message);
     }
 
@@ -42,15 +42,33 @@ public class RequestCreationException extends StorageException {
      * @param message
      * @param cause
      */
-    public RequestCreationException(String message, Throwable cause) {
+    public AzureRestServiceException(String message, Throwable cause) {
         super(message, cause);
     }
 
     /**
      * @param cause
      */
-    public RequestCreationException(Throwable cause) {
+    public AzureRestServiceException(Throwable cause) {
         super(cause);
     }
 
+    /**
+     * 
+     * @param messageFormat
+     * @param params
+     */
+    public AzureRestServiceException(String messageFormat, Object... params) {
+        super(messageFormat, params);
+    }
+    
+    /**
+     * 
+     * @param cause
+     * @param messageFormat
+     * @param params
+     */
+    public AzureRestServiceException(Throwable cause, String messageFormat, Object... params) {
+        super(cause, messageFormat, params);
+    }
 }

@@ -15,27 +15,23 @@
 package org.opencredo.storage.azure;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.opencredo.storage.BlobObject;
 import org.opencredo.storage.ContainerStatus;
 import org.opencredo.storage.StorageCommunicationException;
 import org.opencredo.storage.StorageOperations;
+import org.opencredo.storage.azure.model.Blob;
+import org.opencredo.storage.azure.rest.AzureRestService;
+import org.opencredo.storage.azure.rest.internal.DefaultAzureRestService;
+import org.opencredo.storage.azure.rest.internal.XPathContainerListFactory;
+import org.opencredo.storage.azure.rest.internal.XPathContainerObjectListFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.Assert;
+import org.springframework.xml.xpath.Jaxp13XPathTemplate;
+import org.springframework.xml.xpath.XPathOperations;
 
 /**
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
@@ -44,17 +40,30 @@ import org.slf4j.LoggerFactory;
 public class AzureTemplate implements StorageOperations {
     private final static Logger LOG = LoggerFactory.getLogger(AzureTemplate.class);
 
-    private String blobUrlFormat = "http://%s.blob.core.windows.net/%s";
+    private static final String DEFAULT_CONATINER_NAME = "container1";
 
-    private final AzureCredentials credentials;
-    private final RequestAuthorizationInterceptor authorizationInterceptor;
+    private final String defaultContainerName;
+
+    private final AzureRestService restService;
 
     /**
      * 
      */
-    public AzureTemplate(AzureCredentials credentials) {
-        this.credentials = credentials;
-        authorizationInterceptor = new RequestAuthorizationInterceptor(credentials);
+    public AzureTemplate(final AzureCredentials credentials) {
+        this(credentials, DEFAULT_CONATINER_NAME);
+    }
+
+    /**
+     * @param defaultContainerName
+     * @param restService
+     */
+    public AzureTemplate(final AzureCredentials credentials, String defaultContainerName) {
+        super();
+        this.defaultContainerName = defaultContainerName;
+
+        XPathOperations xpathOperations = new Jaxp13XPathTemplate();
+        restService = new DefaultAzureRestService(credentials, new XPathContainerListFactory(xpathOperations),
+                new XPathContainerObjectListFactory(xpathOperations));
     }
 
     /**
@@ -75,27 +84,7 @@ public class AzureTemplate implements StorageOperations {
      *      java.lang.String)
      */
     public void deleteObject(String containerName, String objectName) throws StorageCommunicationException {
-        LOG.debug("Delete Azure blob '{}' from container '{}'", objectName, containerName);
-
-        HttpClient client = createClient();
-        HttpDelete req = new HttpDelete(String.format(blobUrlFormat, credentials.getAccountName(), containerName + "/"
-                + objectName));
-
-        try {
-            HttpResponse response = client.execute(req);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Delete Azure blob '{}' from container '{}' response status line:\n{}",
-                        new Object[] { objectName, containerName, response.getStatusLine() });
-            }
-            response.getEntity().writeTo(System.out);
-        } catch (ClientProtocolException e) {
-            throw new StorageCommunicationException(e, "Delete Azure blob '%s' from container '%s' problem", objectName,
-                    containerName);
-        } catch (IOException e) {
-            throw new StorageCommunicationException(e, "Delete Azure blob '%s' from container '%s' IO problem", objectName,
-                    containerName);
-        }
-
+        restService.deleteObject(containerName, objectName);
     }
 
     /**
@@ -105,25 +94,7 @@ public class AzureTemplate implements StorageOperations {
      * @see org.opencredo.storage.StorageOperations#listContainerObjects(java.lang.String)
      */
     public List<BlobObject> listContainerObjects(String containerName) throws StorageCommunicationException {
-        LOG.debug("List objects in Azure container '{}'", containerName);
-
-        HttpClient client = createClient();
-        HttpGet req = new HttpGet(String.format(blobUrlFormat, credentials.getAccountName(), containerName
-                + "?restype=container&comp=list"));
-
-        try {
-            HttpResponse response = client.execute(req);
-            LOG.debug("List objects in Azure container '{}' response status line:\n{}", containerName, response
-                    .getStatusLine());
-            // TODO Validate response status
-            response.getEntity().writeTo(System.out);
-        } catch (ClientProtocolException e) {
-            throw new StorageCommunicationException(e, "List objects in Azure container '%s' problem", containerName);
-        } catch (IOException e) {
-            throw new StorageCommunicationException(e, "List objects in Azure container '%s' IO problem", containerName);
-        }
-
-        return null;
+        return restService.listContainerObjects(containerName);
     }
 
     /**
@@ -132,24 +103,11 @@ public class AzureTemplate implements StorageOperations {
      * @see org.opencredo.storage.StorageOperations#listContainers()
      */
     public String[] listContainers() throws StorageCommunicationException {
-        LOG.debug("List Azure containers");
+        List<String> listContainers = restService.listContainers();
 
-        HttpClient client = createClient();
-        HttpGet req = new HttpGet(String.format(blobUrlFormat, credentials.getAccountName(), "?comp=list"));
+        String[] c = new String[listContainers.size()];
 
-        try {
-            HttpResponse response = client.execute(req);
-            LOG.debug("List Azure containers response status line:\n{}", response.getStatusLine());
-            response.getEntity().writeTo(System.out);
-            // TODO Validate response status
-        } catch (ClientProtocolException e) {
-            throw new StorageCommunicationException("List Azure containers problem", e);
-        } catch (IOException e) {
-            throw new StorageCommunicationException("List Azure containers IO problem", e);
-        }
-
-        // TODO ccreate the response
-        return null;
+        return listContainers.toArray(c);
     }
 
     /**
@@ -158,24 +116,7 @@ public class AzureTemplate implements StorageOperations {
      * @see org.opencredo.storage.StorageOperations#createContainer(java.lang.String)
      */
     public void createContainer(String containerName) throws StorageCommunicationException {
-        LOG.debug("Create Azure container '{}'", containerName);
-
-        HttpClient client = createClient();
-        HttpPut req = new HttpPut(String.format(blobUrlFormat, credentials.getAccountName(), containerName
-                + "?restype=container"));
-
-        try {
-            HttpResponse response = client.execute(req);
-            LOG.debug("Create Azure container '{}' response status line:\n{}", containerName, response.getStatusLine());
-            response.getEntity().writeTo(System.out);
-            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_CONFLICT) {
-                LOG.warn("The specified Azure container '" + containerName + "' already exists.");
-            }
-        } catch (ClientProtocolException e) {
-            throw new StorageCommunicationException(e, "Create Azure container '%s' problem", containerName);
-        } catch (IOException e) {
-            throw new StorageCommunicationException(e, "Create Azure container '%s' IO problem", containerName);
-        }
+        restService.createContainer(containerName);
     }
 
     /**
@@ -184,21 +125,7 @@ public class AzureTemplate implements StorageOperations {
      * @see org.opencredo.storage.StorageOperations#deleteContainer(java.lang.String)
      */
     public void deleteContainer(String containerName) throws StorageCommunicationException {
-        LOG.debug("Delete Azure container '{}'", containerName);
-
-        HttpClient client = createClient();
-        HttpDelete req = new HttpDelete(String.format(blobUrlFormat, credentials.getAccountName(), containerName
-                + "?restype=container"));
-
-        try {
-            HttpResponse response = client.execute(req);
-            LOG.debug("Delete Azure container '{}' response status line:\n{}", containerName, response.getStatusLine());
-            response.getEntity().writeTo(System.out);
-        } catch (ClientProtocolException e) {
-            throw new StorageCommunicationException(e, "Delete Azure container '%s' problem", containerName);
-        } catch (IOException e) {
-            throw new StorageCommunicationException(e, "Delete Azure container '%s' IO problem", containerName);
-        }
+        restService.deleteContainer(containerName);
     }
 
     /**
@@ -208,7 +135,7 @@ public class AzureTemplate implements StorageOperations {
      * @see org.opencredo.storage.StorageOperations#receiveAsFile(java.lang.String)
      */
     public File receiveAsFile(String objectName) throws StorageCommunicationException {
-        throw new RuntimeException("Not implementated");
+        return receiveAsFile(defaultContainerName, objectName);
     }
 
     /**
@@ -230,7 +157,8 @@ public class AzureTemplate implements StorageOperations {
      * @see org.opencredo.storage.StorageOperations#receiveAsInputStream(java.lang.String)
      */
     public InputStream receiveAsInputStream(String objectName) throws StorageCommunicationException {
-        throw new RuntimeException("Not implementated");
+        Assert.notNull(this.defaultContainerName, "Default container name is not provided");
+        return receiveAsInputStream(defaultContainerName, objectName);
     }
 
     /**
@@ -253,7 +181,8 @@ public class AzureTemplate implements StorageOperations {
      * @see org.opencredo.storage.StorageOperations#receiveAsString(java.lang.String)
      */
     public String receiveAsString(String objectName) throws StorageCommunicationException {
-        throw new RuntimeException("Not implementated");
+        Assert.notNull(this.defaultContainerName, "Default container name is not provided");
+        return receiveAsString(defaultContainerName, objectName);
     }
 
     /**
@@ -265,30 +194,8 @@ public class AzureTemplate implements StorageOperations {
      *      java.lang.String)
      */
     public String receiveAsString(String containerName, String objectName) throws StorageCommunicationException {
-        LOG.debug("Receive blob '{}' from Azure container '{}' as string", objectName, containerName);
-
-        HttpClient client = createClient();
-        HttpGet req = new HttpGet(String.format(blobUrlFormat, credentials.getAccountName(), containerName + "/"
-                + objectName));
-
-        req.addHeader("x-ms-blob-type", "BlockBlob");
-
-        try {
-            HttpResponse response = client.execute(req);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Receive blob '{}' from Azure container '{}' as string response status line:\n{}", new Object[] {
-                        objectName, containerName, response.getStatusLine() });
-            }
-            response.getEntity().writeTo(System.out);
-        } catch (ClientProtocolException e) {
-            throw new StorageCommunicationException(e, "Receive blob '%s' from Azure container '%s' problem", objectName,
-                    containerName);
-        } catch (IOException e) {
-            throw new StorageCommunicationException(e, "Receive blob '%s' from Azure container '%s' IO problem", objectName,
-                    containerName);
-        }
-
-        return null;
+        Blob blob = restService.getObject(containerName, objectName);
+        return blob.getStringContent();
     }
 
     /**
@@ -299,8 +206,8 @@ public class AzureTemplate implements StorageOperations {
      *      java.lang.String)
      */
     public void send(String objectName, String stringToSend) throws StorageCommunicationException {
-        throw new RuntimeException("Not implementated");
-
+        Assert.notNull(this.defaultContainerName, "Default container name is not provided");
+        send(defaultContainerName, objectName, stringToSend);
     }
 
     /**
@@ -312,39 +219,7 @@ public class AzureTemplate implements StorageOperations {
      *      java.lang.String, java.lang.String)
      */
     public void send(String containerName, String objectName, String stringToSend) throws StorageCommunicationException {
-        LOG.debug("Send string as blob '{}' to Azure container '{}'", objectName, containerName);
-
-        HttpEntity entity;
-        try {
-            entity = new StringEntity(stringToSend);
-        } catch (UnsupportedEncodingException e) {
-            throw new StorageCommunicationException("Usupported encoding of string to be send to container '"
-                    + containerName + "' as blob '" + objectName + "'.", e);
-        }
-
-        HttpClient client = createClient();
-        HttpPut req = new HttpPut(String.format(blobUrlFormat, credentials.getAccountName(), containerName + "/"
-                + objectName, entity));
-
-        req.addHeader("x-ms-blob-type", "BlockBlob");
-        req.setEntity(entity);
-
-        try {
-            HttpResponse response = client.execute(req);
-            LOG.debug("Response status: '{}'", response.getStatusLine());
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Send string as blob '{}' to Azure container '{}' response status line:\n{}", new Object[] {
-                        objectName, containerName, response.getStatusLine() });
-            }
-            response.getEntity().writeTo(System.out);
-        } catch (ClientProtocolException e) {
-            throw new StorageCommunicationException(e, "Send string as blob '%s' to Azure container '%s' problem", objectName,
-                    containerName);
-        } catch (IOException e) {
-            throw new StorageCommunicationException(e, "Send string as blob '%s' to Azure container '%s' IO problem", objectName,
-                    containerName);
-        }
-
+        restService.putObject(containerName, new Blob(objectName, stringToSend));
     }
 
     /**
@@ -353,8 +228,8 @@ public class AzureTemplate implements StorageOperations {
      * @see org.opencredo.storage.StorageOperations#send(java.io.File)
      */
     public void send(File fileToSend) throws StorageCommunicationException {
-        throw new RuntimeException("Not implementated");
-
+        Assert.notNull(this.defaultContainerName, "Default container name is not provided");
+        send(defaultContainerName, fileToSend);
     }
 
     /**
@@ -365,8 +240,8 @@ public class AzureTemplate implements StorageOperations {
      *      java.io.File)
      */
     public void send(String containerName, File fileToSend) throws StorageCommunicationException {
-        throw new RuntimeException("Not implementated");
-
+        Assert.notNull(this.defaultContainerName, "Default container name is not provided");
+        send(defaultContainerName, fileToSend.getName(), fileToSend);
     }
 
     /**
@@ -390,8 +265,8 @@ public class AzureTemplate implements StorageOperations {
      *      java.io.InputStream)
      */
     public void send(String objectName, InputStream is) throws StorageCommunicationException {
-        throw new RuntimeException("Not implementated");
-
+        Assert.notNull(this.defaultContainerName, "Default container name is not provided");
+        send(defaultContainerName, objectName, is);
     }
 
     /**
@@ -407,13 +282,4 @@ public class AzureTemplate implements StorageOperations {
 
     }
 
-    /**
-     * 
-     * @return
-     */
-    private HttpClient createClient() {
-        DefaultHttpClient httpClient = new DefaultHttpClient();
-        httpClient.addRequestInterceptor(authorizationInterceptor);
-        return httpClient;
-    }
 }

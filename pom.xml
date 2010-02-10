@@ -73,6 +73,7 @@
 		<springVersion>2.5.6.SEC01</springVersion>
 		<springIntegrationVersion>1.0.3.RELEASE</springIntegrationVersion>
 		<jets3tVersion>0.7.2</jets3tVersion>
+		<springWsVersion>1.5.8</springWsVersion>
 	</properties>
 	<dependencies>
 		<dependency>

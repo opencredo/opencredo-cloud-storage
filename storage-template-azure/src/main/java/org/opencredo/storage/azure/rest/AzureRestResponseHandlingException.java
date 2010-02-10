@@ -12,56 +12,63 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.opencredo.storage.azure.rest;
 
-package org.opencredo.storage;
+import org.opencredo.storage.StorageException;
 
 /**
- * @author Eren Aykin (eren.aykin@opencredo.com)
+ * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
+ * 
  */
-public class StorageCommunicationException extends StorageException {
+public class AzureRestResponseHandlingException extends StorageException {
 
-    private static final long serialVersionUID = 8080789275931833330L;
+    private static final long serialVersionUID = -276354276775535652L;
 
-    public StorageCommunicationException() {
+    /**
+     * 
+     */
+    public AzureRestResponseHandlingException() {
         super();
     }
 
     /**
      * @param message
-     * @param cause
      */
-    public StorageCommunicationException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    /**
-     * @param message
-     */
-    public StorageCommunicationException(String message) {
+    public AzureRestResponseHandlingException(String message) {
         super(message);
     }
 
     /**
+     * @param message
      * @param cause
      */
-    public StorageCommunicationException(Throwable cause) {
+    public AzureRestResponseHandlingException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    /**
+     * @param cause
+     */
+    public AzureRestResponseHandlingException(Throwable cause) {
         super(cause);
     }
 
     /**
+     * 
      * @param messageFormat
      * @param params
      */
-    public StorageCommunicationException(String messageFormat, Object... params) {
+    public AzureRestResponseHandlingException(String messageFormat, Object... params) {
         super(messageFormat, params);
     }
-
+    
     /**
+     * 
      * @param cause
      * @param messageFormat
      * @param params
      */
-    public StorageCommunicationException(Throwable cause, String messageFormat, Object... params) {
+    public AzureRestResponseHandlingException(Throwable cause, String messageFormat, Object... params) {
         super(cause, messageFormat, params);
     }
 }

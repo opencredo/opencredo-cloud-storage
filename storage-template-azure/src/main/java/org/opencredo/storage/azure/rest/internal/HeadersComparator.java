@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.opencredo.storage.azure;
+package org.opencredo.storage.azure.rest.internal;
 
 import java.util.Comparator;
 

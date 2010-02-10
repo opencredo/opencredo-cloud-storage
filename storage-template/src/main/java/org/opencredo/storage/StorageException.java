@@ -50,4 +50,22 @@ public class StorageException extends RuntimeException {
         super(cause);
     }
 
+    /**
+     * 
+     * @param messageFormat
+     * @param params
+     */
+    public StorageException(String messageFormat, Object... params) {
+        super(String.format(messageFormat, params));
+    }
+    
+    /**
+     * 
+     * @param cause
+     * @param messageFormat
+     * @param params
+     */
+    public StorageException(Throwable cause, String messageFormat, Object... params) {
+        this(String.format(messageFormat, params), cause);
+    }
 }

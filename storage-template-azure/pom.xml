@@ -30,6 +30,11 @@
 			<version>${project.parent.version}</version>
 			<scope>test</scope>
 		</dependency>
+		 <dependency>
+            <groupId>org.springframework.ws</groupId>
+            <artifactId>spring-xml</artifactId>
+            <version>${springWsVersion}</version>
+        </dependency>
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
