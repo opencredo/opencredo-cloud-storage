@@ -1,0 +1,2 @@
+http\://www.opencredo.com/schema/si/cloud/storage/opencredo-si-cloud-storage-1.0.xsd=org/opencredo/cloud/storage/si/config/opencredo-si-cloud-storage-1.0.xsd
+http\://www.opencredo.com/schema/si/cloud/storage/opencredo-si-cloud-storage.xsd=org/opencredo/cloud/storage/si/config/opencredo-si-cloud-storage-1.0.xsd

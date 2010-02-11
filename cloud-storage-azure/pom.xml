@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<parent>
+		<groupId>org.opencredo.cloud.storage</groupId>
+		<artifactId>opencredo-cloud-storage-parent</artifactId>
+		<version>1.0-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.opencredo.cloud.storage</groupId>
+	<artifactId>cloud-storage-azure</artifactId>
+	<name>OpenCredo Cloud Storage Azure Template</name>
+	<version>${project.parent.version}</version>
+	<dependencies>
+		<dependency>
+			<groupId>org.opencredo.cloud.storage</groupId>
+			<artifactId>cloud-storage-template</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.0.1</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.opencredo.cloud.storage</groupId>
+			<artifactId>cloud-storage-test-utils</artifactId>
+			<version>${project.parent.version}</version>
+			<scope>test</scope>
+		</dependency>
+		 <dependency>
+            <groupId>org.springframework.ws</groupId>
+            <artifactId>spring-xml</artifactId>
+            <version>${springWsVersion}</version>
+        </dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.4</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
+</project>

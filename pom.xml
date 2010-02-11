@@ -2,8 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.opencredo.storage</groupId>
-	<artifactId>opencredo-storage-parent</artifactId>
+	<groupId>org.opencredo.cloud.storage</groupId>
+	<artifactId>opencredo-cloud-storage-parent</artifactId>
 	<packaging>pom</packaging>
 	<version>1.0-SNAPSHOT</version>
 	<name>OpenCredo Cloud Storage</name>
@@ -153,11 +153,11 @@
 		</profile>
 	</profiles>
 	<modules>
-		<module>storage-test-utils</module>
-		<module>storage-template</module>
-		<module>storage-template-azure</module>
-		<module>storage-template-s3</module>
-		<module>storage-spring-integration-support</module>
-		<module>storage-samples</module>
+		<module>cloud-storage-test-utils</module>
+		<module>cloud-storage-template</module>
+		<module>cloud-storage-azure</module>
+		<module>cloud-storage-s3</module>
+		<module>cloud-storage-spring-integration-support</module>
+		<module>cloud-storage-samples</module>
 	</modules>
 </project>

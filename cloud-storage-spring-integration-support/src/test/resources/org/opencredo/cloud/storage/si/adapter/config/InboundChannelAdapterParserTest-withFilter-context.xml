@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/integration"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:cloud="http://www.opencredo.com/schema/si/cloud/storage"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+ 	        http://www.springframework.org/schema/integration
+			http://www.springframework.org/schema/integration/spring-integration-1.0.xsd
+	        http://www.opencredo.com/schema/si/cloud/storage
+			http://www.opencredo.com/schema/si/cloud/storage/opencredo-si-cloud-storage.xsd">
+	<beans:import resource="../../common-context.xml" />
+
+	<!--  SI config -->
+	<channel id="inputChannel" />
+
+	<!-- Inbound adapter -->
+	<beans:bean id="testFilter"
+		class="org.opencredo.cloud.storage.si.filter.internal.PatternMatchingBlobObjectIdFilter">
+		<beans:constructor-arg value="object*" />
+	</beans:bean>
+
+	<cloud:inbound-channel-adapter id="inbound-adapter"
+		channel="inputChannel" template="mockTemplate" bucket="${awsS3DefaultBucketName}"
+		filter="testFilter">
+		<poller>
+			<interval-trigger interval="5000" />
+		</poller>
+	</cloud:inbound-channel-adapter>
+
+
+</beans:beans>
