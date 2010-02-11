@@ -17,7 +17,9 @@ package org.opencredo.storage.azure.rest;
 import java.util.List;
 
 import org.opencredo.storage.BlobObject;
+import org.opencredo.storage.ContainerStatus;
 import org.opencredo.storage.azure.model.Blob;
+import org.opencredo.storage.azure.model.InputStreamBlob;
 
 /**
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
@@ -39,9 +41,9 @@ public interface AzureRestService {
 
     void deleteObject(String containerName, String blobName) throws AzureRestServiceException;
 
-    void putObject(String containerName, Blob blob) throws AzureRestServiceException;
+    void putObject(String containerName, Blob<?> blob) throws AzureRestServiceException;
 
-    Blob getObject(String containerName, String blobName) throws AzureRestServiceException;
+    InputStreamBlob getObject(String containerName, String blobName) throws AzureRestServiceException;
 
     /**
      * 
@@ -50,4 +52,10 @@ public interface AzureRestService {
      * @throws AzureRestServiceException
      */
     List<BlobObject> listContainerObjects(String containerName) throws AzureRestServiceException;
+
+    /**
+     * @param containerName
+     * @return
+     */
+    ContainerStatus checkContainerStatus(String containerName) throws AzureRestServiceException;
 }

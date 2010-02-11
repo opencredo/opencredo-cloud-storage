@@ -15,15 +15,14 @@
 
 package org.opencredo.aws.s3;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.jets3t.service.S3Service;
 import org.jets3t.service.S3ServiceException;
 import org.jets3t.service.impl.rest.httpclient.RestS3Service;
@@ -35,6 +34,8 @@ import org.opencredo.storage.ContainerStatus;
 import org.opencredo.storage.StorageCommunicationException;
 import org.opencredo.storage.StorageException;
 import org.opencredo.storage.StorageOperations;
+import org.opencredo.storage.StorageResponseHandlingException;
+import org.opencredo.storage.StorageResponseUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
@@ -346,7 +347,7 @@ public class S3Template implements StorageOperations {
      * @throws StorageCommunicationException
      * @see org.opencredo.aws.S3Operations#receiveAsString(java.lang.String)
      */
-    public String receiveAsString(String keyName) throws StorageCommunicationException {
+    public String receiveAsString(String keyName) throws StorageCommunicationException, StorageResponseHandlingException {
         Assert.notNull(this.defaultBucketName, "Default bucket name is not provided");
         return receiveAsString(defaultBucketName, keyName);
     }
@@ -359,55 +360,71 @@ public class S3Template implements StorageOperations {
      * @see org.opencredo.aws.S3Operations#receiveAsString(java.lang.String,
      *      java.lang.String)
      */
-    public String receiveAsString(String bucketName, String key) throws StorageCommunicationException {
+    public String receiveAsString(String bucketName, String key) throws StorageCommunicationException, StorageResponseHandlingException {
         Assert.notNull(bucketName, "Bucket name cannot be null");
         LOG.debug("Receive string from bucket '{}' with key '{}'", bucketName, key);
+        S3Object s3Object = null;
         try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(s3Service.getObject(new S3Bucket(bucketName),
-                    key).getDataInputStream()));
-            StringBuilder sb = new StringBuilder();
-            String line = null;
-            while ((line = br.readLine()) != null) {
-                if (sb.length() != 0) {
-                    sb.append("\n");
-                }
-                sb.append(line);
-            }
-            br.close();
-            return sb.toString();
+            s3Object = s3Service.getObject(new S3Bucket(bucketName), key);
+            return IOUtils.toString(s3Object.getDataInputStream());
         } catch (S3ServiceException e) {
             throw new StorageCommunicationException("Receiving as string problem", e);
         } catch (IOException e) {
-            throw new StorageCommunicationException("Receiving as string IO problem", e);
+            throw new StorageResponseHandlingException("Receiving as string IO problem", e);
+        } finally {
+            if (s3Object != null) {
+                try {
+                    s3Object.closeDataInputStream();
+                } catch (IOException e) {
+                    throw new StorageResponseHandlingException("Close response data strem IO problem", e);
+                }
+            }
         }
     }
 
     /**
      * @param key
-     * @return
      * @throws StorageCommunicationException
-     * @see org.opencredo.aws.S3Operations#receiveAsFile(java.lang.String)
+     * @see org.opencredo.aws.S3Operations#receiveAndSaveToFile(java.lang.String,
+     *      File)
      */
-    public File receiveAsFile(String key) throws StorageCommunicationException {
+    public void receiveAndSaveToFile(String key, File toFile) throws StorageCommunicationException, StorageResponseHandlingException {
         Assert.notNull(this.defaultBucketName, "Default bucket name is not provided");
-        return receiveAsFile(defaultBucketName, key);
+        receiveAndSaveToFile(defaultBucketName, key, toFile);
     }
 
     /**
      * @param bucketName
      * @param key
-     * @return
      * @throws StorageCommunicationException
-     * @see org.opencredo.aws.S3Operations#receiveAsFile(java.lang.String,
-     *      java.lang.String)
+     * @see org.opencredo.aws.S3Operations#receiveAndSaveToFile(java.lang.String,
+     *      java.lang.String, File)
      */
-    public File receiveAsFile(String bucketName, String key) throws StorageCommunicationException {
+    public void receiveAndSaveToFile(String bucketName, String key, File toFile) throws StorageCommunicationException, StorageResponseHandlingException {
         Assert.notNull(bucketName, "Bucket name cannot be null");
-        LOG.debug("Receive file from bucket '{}' with key '{}'", bucketName, key);
+        Assert.notNull(toFile, "File to save received data must be specified");
+        Assert.isTrue(toFile.isFile(), "File to save received data does not exist");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Receive data from bucket '{}' with key '{}' and save it to file '{}'", new Object[] {
+                    bucketName, key, toFile.getAbsolutePath() });
+        }
+        
+        S3Object s3Object = null;
         try {
-            return s3Service.getObject(new S3Bucket(bucketName), key).getDataInputFile();
+            s3Object = s3Service.getObject(new S3Bucket(bucketName), key);
+            StorageResponseUtils.responseStreamToFile(s3Object.getDataInputStream(), toFile);
         } catch (S3ServiceException e) {
             throw new StorageCommunicationException("Receiving file problem", e);
+        } catch (IOException e) {
+            throw new StorageResponseHandlingException("Response data strem to file IO problem", e);
+        } finally {
+            if (s3Object != null) {
+                try {
+                    s3Object.closeDataInputStream();
+                } catch (IOException e) {
+                    throw new StorageResponseHandlingException("Close response data strem IO problem", e);
+                }
+            }
         }
     }
 
@@ -417,7 +434,7 @@ public class S3Template implements StorageOperations {
      * @throws StorageCommunicationException
      * @see org.opencredo.aws.S3Operations#receiveAsInputStream(java.lang.String)
      */
-    public InputStream receiveAsInputStream(String key) throws StorageCommunicationException {
+    public InputStream receiveAsInputStream(String key) throws StorageCommunicationException, StorageResponseHandlingException {
         Assert.notNull(this.defaultBucketName, "Default bucket name is not provided");
         return receiveAsInputStream(defaultBucketName, key);
     }
@@ -430,7 +447,7 @@ public class S3Template implements StorageOperations {
      * @see org.opencredo.aws.S3Operations#receiveAsInputStream(java.lang.String,
      *      java.lang.String)
      */
-    public InputStream receiveAsInputStream(String bucketName, String key) throws StorageCommunicationException {
+    public InputStream receiveAsInputStream(String bucketName, String key) throws StorageCommunicationException, StorageResponseHandlingException {
         Assert.notNull(bucketName, "Bucket name cannot be null");
         LOG.debug("Receive input-stream from bucket '{}' with key '{}'", bucketName, key);
         try {

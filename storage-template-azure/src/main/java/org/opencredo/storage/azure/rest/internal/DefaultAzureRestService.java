@@ -15,7 +15,6 @@
 package org.opencredo.storage.azure.rest.internal;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
@@ -25,12 +24,14 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.opencredo.storage.BlobObject;
+import org.opencredo.storage.ContainerStatus;
 import org.opencredo.storage.StorageCommunicationException;
 import org.opencredo.storage.azure.AzureCredentials;
 import org.opencredo.storage.azure.model.Blob;
+import org.opencredo.storage.azure.model.InputStreamBlob;
+import org.opencredo.storage.azure.rest.AzureRestRequestCreationException;
 import org.opencredo.storage.azure.rest.AzureRestService;
 import org.opencredo.storage.azure.rest.AzureRestServiceException;
 import org.opencredo.storage.azure.rest.ContainerListFactory;
@@ -41,6 +42,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * TODO Add comments.
+ * 
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  * 
  */
@@ -80,12 +82,14 @@ public class DefaultAzureRestService implements AzureRestService {
 
         try {
             HttpResponse response = client.execute(req);
-            LOG.debug("Create Azure container '{}' response status line: '{}'", containerName, response.getStatusLine());
+            LOG
+                    .debug("Create Azure container '{}' response status line: '{}'", containerName, response
+                            .getStatusLine());
             responseHandler.handleCreateContainerResponse(response, containerName);
-        } catch (ClientProtocolException e) {
+        } catch (AzureRestServiceException e) {
             throw new StorageCommunicationException(e, "Create Azure container '%s' problem", containerName);
         } catch (IOException e) {
-            throw new StorageCommunicationException(e, "Create Azure container '%s' IO problem", containerName);
+            throw new AzureRestServiceException(e, "Create Azure container '%s' IO problem", containerName);
         }
     }
 
@@ -103,12 +107,14 @@ public class DefaultAzureRestService implements AzureRestService {
 
         try {
             HttpResponse response = client.execute(req);
-            LOG.debug("Delete Azure container '{}' response status line: '{}'", containerName, response.getStatusLine());
+            LOG
+                    .debug("Delete Azure container '{}' response status line: '{}'", containerName, response
+                            .getStatusLine());
             responseHandler.handleDeleteContainerResponse(response, containerName);
         } catch (ClientProtocolException e) {
-            throw new StorageCommunicationException(e, "Delete Azure container '%s' problem", containerName);
+            throw new AzureRestServiceException(e, "Delete Azure container '%s' problem", containerName);
         } catch (IOException e) {
-            throw new StorageCommunicationException(e, "Delete Azure container '%s' IO problem", containerName);
+            throw new AzureRestServiceException(e, "Delete Azure container '%s' IO problem", containerName);
         }
     }
 
@@ -152,7 +158,7 @@ public class DefaultAzureRestService implements AzureRestService {
      * @see org.opencredo.storage.azure.rest.AzureRestService#getObject(java.lang.String,
      *      java.lang.String)
      */
-    public Blob getObject(String containerName, String blobName) throws AzureRestServiceException {
+    public InputStreamBlob getObject(String containerName, String blobName) throws AzureRestServiceException {
 
         LOG.debug("Receive blob '{}' from Azure container '{}' as string", blobName, containerName);
 
@@ -171,11 +177,11 @@ public class DefaultAzureRestService implements AzureRestService {
 
             return responseHandler.handleGetObjectResponse(response, containerName, blobName);
         } catch (ClientProtocolException e) {
-            throw new StorageCommunicationException(e, "Receive blob '%s' from Azure container '%s' problem", blobName,
+            throw new AzureRestServiceException(e, "Receive blob '%s' from Azure container '%s' problem", blobName,
                     containerName);
         } catch (IOException e) {
-            throw new StorageCommunicationException(e, "Receive blob '%s' from Azure container '%s' IO problem",
-                    blobName, containerName);
+            throw new AzureRestServiceException(e, "Receive blob '%s' from Azure container '%s' IO problem", blobName,
+                    containerName);
         }
     }
 
@@ -196,9 +202,9 @@ public class DefaultAzureRestService implements AzureRestService {
 
             return responseHandler.handleListContainersResponse(response);
         } catch (ClientProtocolException e) {
-            throw new StorageCommunicationException("List Azure containers problem", e);
+            throw new AzureRestServiceException("List Azure containers problem", e);
         } catch (IOException e) {
-            throw new StorageCommunicationException("List Azure containers IO problem", e);
+            throw new AzureRestServiceException("List Azure containers IO problem", e);
         }
     }
 
@@ -209,16 +215,16 @@ public class DefaultAzureRestService implements AzureRestService {
      * @see org.opencredo.storage.azure.rest.AzureRestService#putObject(java.lang.String,
      *      org.opencredo.storage.azure.model.Blob)
      */
-    public void putObject(String containerName, Blob blob) throws AzureRestServiceException {
+    public void putObject(String containerName, Blob<?> blob) throws AzureRestServiceException {
 
         LOG.debug("Send string as blob '{}' to Azure container '{}'", blob.getName(), containerName);
 
         HttpEntity entity;
         try {
-            entity = new StringEntity(blob.getStringContent());
-        } catch (UnsupportedEncodingException e) {
-            throw new StorageCommunicationException("Usupported encoding of string to be send to container '"
-                    + containerName + "' as blob '" + blob.getName() + "'.", e);
+            entity = blob.createRequestBody();
+        } catch (AzureRestRequestCreationException e) {
+            throw new AzureRestRequestCreationException(e,
+                    "Failed to create request body as blob '{}' in container '{}'", blob.getName(), containerName);
         }
 
         HttpClient client = createClient();
@@ -238,11 +244,11 @@ public class DefaultAzureRestService implements AzureRestService {
 
             responseHandler.handlePutObjectResponse(response, containerName, blob);
         } catch (ClientProtocolException e) {
-            throw new StorageCommunicationException(e, "Send string as blob '%s' to Azure container '%s' problem", blob
+            throw new AzureRestServiceException(e, "Send string as blob '%s' to Azure container '%s' problem", blob
                     .getName(), containerName);
         } catch (IOException e) {
-            throw new StorageCommunicationException(e, "Send string as blob '%s' to Azure container '%s' IO problem",
-                    blob.getName(), containerName);
+            throw new AzureRestServiceException(e, "Send string as blob '%s' to Azure container '%s' IO problem", blob
+                    .getName(), containerName);
         }
 
     }
@@ -267,9 +273,9 @@ public class DefaultAzureRestService implements AzureRestService {
 
             return responseHandler.handleListContainerObjectsResponse(response, containerName);
         } catch (ClientProtocolException e) {
-            throw new StorageCommunicationException(e, "List objects in Azure container '%s' problem", containerName);
+            throw new AzureRestServiceException(e, "List objects in Azure container '%s' problem", containerName);
         } catch (IOException e) {
-            throw new StorageCommunicationException(e, "List objects in Azure container '%s' IO problem", containerName);
+            throw new AzureRestServiceException(e, "List objects in Azure container '%s' IO problem", containerName);
         }
     }
 
@@ -281,5 +287,29 @@ public class DefaultAzureRestService implements AzureRestService {
         DefaultHttpClient httpClient = new DefaultHttpClient();
         httpClient.addRequestInterceptor(authorizationInterceptor);
         return httpClient;
+    }
+
+    /**
+     * @param containerName
+     * @return
+     * @throws AzureRestServiceException
+     * @see org.opencredo.storage.azure.rest.AzureRestService#checkContainerStatus(java.lang.String)
+     */
+    public ContainerStatus checkContainerStatus(String containerName) throws AzureRestServiceException {
+        HttpClient client = createClient();
+        HttpGet req = new HttpGet(String.format(blobUrlFormat, credentials.getAccountName(), containerName
+                + "?restype=container&comp=list"));
+
+        try {
+            HttpResponse response = client.execute(req);
+            LOG.debug("Check status for Azure container '{}' response status line: '{}'", containerName, response
+                    .getStatusLine());
+
+            return responseHandler.handleCheckContainerStatus(response, containerName);
+        } catch (ClientProtocolException e) {
+            throw new AzureRestServiceException(e, "Check status for Azure container '%s' problem", containerName);
+        } catch (IOException e) {
+            throw new AzureRestServiceException(e, "Check status for Azure container '%s' IO problem", containerName);
+        }
     }
 }

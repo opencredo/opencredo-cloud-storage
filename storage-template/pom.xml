@@ -11,4 +11,12 @@
 	<artifactId>storage-template</artifactId>
 	<name>OpenCredo Cloud Storage Template</name>
 	<version>${project.parent.version}</version>
+	<dependencies>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>${commonsIOVersion}</version>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
 </project>

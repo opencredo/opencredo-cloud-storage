@@ -18,7 +18,9 @@ import java.util.List;
 
 import org.apache.http.HttpResponse;
 import org.opencredo.storage.BlobObject;
+import org.opencredo.storage.ContainerStatus;
 import org.opencredo.storage.azure.model.Blob;
+import org.opencredo.storage.azure.model.InputStreamBlob;
 
 /**
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
@@ -61,7 +63,7 @@ public interface RestResponseHandler {
      * @throws AzureRestServiceException
      * @throws AzureRestResponseHandlingException
      */
-    Blob handleGetObjectResponse(HttpResponse response, String containerName, String blobName)
+    InputStreamBlob handleGetObjectResponse(HttpResponse response, String containerName, String blobName)
             throws AzureRestServiceException, AzureRestResponseHandlingException;
 
     /**
@@ -91,6 +93,15 @@ public interface RestResponseHandler {
      * @param blob
      * @throws AzureRestServiceException
      */
-    void handlePutObjectResponse(HttpResponse response, String containerName, Blob blob)
+    void handlePutObjectResponse(HttpResponse response, String containerName, Blob<?> blob)
             throws AzureRestServiceException;
+
+    /**
+     * 
+     * @param response
+     * @param containerName
+     * @return
+     * @throws AzureRestServiceException
+     */
+    ContainerStatus handleCheckContainerStatus(HttpResponse response, String containerName) throws AzureRestServiceException;
 }

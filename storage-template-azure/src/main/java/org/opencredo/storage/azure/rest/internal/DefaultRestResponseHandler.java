@@ -20,7 +20,9 @@ import java.util.List;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.opencredo.storage.BlobObject;
+import org.opencredo.storage.ContainerStatus;
 import org.opencredo.storage.azure.model.Blob;
+import org.opencredo.storage.azure.model.InputStreamBlob;
 import org.opencredo.storage.azure.rest.AzureRestResponseHandlingException;
 import org.opencredo.storage.azure.rest.AzureRestServiceException;
 import org.opencredo.storage.azure.rest.ContainerListFactory;
@@ -105,7 +107,7 @@ public class DefaultRestResponseHandler implements RestResponseHandler {
      * @see org.opencredo.storage.azure.rest.RestResponseHandler#handlePutObjectResponse(org.apache.http.HttpResponse,
      *      java.lang.String, org.opencredo.storage.azure.model.Blob)
      */
-    public void handlePutObjectResponse(HttpResponse response, String containerName, Blob blob)
+    public void handlePutObjectResponse(HttpResponse response, String containerName, Blob<?> blob)
             throws AzureRestServiceException {
         if (response.getStatusLine().getStatusCode() != HttpStatus.SC_CREATED) {
             throw new AzureRestServiceException("Failed to add blob '%s' in Azure container '%s'. Reason: '%s %d: %s'",
@@ -124,7 +126,7 @@ public class DefaultRestResponseHandler implements RestResponseHandler {
      * @see org.opencredo.storage.azure.rest.RestResponseHandler#handleGetObjectResponse(org.apache.http.HttpResponse,
      *      java.lang.String, java.lang.String)
      */
-    public Blob handleGetObjectResponse(HttpResponse response, String containerName, String blobName)
+    public InputStreamBlob handleGetObjectResponse(HttpResponse response, String containerName, String blobName)
             throws AzureRestServiceException, AzureRestResponseHandlingException {
         if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
             throw new AzureRestServiceException("Failed to get blob '%s' in Azure container '%s'. Reason: '%s %d: %s'",
@@ -133,7 +135,7 @@ public class DefaultRestResponseHandler implements RestResponseHandler {
         }
 
         try {
-            return new Blob(blobName, response.getEntity().getContent());
+            return new InputStreamBlob(blobName, response.getEntity().getContent());
         } catch (IllegalStateException e) {
             throw new AzureRestResponseHandlingException("Failed to get content", e);
         } catch (IOException e) {
@@ -188,6 +190,30 @@ public class DefaultRestResponseHandler implements RestResponseHandler {
         } catch (AzureRestResponseHandlingException e) {
             throw new AzureRestResponseHandlingException("Failed to load Azure containers list from response.", e);
         }
+    }
+
+    /**
+     * 
+     * @param response
+     * @param containerName
+     * @return
+     * @throws AzureRestServiceException
+     * @see org.opencredo.storage.azure.rest.RestResponseHandler#handleCheckContainerStatus(org.apache.http.HttpResponse,
+     *      java.lang.String)
+     */
+    public ContainerStatus handleCheckContainerStatus(HttpResponse response, String containerName)
+            throws AzureRestServiceException {
+        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+            return ContainerStatus.MINE;
+        }
+
+        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
+            return ContainerStatus.DOES_NOT_EXIST;
+        }
+
+        throw new AzureRestServiceException("Unexpected Azure containers '{}' status. Reason: '%s %d: %s'",
+                containerName, response.getStatusLine().getProtocolVersion().getProtocol(), response.getStatusLine()
+                        .getStatusCode(), response.getStatusLine().getReasonPhrase());
     }
 
 }

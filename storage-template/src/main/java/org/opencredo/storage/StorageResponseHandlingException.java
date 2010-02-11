@@ -1,4 +1,4 @@
-/* Copyright 2009-2010 the original author or authors.
+/* Copyright 2008 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,59 +12,59 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.opencredo.storage.azure.rest;
+package org.opencredo.storage;
 
 /**
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
- * 
  */
-public class AzureRestRequestCreationException extends AzureRestServiceException {
+public class StorageResponseHandlingException extends StorageException {
 
-    private static final long serialVersionUID = -7464153324139255021L;
+    private static final long serialVersionUID = -6954894808311421881L;
 
     /**
      * 
      */
-    public AzureRestRequestCreationException() {
+    public StorageResponseHandlingException() {
         super();
     }
 
     /**
-     * @param message
-     */
-    public AzureRestRequestCreationException(String message) {
-        super(message);
-    }
-
-    /**
-     * @param message
-     * @param cause
-     */
-    public AzureRestRequestCreationException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    /**
-     * @param cause
-     */
-    public AzureRestRequestCreationException(Throwable cause) {
-        super(cause);
-    }
-
-    /**
      * @param messageFormat
      * @param params
      */
-    public AzureRestRequestCreationException(String messageFormat, Object... params) {
+    public StorageResponseHandlingException(String messageFormat, Object... params) {
         super(messageFormat, params);
     }
 
     /**
+     * @param message
+     * @param cause
+     */
+    public StorageResponseHandlingException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    /**
+     * @param message
+     */
+    public StorageResponseHandlingException(String message) {
+        super(message);
+    }
+
+    /**
      * @param cause
      * @param messageFormat
      * @param params
      */
-    public AzureRestRequestCreationException(Throwable cause, String messageFormat, Object... params) {
+    public StorageResponseHandlingException(Throwable cause, String messageFormat, Object... params) {
         super(cause, messageFormat, params);
     }
+
+    /**
+     * @param cause
+     */
+    public StorageResponseHandlingException(Throwable cause) {
+        super(cause);
+    }
+
 }

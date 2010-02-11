@@ -159,8 +159,11 @@ public interface StorageOperations {
      *            received.
      * @return
      * @throws StorageCommunicationException
+     * @throws StorageResponseHandlingException
+     *             TODO
      */
-    public String receiveAsString(String objectName) throws StorageCommunicationException;
+    public String receiveAsString(String objectName) throws StorageCommunicationException,
+            StorageResponseHandlingException;
 
     /**
      * Receive the object as String from cloud storage container.
@@ -172,8 +175,11 @@ public interface StorageOperations {
      *            received.
      * @return
      * @throws StorageCommunicationException
+     * @throws StorageResponseHandlingException
+     *             TODO
      */
-    public String receiveAsString(String containerName, String objectName) throws StorageCommunicationException;
+    public String receiveAsString(String containerName, String objectName) throws StorageCommunicationException,
+            StorageResponseHandlingException;
 
     /**
      * Receive the object as File from cloud storage container. Default bucket
@@ -182,23 +188,32 @@ public interface StorageOperations {
      * @param objectName
      *            The name of object in the cloud storage container to be
      *            received.
-     * @return
+     * @param toFile
+     *            TODO
      * @throws StorageCommunicationException
+     * @throws StorageResponseHandlingException
+     *             TODO
      */
-    public File receiveAsFile(String objectName) throws StorageCommunicationException;
+    public void receiveAndSaveToFile(String objectName, File toFile) throws StorageCommunicationException,
+            StorageResponseHandlingException;
 
     /**
-     * Receive the object as File from cloud storage container.
+     * Receive the object from cloud storage container and save it to specified
+     * file.
      * 
      * @param containerName
      *            The name of the cloud storage container.
      * @param objectName
      *            The name of object in the cloud storage container to be
      *            received.
-     * @return
+     * @param toFile
+     *            TODO
      * @throws StorageCommunicationException
+     * @throws StorageResponseHandlingException
+     *             TODO
      */
-    public File receiveAsFile(String containerName, String objectName) throws StorageCommunicationException;
+    public void receiveAndSaveToFile(String containerName, String objectName, File toFile)
+            throws StorageCommunicationException, StorageResponseHandlingException;
 
     /**
      * Receive the object as InputStream from cloud storage container. Default
@@ -209,8 +224,11 @@ public interface StorageOperations {
      *            received.
      * @return
      * @throws StorageCommunicationException
+     * @throws StorageResponseHandlingException
+     *             TODO
      */
-    public InputStream receiveAsInputStream(String objectName) throws StorageCommunicationException;
+    public InputStream receiveAsInputStream(String objectName) throws StorageCommunicationException,
+            StorageResponseHandlingException;
 
     /**
      * Receive the object as InputStream from cloud storage container.
@@ -222,9 +240,11 @@ public interface StorageOperations {
      *            received.
      * @return
      * @throws StorageCommunicationException
+     * @throws StorageResponseHandlingException
+     *             TODO
      */
     public InputStream receiveAsInputStream(String containerName, String objectName)
-            throws StorageCommunicationException;
+            throws StorageCommunicationException, StorageResponseHandlingException;
 
     /**
      * Delete the object from cloud storage container.

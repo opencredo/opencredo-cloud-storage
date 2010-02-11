@@ -14,41 +14,47 @@
  */
 package org.opencredo.storage.azure.model;
 
+import java.io.UnsupportedEncodingException;
+
 import org.apache.http.HttpEntity;
+import org.apache.http.entity.StringEntity;
 import org.opencredo.storage.azure.rest.AzureRestRequestCreationException;
-import org.springframework.util.Assert;
 
 /**
- * FIXME: Need to support blob from file, InputStream etc.
- * 
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  * 
  */
-public abstract class Blob<T> {
+public class StringBlob extends Blob<String> {
 
-    private final String name;
+    private final String data;
 
-    public Blob(String name) {
-        Assert.hasText(name, "Blob name must be specified.");
-        this.name = name;
+    /**
+     * @param name
+     */
+    public StringBlob(String name, String data) {
+        super(name);
+        this.data = data;
     }
 
     /**
-     * @return the objectName
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @return the data
-     */
-    public abstract T getData();
-    
-    /**
-     * Creates request body from data it has.ì
      * @return
+     * @see org.opencredo.storage.azure.model.Blob#getData()
      */
-    public abstract HttpEntity createRequestBody() throws AzureRestRequestCreationException;
+    @Override
+    public String getData() {
+        return data;
+    }
 
+    /**
+     * @return
+     * @see org.opencredo.storage.azure.model.Blob#createRequestBody()
+     */
+    @Override
+    public HttpEntity createRequestBody() throws AzureRestRequestCreationException {
+        try {
+            return new StringEntity(data);
+        } catch (UnsupportedEncodingException e) {
+            throw new AzureRestRequestCreationException("Usupported string encoding", e);
+        }
+    }
 }

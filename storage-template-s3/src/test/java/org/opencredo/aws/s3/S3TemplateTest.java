@@ -15,7 +15,6 @@
 package org.opencredo.aws.s3;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -34,7 +33,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.jets3t.service.S3Service;
 import org.jets3t.service.S3ServiceException;
@@ -63,7 +61,7 @@ public class S3TemplateTest {
 
     private static String BUCKET_NAME = "bucket1";
     private static String KEY = "key1";
-    private static String TEST_FILE_NAME = "test.txt";
+    private static String TEST_FILE_NAME = "test-s3.txt";
     private static final S3BucketNameMatcher S3_BUCKET_NAME_MATCHER = new S3BucketNameMatcher();
     private static final S3ObjectMatcher S3_OBJECT_MATCHER = new S3ObjectMatcher(KEY);
 
@@ -92,7 +90,8 @@ public class S3TemplateTest {
 
     /**
      * Test method for
-     * {@link org.opencredo.aws.s3.S3Template#createContainer(java.lang.String)}.
+     * {@link org.opencredo.aws.s3.S3Template#createContainer(java.lang.String)}
+     * .
      * 
      * @throws S3ServiceException
      */
@@ -105,7 +104,8 @@ public class S3TemplateTest {
 
     /**
      * Test method for
-     * {@link org.opencredo.aws.s3.S3Template#createContainer(java.lang.String)}.
+     * {@link org.opencredo.aws.s3.S3Template#createContainer(java.lang.String)}
+     * .
      * 
      * @throws S3ServiceException
      */
@@ -118,7 +118,8 @@ public class S3TemplateTest {
 
     /**
      * Test method for
-     * {@link org.opencredo.aws.s3.S3Template#deleteContainer(java.lang.String)}.
+     * {@link org.opencredo.aws.s3.S3Template#deleteContainer(java.lang.String)}
+     * .
      * 
      * @throws S3ServiceException
      */
@@ -130,7 +131,8 @@ public class S3TemplateTest {
 
     /**
      * Test method for
-     * {@link org.opencredo.aws.s3.S3Template#deleteContainer(java.lang.String)}.
+     * {@link org.opencredo.aws.s3.S3Template#deleteContainer(java.lang.String)}
+     * .
      * 
      * @throws S3ServiceException
      */
@@ -408,19 +410,24 @@ public class S3TemplateTest {
 
     /**
      * Test method for
-     * {@link org.opencredo.aws.s3.S3Template#receiveAsFile(java.lang.String)}.
+     * {@link org.opencredo.aws.s3.S3Template#receiveAndSaveToFile(java.lang.String, File)}
+     * .
      * 
      * @throws S3ServiceException
+     * @throws IOException
+     * @throws StorageCommunicationException
      */
     @Test(expected = StorageCommunicationException.class)
-    public void testReceiveAsFileCauseS3CommunicationException() throws S3ServiceException {
+    public void testReceiveAsFileCauseS3CommunicationException() throws S3ServiceException,
+            StorageCommunicationException, IOException {
         doThrow(new S3ServiceException()).when(s3Service).getObject(argThat(S3_BUCKET_NAME_MATCHER), eq(KEY));
-        template.receiveAsFile(BUCKET_NAME, KEY);
+        template.receiveAndSaveToFile(BUCKET_NAME, KEY, File.createTempFile(getClass().getSimpleName(), ".txt"));
     }
 
     /**
      * Test method for
-     * {@link org.opencredo.aws.s3.S3Template#receiveAsFile(java.lang.String)}.
+     * {@link org.opencredo.aws.s3.S3Template#receiveAndSaveToFile(java.lang.String, File)}
+     * .
      * 
      * @throws S3ServiceException
      * @throws IOException
@@ -428,19 +435,11 @@ public class S3TemplateTest {
      */
     @Test
     public void testReceiveAsFile() throws S3ServiceException, NoSuchAlgorithmException, IOException {
-        String orgFileContent = FileUtils.readFileToString(TEST_FILE);
         doReturn(new S3Object(TEST_FILE)).when(s3Service).getObject(argThat(S3_BUCKET_NAME_MATCHER), eq(KEY));
 
-        File received = template.receiveAsFile(BUCKET_NAME, KEY);
-        System.out.println("Received file: " + received);
+        template.receiveAndSaveToFile(BUCKET_NAME, KEY, File.createTempFile(getClass().getSimpleName(), ".txt"));
 
         verify(s3Service).getObject(argThat(S3_BUCKET_NAME_MATCHER), eq(KEY));
-
-        assertTrue("Received file does not exist", received.exists());
-
-        String receivedFileContent = FileUtils.readFileToString(received);
-
-        assertEquals(orgFileContent, receivedFileContent);
     }
 
     /**

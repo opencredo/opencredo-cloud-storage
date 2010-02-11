@@ -14,41 +14,43 @@
  */
 package org.opencredo.storage.azure.model;
 
+import java.io.InputStream;
+
 import org.apache.http.HttpEntity;
-import org.opencredo.storage.azure.rest.AzureRestRequestCreationException;
-import org.springframework.util.Assert;
+import org.apache.http.entity.InputStreamEntity;
 
 /**
- * FIXME: Need to support blob from file, InputStream etc.
- * 
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
- * 
+ *
  */
-public abstract class Blob<T> {
+public class InputStreamBlob extends Blob<InputStream> {
 
-    private final String name;
-
-    public Blob(String name) {
-        Assert.hasText(name, "Blob name must be specified.");
-        this.name = name;
+    private final InputStream data;
+    /**
+     * @param name
+     */
+    public InputStreamBlob(String name, InputStream data) {
+        super(name);
+        this.data = data;
     }
 
     /**
-     * @return the objectName
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @return the data
-     */
-    public abstract T getData();
-    
-    /**
-     * Creates request body from data it has.ì
      * @return
+     * @see org.opencredo.storage.azure.model.Blob#getData()
      */
-    public abstract HttpEntity createRequestBody() throws AzureRestRequestCreationException;
+    @Override
+    public InputStream getData() {
+        return data;
+    }
+
+    /**
+     * @return
+     * @see org.opencredo.storage.azure.model.Blob#createRequestBody()
+     */
+    @Override
+    public HttpEntity createRequestBody() {
+        // FIXME: Calculate size - currently is 0
+        return new InputStreamEntity(data, 0);
+    }
 
 }
