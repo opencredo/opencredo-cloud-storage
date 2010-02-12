@@ -14,8 +14,9 @@
  */
 package org.opencredo.cloud.storage.azure.rest;
 
-
 /**
+ * Azure Blob REST API request creation exception.
+ * 
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  * 
  */
@@ -60,7 +61,7 @@ public class AzureRestRequestCreationException extends AzureRestException {
     public AzureRestRequestCreationException(String messageFormat, Object... params) {
         super(messageFormat, params);
     }
-    
+
     /**
      * 
      * @param cause

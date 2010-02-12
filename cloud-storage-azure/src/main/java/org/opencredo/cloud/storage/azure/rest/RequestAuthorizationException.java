@@ -17,8 +17,7 @@ package org.opencredo.cloud.storage.azure.rest;
 import org.apache.http.ProtocolException;
 
 /**
- * This exception occurs if creation of Azure Blob REST API request fails (e.g.
- * request authorization fails).
+ * This exception occurs if Azure Blob REST API request fails.
  * 
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  * 

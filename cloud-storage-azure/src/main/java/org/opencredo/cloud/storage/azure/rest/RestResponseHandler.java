@@ -23,7 +23,7 @@ import org.opencredo.cloud.storage.azure.model.Blob;
 import org.opencredo.cloud.storage.azure.model.InputStreamBlob;
 
 /**
- * Interface defining response handling methods.
+ * Interface defining Azure Blob REST API response handling methods.
  * 
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  */

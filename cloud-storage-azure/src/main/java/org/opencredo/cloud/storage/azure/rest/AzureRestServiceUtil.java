@@ -22,6 +22,8 @@ import java.util.Date;
 import org.apache.commons.lang.time.DateFormatUtils;
 
 /**
+ * Utils for Azure REST API.
+ * 
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  * 
  */
@@ -30,13 +32,23 @@ public class AzureRestServiceUtil {
     public static final String RFC1123_DATE_PATTERN = "EEE, dd MMM yyyy HH:mm:ss z";
     private static final DateFormat rfc1123_dateFormatter = new SimpleDateFormat(RFC1123_DATE_PATTERN);
 
+    /**
+     * 
+     * @return Returns current time string in RFC1123 pattern.
+     */
     public static String currentTimeStringInRFC1123() {
         return DateFormatUtils.formatUTC(System.currentTimeMillis(), RFC1123_DATE_PATTERN);
     }
-    
+
+    /**
+     * Parses date in RFC1123 string.
+     * 
+     * @param dateStr
+     * @return
+     * @throws ParseException
+     */
     public static Date parseRFC1123TimeString(String dateStr) throws ParseException {
         return rfc1123_dateFormatter.parse(dateStr);
     }
-    
-    
+
 }

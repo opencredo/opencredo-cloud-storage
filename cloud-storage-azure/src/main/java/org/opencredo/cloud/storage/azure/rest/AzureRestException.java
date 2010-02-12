@@ -14,8 +14,9 @@
  */
 package org.opencredo.cloud.storage.azure.rest;
 
-
 /**
+ * Root exception for Azure REST Blob API.
+ * 
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  * 
  */
@@ -60,7 +61,7 @@ public class AzureRestException extends Exception {
     public AzureRestException(String messageFormat, Object... params) {
         super(String.format(messageFormat, params));
     }
-    
+
     /**
      * 
      * @param cause

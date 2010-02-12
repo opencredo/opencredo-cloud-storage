@@ -33,6 +33,8 @@ import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 /**
+ * Container names factory using XPath to get data.
+ * 
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  * 
  */

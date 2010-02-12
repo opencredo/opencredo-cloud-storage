@@ -30,6 +30,7 @@ import org.opencredo.cloud.storage.azure.rest.ContainerObjectDetailsListFactory;
 import org.opencredo.cloud.storage.azure.rest.RestResponseHandler;
 
 /**
+ * Default response handler for Azure Blob REST API.
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  * 
  */
