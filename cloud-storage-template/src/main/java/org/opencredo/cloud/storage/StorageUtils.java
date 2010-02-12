@@ -21,12 +21,23 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
+ * Utility class.
+ * 
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  * 
  */
-public class StorageResponseUtils {
+public class StorageUtils {
 
-    public static void responseStreamToFile(InputStream is, File toFile) throws IOException {
+    /**
+     * Write InputStream to provided class.
+     * 
+     * @param is
+     *            Input stream.
+     * @param toFile
+     *            Class where input stream should be written.
+     * @throws IOException
+     */
+    public static void writeStreamToFile(InputStream is, File toFile) throws IOException {
         OutputStream os = null;
         try {
             os = new FileOutputStream(toFile);

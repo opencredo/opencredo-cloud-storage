@@ -41,7 +41,7 @@ import org.jets3t.service.model.S3Object;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
-import org.opencredo.cloud.storage.BlobObject;
+import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.ContainerStatus;
 import org.opencredo.cloud.storage.StorageCommunicationException;
 import org.opencredo.cloud.storage.StorageException;
@@ -173,18 +173,18 @@ public class S3TemplateTest {
     }
 
     /**
-     * Test method for {@link org.opencredo.cloud.storage.s3.S3Template#listContainers()}.
+     * Test method for {@link org.opencredo.cloud.storage.s3.S3Template#listContainerNames()}.
      * 
      * @throws S3ServiceException
      */
     @Test(expected = StorageCommunicationException.class)
     public void testListBucketsCauseS3CommunicationException() throws S3ServiceException {
         doThrow(new S3ServiceException()).when(s3Service).listAllBuckets();
-        template.listContainers();
+        template.listContainerNames();
     }
 
     /**
-     * Test method for {@link org.opencredo.cloud.storage.s3.S3Template#listContainers()}.
+     * Test method for {@link org.opencredo.cloud.storage.s3.S3Template#listContainerNames()}.
      * 
      * @throws S3ServiceException
      */
@@ -192,12 +192,12 @@ public class S3TemplateTest {
     public void testListBuckets() throws S3ServiceException {
         S3Bucket[] objs = new S3Bucket[] { new S3Bucket("name1"), new S3Bucket("name2") };
         doReturn(objs).when(s3Service).listAllBuckets();
-        String[] listBuckets = template.listContainers();
+        List<String> listBuckets = template.listContainerNames();
         verify(s3Service).listAllBuckets();
 
-        assertEquals(2, listBuckets.length);
-        assertEquals("name1", listBuckets[0]);
-        assertEquals("name2", listBuckets[1]);
+        assertEquals(2, listBuckets.size());
+        assertEquals("name1", listBuckets.get(0));
+        assertEquals("name2", listBuckets.get(1));
     }
 
     /**
@@ -254,7 +254,7 @@ public class S3TemplateTest {
 
     /**
      * Test method for
-     * {@link org.opencredo.cloud.storage.s3.S3Template#listContainerObjects(java.lang.String)}
+     * {@link org.opencredo.cloud.storage.s3.S3Template#listContainerObjectDetails(java.lang.String)}
      * .
      * 
      * @throws S3ServiceException
@@ -262,12 +262,12 @@ public class S3TemplateTest {
     @Test(expected = StorageCommunicationException.class)
     public void testListBucketObjectsCauseS3CommunicationException() throws S3ServiceException {
         doThrow(new S3ServiceException()).when(s3Service).listObjects(argThat(S3_BUCKET_NAME_MATCHER));
-        template.listContainerObjects(BUCKET_NAME);
+        template.listContainerObjectDetails(BUCKET_NAME);
     }
 
     /**
      * Test method for
-     * {@link org.opencredo.cloud.storage.s3.S3Template#listContainerObjects(java.lang.String)}
+     * {@link org.opencredo.cloud.storage.s3.S3Template#listContainerObjectDetails(java.lang.String)}
      * .
      * 
      * @throws S3ServiceException
@@ -283,7 +283,7 @@ public class S3TemplateTest {
         }
 
         doReturn(objs).when(s3Service).listObjects(argThat(S3_BUCKET_NAME_MATCHER));
-        List<BlobObject> bucketObjects = template.listContainerObjects(BUCKET_NAME);
+        List<BlobDetails> bucketObjects = template.listContainerObjectDetails(BUCKET_NAME);
         verify(s3Service).listObjects(argThat(S3_BUCKET_NAME_MATCHER));
         assertEquals(objs.length, bucketObjects.size());
 

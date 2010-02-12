@@ -24,7 +24,7 @@ import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.opencredo.cloud.storage.BlobObject;
+import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.si.filter.internal.PatternMatchingBlobObjectIdFilter;
 
 /**
@@ -40,9 +40,9 @@ public class PatternMatchingBlobObjectIdFilterTest {
     @Test
     public void matchSingleObject() {
 
-        BlobObject[] s3Objects = new BlobObject[] { new BlobObject("", testKey, "", currentDate) };
+        BlobDetails[] s3Objects = new BlobDetails[] { new BlobDetails("", testKey, "", currentDate) };
         PatternMatchingBlobObjectIdFilter filter = new PatternMatchingBlobObjectIdFilter(testKey);
-        List<BlobObject> accepted = filter.filter(Arrays.asList(s3Objects));
+        List<BlobDetails> accepted = filter.filter(Arrays.asList(s3Objects));
 
         assertEquals(1, accepted.size());
     }
@@ -50,10 +50,10 @@ public class PatternMatchingBlobObjectIdFilterTest {
     @Test
     public void matchSubset() {
 
-        BlobObject[] s3Objects = new BlobObject[] { new BlobObject("", testKey, "", currentDate),
-                new BlobObject("", "a", "", currentDate) };
+        BlobDetails[] s3Objects = new BlobDetails[] { new BlobDetails("", testKey, "", currentDate),
+                new BlobDetails("", "a", "", currentDate) };
         PatternMatchingBlobObjectIdFilter filter = new PatternMatchingBlobObjectIdFilter(testKey);
-        List<BlobObject> accepted = filter.filter(Arrays.asList(s3Objects));
+        List<BlobDetails> accepted = filter.filter(Arrays.asList(s3Objects));
 
         assertEquals(1, accepted.size());
     }

@@ -15,6 +15,9 @@
 package org.opencredo.cloud.storage;
 
 /**
+ * This exception is thrown when exception occurs during response data handling
+ * (e.g. Converting response byte stream to String).
+ * 
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  */
 public class StorageResponseHandlingException extends StorageException {

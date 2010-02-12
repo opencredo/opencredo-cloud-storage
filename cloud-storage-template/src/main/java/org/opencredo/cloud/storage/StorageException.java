@@ -15,6 +15,8 @@
 package org.opencredo.cloud.storage;
 
 /**
+ * This is root runtime exception in Cloud Storage exception hierarchy.
+ * 
  * @author Eren Aykin (eren.aykin@opencredo.com)
  */
 public class StorageException extends RuntimeException {
@@ -58,7 +60,7 @@ public class StorageException extends RuntimeException {
     public StorageException(String messageFormat, Object... params) {
         super(String.format(messageFormat, params));
     }
-    
+
     /**
      * 
      * @param cause

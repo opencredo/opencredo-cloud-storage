@@ -16,46 +16,97 @@ package org.opencredo.cloud.storage.azure.rest;
 
 import java.util.List;
 
-import org.opencredo.cloud.storage.BlobObject;
+import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.ContainerStatus;
 import org.opencredo.cloud.storage.azure.model.Blob;
 import org.opencredo.cloud.storage.azure.model.InputStreamBlob;
 
 /**
+ * Interface specifying basic interactions with Azure Blob REST API.
+ * 
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  * 
  */
 public interface AzureRestService {
 
-    void createContainer(String containerName) throws AzureRestServiceException;
-
-    void deleteContainer(String containerName) throws AzureRestServiceException;
+    /**
+     * Create container in Azure cloud storage.
+     * 
+     * @param containerName
+     * @throws AzureRestCommunicationException
+     * @throws AzureRestResponseHandlingException 
+     */
+    void createContainer(String containerName) throws AzureRestCommunicationException, AzureRestResponseHandlingException;
 
     /**
+     * Delete container from Azure cloud storage.
+     * 
+     * @param containerName
+     * @throws AzureRestCommunicationException
+     * @throws AzureRestResponseHandlingException 
+     */
+    void deleteContainer(String containerName) throws AzureRestCommunicationException, AzureRestResponseHandlingException;
+
+    /**
+     * List container names in Azure cloud storage.
      * 
      * @return Returns list of container names, or empty list if containers not
      *         found.
-     * @throws AzureRestServiceException
+     * @throws AzureRestCommunicationException
+     * @throws AzureRestResponseHandlingException 
      */
-    List<String> listContainers() throws AzureRestServiceException;
-
-    void deleteObject(String containerName, String blobName) throws AzureRestServiceException;
-
-    void putObject(String containerName, Blob<?> blob) throws AzureRestServiceException;
-
-    InputStreamBlob getObject(String containerName, String blobName) throws AzureRestServiceException;
+    List<String> listContainerNames() throws AzureRestCommunicationException, AzureRestResponseHandlingException;
 
     /**
+     * Delete object from Azure cloud storage container.
      * 
-     * @return Returns container objects list, or empty list if container does
-     *         not contain any objects.
-     * @throws AzureRestServiceException
+     * @param containerName
+     * @param blobName
+     * @throws AzureRestCommunicationException
+     * @throws AzureRestResponseHandlingException 
      */
-    List<BlobObject> listContainerObjects(String containerName) throws AzureRestServiceException;
+    void deleteObject(String containerName, String blobName) throws AzureRestCommunicationException, AzureRestResponseHandlingException;
 
     /**
+     * Add object into Azure cloud storage container.
+     * 
+     * @param containerName
+     * @param blob
+     * @throws AzureRestRequestCreationException
+     * @throws AzureRestCommunicationException
+     * @throws AzureRestResponseHandlingException 
+     */
+    void putObject(String containerName, Blob<?> blob) throws AzureRestRequestCreationException, AzureRestCommunicationException, AzureRestResponseHandlingException;
+
+    /**
+     * Get object from Azure cloud storage container.
+     * 
+     * @param containerName
+     * @param blobName
+     * @return
+     * @throws AzureRestCommunicationException
+     * @throws AzureRestResponseHandlingException
+     */
+    InputStreamBlob getObject(String containerName, String blobName) throws AzureRestCommunicationException,
+            AzureRestResponseHandlingException;
+
+    /**
+     * List object details in specified Azure cloud storage container.
+     * 
+     * @return Returns container object details list, or empty list if container
+     *         does not contain any objects.
+     * @throws AzureRestCommunicationException
+     * @throws AzureRestResponseHandlingException 
+     */
+    List<BlobDetails> listContainerObjectDetails(String containerName) throws AzureRestCommunicationException, AzureRestResponseHandlingException;
+
+    /**
+     * Check the status of the container.
+     * 
      * @param containerName
      * @return
+     * @throws AzureRestCommunicationException 
+     * @throws AzureRestResponseHandlingException 
      */
-    ContainerStatus checkContainerStatus(String containerName) throws AzureRestServiceException;
+    ContainerStatus checkContainerStatus(String containerName) throws AzureRestCommunicationException, AzureRestResponseHandlingException;
 }

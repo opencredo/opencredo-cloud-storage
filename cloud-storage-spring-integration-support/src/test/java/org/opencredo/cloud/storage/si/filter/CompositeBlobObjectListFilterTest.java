@@ -28,7 +28,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.opencredo.cloud.storage.BlobObject;
+import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.si.filter.BlobObjectFilter;
 import org.opencredo.cloud.storage.si.filter.CompositeBlobObjectFilter;
 
@@ -45,32 +45,32 @@ public class CompositeBlobObjectListFilterTest {
     private BlobObjectFilter s3ObjectFilterMock2;
 
     @Mock
-    private BlobObject mockBucketObject;
+    private BlobDetails mockBucketObject;
 
     @Test
     public void testForwardedToFilters() throws Exception {
         CompositeBlobObjectFilter compositeS3ObjectFilter = new CompositeBlobObjectFilter(s3ObjectFilterMock1,
                 s3ObjectFilterMock2);
-        List<BlobObject> returnedObjects = Arrays.asList(new BlobObject[] { mockBucketObject });
+        List<BlobDetails> returnedObjects = Arrays.asList(new BlobDetails[] { mockBucketObject });
 
-        when(s3ObjectFilterMock1.filter(anyListOf(BlobObject.class))).thenReturn(returnedObjects);
-        when(s3ObjectFilterMock2.filter(anyListOf(BlobObject.class))).thenReturn(returnedObjects);
+        when(s3ObjectFilterMock1.filter(anyListOf(BlobDetails.class))).thenReturn(returnedObjects);
+        when(s3ObjectFilterMock2.filter(anyListOf(BlobDetails.class))).thenReturn(returnedObjects);
 
         assertEquals(returnedObjects, compositeS3ObjectFilter.filter(Arrays
-                .asList(new BlobObject[] { mockBucketObject })));
+                .asList(new BlobDetails[] { mockBucketObject })));
     }
 
     @Test
     public void testForwardedToAddedFilters() throws Exception {
         CompositeBlobObjectFilter compositeS3ObjectFilter = new CompositeBlobObjectFilter().addFilter(
                 s3ObjectFilterMock1, s3ObjectFilterMock2);
-        List<BlobObject> returnedObjects = Arrays.asList(new BlobObject[] { mockBucketObject });
+        List<BlobDetails> returnedObjects = Arrays.asList(new BlobDetails[] { mockBucketObject });
 
-        when(s3ObjectFilterMock1.filter(anyListOf(BlobObject.class))).thenReturn(returnedObjects);
-        when(s3ObjectFilterMock2.filter(anyListOf(BlobObject.class))).thenReturn(returnedObjects);
+        when(s3ObjectFilterMock1.filter(anyListOf(BlobDetails.class))).thenReturn(returnedObjects);
+        when(s3ObjectFilterMock2.filter(anyListOf(BlobDetails.class))).thenReturn(returnedObjects);
 
         assertEquals(returnedObjects, compositeS3ObjectFilter.filter(Arrays
-                .asList(new BlobObject[] { mockBucketObject })));
+                .asList(new BlobDetails[] { mockBucketObject })));
     }
 
     @Test
@@ -78,10 +78,10 @@ public class CompositeBlobObjectListFilterTest {
         CompositeBlobObjectFilter compositeS3ObjectFilter = new CompositeBlobObjectFilter(s3ObjectFilterMock1,
                 s3ObjectFilterMock2);
 
-        when(s3ObjectFilterMock1.filter(anyListOf(BlobObject.class))).thenReturn(new ArrayList<BlobObject>(0));
-        when(s3ObjectFilterMock2.filter(anyListOf(BlobObject.class))).thenReturn(new ArrayList<BlobObject>(0));
+        when(s3ObjectFilterMock1.filter(anyListOf(BlobDetails.class))).thenReturn(new ArrayList<BlobDetails>(0));
+        when(s3ObjectFilterMock2.filter(anyListOf(BlobDetails.class))).thenReturn(new ArrayList<BlobDetails>(0));
 
-        assertTrue(compositeS3ObjectFilter.filter(Arrays.asList(new BlobObject[] { mockBucketObject })).isEmpty());
+        assertTrue(compositeS3ObjectFilter.filter(Arrays.asList(new BlobDetails[] { mockBucketObject })).isEmpty());
     }
 
 }

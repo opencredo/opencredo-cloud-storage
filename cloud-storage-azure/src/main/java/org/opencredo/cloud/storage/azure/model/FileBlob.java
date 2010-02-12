@@ -20,12 +20,15 @@ import org.apache.http.HttpEntity;
 import org.apache.http.entity.FileEntity;
 
 /**
+ * Blob abstraction for sending file to Azure cloud storage.
+ * 
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
- *
+ * 
  */
 public class FileBlob extends Blob<File> {
 
     private final File data;
+
     /**
      * @param name
      */

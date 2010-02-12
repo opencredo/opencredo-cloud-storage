@@ -19,21 +19,21 @@ package org.opencredo.cloud.storage.azure.rest;
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  * 
  */
-public class AzureRestRequestCreationException extends AzureRestException {
+public class AzureRestException extends Exception {
 
     private static final long serialVersionUID = -276354276775535652L;
 
     /**
      * 
      */
-    public AzureRestRequestCreationException() {
+    public AzureRestException() {
         super();
     }
 
     /**
      * @param message
      */
-    public AzureRestRequestCreationException(String message) {
+    public AzureRestException(String message) {
         super(message);
     }
 
@@ -41,14 +41,14 @@ public class AzureRestRequestCreationException extends AzureRestException {
      * @param message
      * @param cause
      */
-    public AzureRestRequestCreationException(String message, Throwable cause) {
+    public AzureRestException(String message, Throwable cause) {
         super(message, cause);
     }
 
     /**
      * @param cause
      */
-    public AzureRestRequestCreationException(Throwable cause) {
+    public AzureRestException(Throwable cause) {
         super(cause);
     }
 
@@ -57,8 +57,8 @@ public class AzureRestRequestCreationException extends AzureRestException {
      * @param messageFormat
      * @param params
      */
-    public AzureRestRequestCreationException(String messageFormat, Object... params) {
-        super(messageFormat, params);
+    public AzureRestException(String messageFormat, Object... params) {
+        super(String.format(messageFormat, params));
     }
     
     /**
@@ -67,7 +67,7 @@ public class AzureRestRequestCreationException extends AzureRestException {
      * @param messageFormat
      * @param params
      */
-    public AzureRestRequestCreationException(Throwable cause, String messageFormat, Object... params) {
-        super(cause, messageFormat, params);
+    public AzureRestException(Throwable cause, String messageFormat, Object... params) {
+        this(String.format(messageFormat, params), cause);
     }
 }

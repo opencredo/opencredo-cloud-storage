@@ -18,7 +18,7 @@ package org.opencredo.cloud.storage.si.filter.internal;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.opencredo.cloud.storage.BlobObject;
+import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.si.filter.AbstractBucketObjectFilter;
 
 /**
@@ -39,9 +39,9 @@ public class AcceptOnceBlobObjectFilter extends AbstractBucketObjectFilter {
      * 
      * @param obj
      * @return
-     * @see org.opencredo.cloud.storage.si.filter.AbstractBucketObjectFilter#accept(org.opencredo.cloud.storage.BlobObject)
+     * @see org.opencredo.cloud.storage.si.filter.AbstractBucketObjectFilter#accept(org.opencredo.cloud.storage.BlobDetails)
      */
-    protected boolean accept(BlobObject obj) {
+    protected boolean accept(BlobDetails obj) {
         synchronized (this.monitor) {
             if (seenKeys.contains(obj.getName())) {
                 return false;

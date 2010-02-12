@@ -19,7 +19,7 @@ import org.opencredo.cloud.storage.azure.rest.AzureRestRequestCreationException;
 import org.springframework.util.Assert;
 
 /**
- * FIXME: Need to support blob from file, InputStream etc.
+ * Abstract class representing Azure blob.
  * 
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  * 
@@ -44,9 +44,10 @@ public abstract class Blob<T> {
      * @return the data
      */
     public abstract T getData();
-    
+
     /**
-     * Creates request body from data it has.ì
+     * Creates request body from data it has.
+     * 
      * @return
      */
     public abstract HttpEntity createRequestBody() throws AzureRestRequestCreationException;

@@ -36,13 +36,14 @@ import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.protocol.HttpContext;
 import org.opencredo.cloud.storage.azure.AzureCredentials;
-import org.opencredo.cloud.storage.azure.rest.AzureRestRequestCreationException;
+import org.opencredo.cloud.storage.azure.rest.RequestAuthorizationException;
 import org.opencredo.cloud.storage.azure.rest.AzureRestServiceUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * TODO Add comments.
+ * 
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  * 
  */
@@ -117,7 +118,7 @@ public class RequestAuthorizationInterceptor implements HttpRequestInterceptor {
      * @param signatureString
      * @return
      */
-    private String createSignature(String signatureString) throws AzureRestRequestCreationException {
+    private String createSignature(String signatureString) throws RequestAuthorizationException {
         String encoding = "UTF-8";
         String encryptionAlgorithm = "HmacSHA256";
         try {
@@ -128,16 +129,16 @@ public class RequestAuthorizationInterceptor implements HttpRequestInterceptor {
             byte[] result = mac.doFinal();
             return new String(Base64.encodeBase64(result));
         } catch (InvalidKeyException e) {
-            throw new AzureRestRequestCreationException(
+            throw new RequestAuthorizationException(
                     "Provided secret key is inappropriate to encrypt signature-string.", e);
         } catch (NoSuchAlgorithmException e) {
-            throw new AzureRestRequestCreationException("No algorithm [" + encryptionAlgorithm
+            throw new RequestAuthorizationException("No algorithm [" + encryptionAlgorithm
                     + "] to encrypt signature-string.", e);
         } catch (UnsupportedEncodingException e) {
-            throw new AzureRestRequestCreationException("Unable to convert signature-string to encoding - '" + encoding
+            throw new RequestAuthorizationException("Unable to convert signature-string to encoding - '" + encoding
                     + "'.", e);
         } catch (IllegalStateException e) {
-            throw new AzureRestRequestCreationException("Illegal signature-string encryption state.", e);
+            throw new RequestAuthorizationException("Illegal signature-string encryption state.", e);
         }
     }
 
@@ -146,9 +147,9 @@ public class RequestAuthorizationInterceptor implements HttpRequestInterceptor {
      * 
      * @param req
      * @return
-     * @throws AzureRestRequestCreationException
+     * @throws RequestAuthorizationException
      */
-    private String constructSignatureString(HttpRequest req) throws AzureRestRequestCreationException {
+    private String constructSignatureString(HttpRequest req) throws RequestAuthorizationException {
         StringBuilder sb = new StringBuilder();
         // VERB
         sb.append(req.getRequestLine().getMethod().toUpperCase()).append("\n");
@@ -170,17 +171,17 @@ public class RequestAuthorizationInterceptor implements HttpRequestInterceptor {
      * @param req
      * @param sb
      *            Signature string.
-     * @throws AzureRestRequestCreationException
+     * @throws RequestAuthorizationException
      */
     private void constructStandartHeaderString(HttpRequest req, StringBuilder sb)
-            throws AzureRestRequestCreationException {
+            throws RequestAuthorizationException {
         String standartHeader;
         Header[] headers;
         for (int i = 0; i < standardHeaders.length; i++) {
             standartHeader = standardHeaders[i];
             headers = req.getHeaders(standartHeader);
             if (headers.length > 1) {
-                throw new AzureRestRequestCreationException("Multiple standard header [" + standartHeader + "] found.");
+                throw new RequestAuthorizationException("Multiple standard header [" + standartHeader + "] found.");
             }
 
             // If header specified and is not "Date" header
@@ -227,13 +228,15 @@ public class RequestAuthorizationInterceptor implements HttpRequestInterceptor {
      * @param req
      * @param sb
      *            Signature string.
+     * @throws RequestAuthorizationException
      */
-    private void constructCanonicalizedResourceString(HttpRequest req, StringBuilder sb) {
+    private void constructCanonicalizedResourceString(HttpRequest req, StringBuilder sb)
+            throws RequestAuthorizationException {
         URI uri;
         try {
             uri = new URI(req.getRequestLine().getUri());
         } catch (URISyntaxException e) {
-            throw new AzureRestRequestCreationException("Failed to create uri from request line: "
+            throw new RequestAuthorizationException("Failed to create uri from request line: "
                     + req.getRequestLine().getUri(), e);
         }
 

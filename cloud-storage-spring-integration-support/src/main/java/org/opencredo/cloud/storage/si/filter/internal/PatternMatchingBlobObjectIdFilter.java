@@ -18,7 +18,7 @@ package org.opencredo.cloud.storage.si.filter.internal;
 
 import java.util.regex.Pattern;
 
-import org.opencredo.cloud.storage.BlobObject;
+import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.si.filter.AbstractBucketObjectFilter;
 import org.springframework.util.Assert;
 
@@ -40,7 +40,7 @@ public class PatternMatchingBlobObjectIdFilter extends AbstractBucketObjectFilte
     /**
      * @param obj
      */
-    protected boolean accept(BlobObject obj) {
+    protected boolean accept(BlobDetails obj) {
         return (obj != null) && (obj.getName() != null) && this.pattern.matcher(obj.getName()).matches();
     }
 

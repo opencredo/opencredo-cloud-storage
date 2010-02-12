@@ -17,10 +17,13 @@ package org.opencredo.cloud.storage;
 import java.util.Date;
 
 /**
+ * This simple bean class is used to represent basic details of blob object in
+ * cloud storage.
+ * 
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  * 
  */
-public class BlobObject {
+public class BlobDetails {
 
     private final String containerName;
 
@@ -36,7 +39,7 @@ public class BlobObject {
      * @param eTag
      * @param lastModified
      */
-    public BlobObject(String containerName, String name, String eTag, Date lastModified) {
+    public BlobDetails(String containerName, String name, String eTag, Date lastModified) {
         super();
         this.containerName = containerName;
         this.name = name;

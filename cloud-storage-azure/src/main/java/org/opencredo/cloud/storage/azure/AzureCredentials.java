@@ -17,6 +17,8 @@ package org.opencredo.cloud.storage.azure;
 import org.springframework.util.Assert;
 
 /**
+ * Credentials used to interact with Azure cloud storage.
+ * 
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  * 
  */

@@ -26,10 +26,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.dom.DOMSource;
 
 import org.apache.http.HttpEntity;
-import org.opencredo.cloud.storage.BlobObject;
+import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.azure.rest.AzureRestResponseHandlingException;
 import org.opencredo.cloud.storage.azure.rest.AzureRestServiceUtil;
-import org.opencredo.cloud.storage.azure.rest.ContainerObjectListFactory;
+import org.opencredo.cloud.storage.azure.rest.ContainerObjectDetailsListFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.xml.xpath.XPathException;
@@ -42,15 +42,15 @@ import org.xml.sax.SAXException;
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  * 
  */
-public class XPathContainerObjectListFactory implements ContainerObjectListFactory {
-    private final static Logger LOG = LoggerFactory.getLogger(XPathContainerObjectListFactory.class);
+public class XPathContainerObjectDetailsListFactory implements ContainerObjectDetailsListFactory {
+    private final static Logger LOG = LoggerFactory.getLogger(XPathContainerObjectDetailsListFactory.class);
 
     private final XPathOperations xpathOperations;
 
     /**
      * @param xpathOperations
      */
-    public XPathContainerObjectListFactory(XPathOperations xpathOperations) {
+    public XPathContainerObjectDetailsListFactory(XPathOperations xpathOperations) {
         super();
         this.xpathOperations = xpathOperations;
     }
@@ -59,10 +59,10 @@ public class XPathContainerObjectListFactory implements ContainerObjectListFacto
      * @param entity
      * @return
      * @throws AzureRestResponseHandlingException
-     * @see org.opencredo.cloud.storage.azure.rest.ContainerObjectListFactory#createContainerObjectsList(org.apache.http.HttpEntity)
+     * @see org.opencredo.cloud.storage.azure.rest.ContainerObjectDetailsListFactory#createContainerObjectsList(org.apache.http.HttpEntity)
      */
     @SuppressWarnings("unchecked")
-    public List<BlobObject> createContainerObjectsList(final String containerName, HttpEntity entity)
+    public List<BlobDetails> createContainerObjectDetailsList(final String containerName, HttpEntity entity)
             throws AzureRestResponseHandlingException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         try {
@@ -73,10 +73,10 @@ public class XPathContainerObjectListFactory implements ContainerObjectListFacto
                     doc));
 
             if (nodeList == null) {
-                return new ArrayList<BlobObject>(0);
+                return new ArrayList<BlobDetails>(0);
             }
 
-            ArrayList<BlobObject> containerNames = new ArrayList<BlobObject>(nodeList.size());
+            ArrayList<BlobDetails> containerNames = new ArrayList<BlobDetails>(nodeList.size());
 
             DOMSource domSource;
             String name;
@@ -95,7 +95,7 @@ public class XPathContainerObjectListFactory implements ContainerObjectListFacto
                 }
 
                 date = AzureRestServiceUtil.parseRFC1123TimeString(dateStr);
-                containerNames.add(new BlobObject(containerName, name, eTag, date));
+                containerNames.add(new BlobDetails(containerName, name, eTag, date));
             }
 
             return containerNames;

@@ -26,8 +26,9 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.PriorityBlockingQueue;
 
-import org.opencredo.cloud.storage.BlobObject;
+import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.ContainerStatus;
+import org.opencredo.cloud.storage.StorageCommunicationException;
 import org.opencredo.cloud.storage.StorageException;
 import org.opencredo.cloud.storage.StorageOperations;
 import org.opencredo.cloud.storage.si.comparator.BlobObjectComparator;
@@ -64,7 +65,7 @@ public class ReadingMessageSource implements MessageSource<Map<String, Object>>,
 
     private boolean deleteWhenReceived;
 
-    private final Queue<BlobObject> toBeReceived;
+    private final Queue<BlobDetails> toBeReceived;
 
     /**
      * 
@@ -100,7 +101,7 @@ public class ReadingMessageSource implements MessageSource<Map<String, Object>>,
         this.bucketName = bucketName;
         this.deleteWhenReceived = false;
         this.filter = filter;
-        this.toBeReceived = new PriorityBlockingQueue<BlobObject>(INTERNAL_QUEUE_CAPACITY, comparator);
+        this.toBeReceived = new PriorityBlockingQueue<BlobDetails>(INTERNAL_QUEUE_CAPACITY, comparator);
     }
 
     public void afterPropertiesSet() {
@@ -111,14 +112,14 @@ public class ReadingMessageSource implements MessageSource<Map<String, Object>>,
     /**
 	 * 
 	 */
-    public Message<Map<String, Object>> receive() throws StorageException {
+    public Message<Map<String, Object>> receive() throws StorageCommunicationException {
 
         if (toBeReceived.isEmpty()) {
             doReceive();
         }
 
         if (!toBeReceived.isEmpty()) {
-            BlobObject obj = toBeReceived.poll();
+            BlobDetails obj = toBeReceived.poll();
             Map<String, Object> map = new HashMap<String, Object>(3);
             map.put(BUCKET_NAME, obj.getContainerName());
             map.put(ID, obj.getName());
@@ -136,10 +137,10 @@ public class ReadingMessageSource implements MessageSource<Map<String, Object>>,
      * @param bucketName
      * @return
      */
-    public void doReceive() {
+    public void doReceive() throws StorageCommunicationException {
         LOG.debug("Receive objects from bucket '{}'", bucketName);
 
-        List<BlobObject> bucketObjects = template.listContainerObjects(bucketName);
+        List<BlobDetails> bucketObjects = template.listContainerObjectDetails(bucketName);
 
         if (filter != null) {
             // Filter bucket objects with provided filter
@@ -151,7 +152,7 @@ public class ReadingMessageSource implements MessageSource<Map<String, Object>>,
         }
     }
 
-    public Queue<BlobObject> getQueueToBeReceived() {
+    public Queue<BlobDetails> getQueueToBeReceived() {
         return toBeReceived;
     }
 

@@ -27,7 +27,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.opencredo.cloud.storage.BlobObject;
+import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.StorageOperations;
 import org.opencredo.cloud.storage.si.Constants;
 import org.opencredo.cloud.storage.test.TestPropertiesAccessor;
@@ -52,7 +52,7 @@ public class ReadingMessageSourceTest {
 
     private final String bucketName = TestPropertiesAccessor.getS3DefaultBucketName();
 
-    private BlobObject[] blobObjs;
+    private BlobDetails[] blobObjs;
     private long currentTime;
 
     private int msgCount = 4;
@@ -70,10 +70,10 @@ public class ReadingMessageSourceTest {
         currentTime = System.currentTimeMillis();
         long dayInMils = 24 * 60 * 60 * 1000;
 
-        blobObjs = new BlobObject[msgCount];
+        blobObjs = new BlobDetails[msgCount];
 
         for (int i = 0; i < msgCount; i++) {
-            blobObjs[i] = new BlobObject(BUCKET_NAME_PREFIX + i, ID_PREFIX + i, E_TAG_PREFIX + i, new Date(currentTime
+            blobObjs[i] = new BlobDetails(BUCKET_NAME_PREFIX + i, ID_PREFIX + i, E_TAG_PREFIX + i, new Date(currentTime
                     - (dayInMils * (i + 1))));
         }
     }
@@ -84,7 +84,7 @@ public class ReadingMessageSourceTest {
         assertNotNull(template);
         assertNotNull(inputChannel);
 
-        when(template.listContainerObjects(bucketName)).thenReturn(Arrays.asList(blobObjs));
+        when(template.listContainerObjectDetails(bucketName)).thenReturn(Arrays.asList(blobObjs));
 
         Thread.sleep(3000);
 

@@ -21,8 +21,9 @@ import org.apache.http.entity.StringEntity;
 import org.opencredo.cloud.storage.azure.rest.AzureRestRequestCreationException;
 
 /**
- * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
+ * Blob abstraction for sending string to Azure cloud storage.
  * 
+ * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  */
 public class StringBlob extends Blob<String> {
 

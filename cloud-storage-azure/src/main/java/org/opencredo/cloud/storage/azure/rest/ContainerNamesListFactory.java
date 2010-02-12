@@ -19,10 +19,12 @@ import java.util.List;
 import org.apache.http.HttpEntity;
 
 /**
+ * Factory for creating container names list from Azure REST API response.
+ * 
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  *
  */
-public interface ContainerListFactory {
+public interface ContainerNamesListFactory {
 
-    List<String> createContainersList(HttpEntity entity) throws AzureRestResponseHandlingException;
+    List<String> createContainerNamesList(HttpEntity entity) throws AzureRestResponseHandlingException;
 }

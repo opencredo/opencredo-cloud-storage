@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.opencredo.cloud.storage.BlobObject;
+import org.opencredo.cloud.storage.BlobDetails;
 
 /**
  * @author Eren Aykin (eren.aykin@opencredo.com)
@@ -65,13 +65,13 @@ public class CompositeBlobObjectFilter implements BlobObjectFilter {
      * @return
      * @see org.opencredo.cloud.storage.si.filter.BlobObjectFilter#filter(java.util.List)
      */
-    public List<BlobObject> filter(final List<BlobObject> objects) {
+    public List<BlobDetails> filter(final List<BlobDetails> objects) {
 
         if (objects == null) {
             return null;
         }
 
-        List<BlobObject> accepted = new ArrayList<BlobObject>(objects);
+        List<BlobDetails> accepted = new ArrayList<BlobDetails>(objects);
 
         for (int i = 0; i < s3ObjectFilters.size() && !accepted.isEmpty(); i++) {
             accepted = s3ObjectFilters.get(0).filter(accepted);

@@ -14,26 +14,30 @@
  */
 package org.opencredo.cloud.storage.azure.rest;
 
+import org.apache.http.ProtocolException;
 
 /**
+ * This exception occurs if creation of Azure Blob REST API request fails (e.g.
+ * request authorization fails).
+ * 
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  * 
  */
-public class AzureRestRequestCreationException extends AzureRestException {
+public class RequestAuthorizationException extends ProtocolException {
 
-    private static final long serialVersionUID = -276354276775535652L;
+    private static final long serialVersionUID = -7464153324139255021L;
 
     /**
      * 
      */
-    public AzureRestRequestCreationException() {
+    public RequestAuthorizationException() {
         super();
     }
 
     /**
      * @param message
      */
-    public AzureRestRequestCreationException(String message) {
+    public RequestAuthorizationException(String message) {
         super(message);
     }
 
@@ -41,33 +45,24 @@ public class AzureRestRequestCreationException extends AzureRestException {
      * @param message
      * @param cause
      */
-    public AzureRestRequestCreationException(String message, Throwable cause) {
+    public RequestAuthorizationException(String message, Throwable cause) {
         super(message, cause);
     }
 
     /**
-     * @param cause
+     * @param messageFormat
+     * @param params
      */
-    public AzureRestRequestCreationException(Throwable cause) {
-        super(cause);
+    public RequestAuthorizationException(String messageFormat, Object... params) {
+        this(String.format(messageFormat, params));
     }
 
     /**
-     * 
-     * @param messageFormat
-     * @param params
-     */
-    public AzureRestRequestCreationException(String messageFormat, Object... params) {
-        super(messageFormat, params);
-    }
-    
-    /**
-     * 
      * @param cause
      * @param messageFormat
      * @param params
      */
-    public AzureRestRequestCreationException(Throwable cause, String messageFormat, Object... params) {
-        super(cause, messageFormat, params);
+    public RequestAuthorizationException(Throwable cause, String messageFormat, Object... params) {
+        this(String.format(messageFormat, params), cause);
     }
 }

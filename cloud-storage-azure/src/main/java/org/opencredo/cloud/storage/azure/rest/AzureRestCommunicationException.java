@@ -14,27 +14,26 @@
  */
 package org.opencredo.cloud.storage.azure.rest;
 
-import org.opencredo.cloud.storage.StorageCommunicationException;
 
 /**
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  * 
  */
-public class AzureRestServiceException extends StorageCommunicationException {
+public class AzureRestCommunicationException extends AzureRestException {
 
     private static final long serialVersionUID = -276354276775535652L;
 
     /**
      * 
      */
-    public AzureRestServiceException() {
+    public AzureRestCommunicationException() {
         super();
     }
 
     /**
      * @param message
      */
-    public AzureRestServiceException(String message) {
+    public AzureRestCommunicationException(String message) {
         super(message);
     }
 
@@ -42,14 +41,14 @@ public class AzureRestServiceException extends StorageCommunicationException {
      * @param message
      * @param cause
      */
-    public AzureRestServiceException(String message, Throwable cause) {
+    public AzureRestCommunicationException(String message, Throwable cause) {
         super(message, cause);
     }
 
     /**
      * @param cause
      */
-    public AzureRestServiceException(Throwable cause) {
+    public AzureRestCommunicationException(Throwable cause) {
         super(cause);
     }
 
@@ -58,7 +57,7 @@ public class AzureRestServiceException extends StorageCommunicationException {
      * @param messageFormat
      * @param params
      */
-    public AzureRestServiceException(String messageFormat, Object... params) {
+    public AzureRestCommunicationException(String messageFormat, Object... params) {
         super(messageFormat, params);
     }
     
@@ -68,7 +67,7 @@ public class AzureRestServiceException extends StorageCommunicationException {
      * @param messageFormat
      * @param params
      */
-    public AzureRestServiceException(Throwable cause, String messageFormat, Object... params) {
+    public AzureRestCommunicationException(Throwable cause, String messageFormat, Object... params) {
         super(cause, messageFormat, params);
     }
 }

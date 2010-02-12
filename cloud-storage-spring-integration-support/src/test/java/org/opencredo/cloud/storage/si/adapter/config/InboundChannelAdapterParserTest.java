@@ -22,7 +22,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
-import org.opencredo.cloud.storage.BlobObject;
+import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.si.adapter.ReadingMessageSource;
 import org.opencredo.cloud.storage.si.comparator.BlobObjectComparator;
 import org.opencredo.cloud.storage.si.filter.internal.AcceptOnceBlobObjectFilter;
@@ -156,7 +156,7 @@ public class InboundChannelAdapterParserTest {
      */
     static class MockBlobObjectComparator implements BlobObjectComparator {
 
-        public int compare(BlobObject o1, BlobObject o2) {
+        public int compare(BlobDetails o1, BlobDetails o2) {
             return 0;
         }
 

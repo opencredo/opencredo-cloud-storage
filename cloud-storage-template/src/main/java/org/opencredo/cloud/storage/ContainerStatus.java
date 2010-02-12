@@ -15,6 +15,8 @@
 package org.opencredo.cloud.storage;
 
 /**
+ * Enumeration specifying cloud storage container (bucket) status.
+ * 
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  * 
  */

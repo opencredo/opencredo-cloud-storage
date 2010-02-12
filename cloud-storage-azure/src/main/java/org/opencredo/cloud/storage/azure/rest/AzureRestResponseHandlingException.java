@@ -14,13 +14,14 @@
  */
 package org.opencredo.cloud.storage.azure.rest;
 
-import org.opencredo.cloud.storage.StorageException;
 
 /**
+ * This exception occurs if handling of Azure Blob REST API response fails.
+ * 
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  * 
  */
-public class AzureRestResponseHandlingException extends StorageException {
+public class AzureRestResponseHandlingException extends AzureRestException {
 
     private static final long serialVersionUID = -276354276775535652L;
 
@@ -61,7 +62,7 @@ public class AzureRestResponseHandlingException extends StorageException {
     public AzureRestResponseHandlingException(String messageFormat, Object... params) {
         super(messageFormat, params);
     }
-    
+
     /**
      * 
      * @param cause

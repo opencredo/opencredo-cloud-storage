@@ -20,12 +20,16 @@ import org.apache.http.HttpEntity;
 import org.apache.http.entity.InputStreamEntity;
 
 /**
+ * Blob abstraction for sending input stream to Azure cloud storage. This
+ * abstraction is also used to receive blob data from Azure cloud storage.
+ * 
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
- *
+ * 
  */
 public class InputStreamBlob extends Blob<InputStream> {
 
     private final InputStream data;
+
     /**
      * @param name
      */

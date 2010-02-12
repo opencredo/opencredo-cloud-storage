@@ -25,8 +25,8 @@ import org.apache.http.HttpEntity;
 import org.apache.http.entity.FileEntity;
 import org.junit.Before;
 import org.junit.Test;
-import org.opencredo.cloud.storage.BlobObject;
-import org.opencredo.cloud.storage.azure.rest.internal.XPathContainerObjectListFactory;
+import org.opencredo.cloud.storage.BlobDetails;
+import org.opencredo.cloud.storage.azure.rest.internal.XPathContainerObjectDetailsListFactory;
 import org.springframework.xml.xpath.Jaxp13XPathTemplate;
 import org.springframework.xml.xpath.XPathOperations;
 
@@ -36,12 +36,12 @@ import org.springframework.xml.xpath.XPathOperations;
  */
 public class XPathContainerObjectListFactoryTest {
 
-    private XPathContainerObjectListFactory factory;
+    private XPathContainerObjectDetailsListFactory factory;
 
     @Before
     public void setUp() {
         XPathOperations xpathOperations = new Jaxp13XPathTemplate();
-        factory = new XPathContainerObjectListFactory(xpathOperations);
+        factory = new XPathContainerObjectDetailsListFactory(xpathOperations);
     }
 
     @Test
@@ -51,7 +51,7 @@ public class XPathContainerObjectListFactoryTest {
 
         assertNotNull("Unable to find file: " + fileName, resource);
         HttpEntity entity = new FileEntity(new File(resource.getFile()), null);
-        List<BlobObject> containersList = factory.createContainerObjectsList("container1", entity);
+        List<BlobDetails> containersList = factory.createContainerObjectDetailsList("container1", entity);
         assertEquals("Incorrect amount of container objects", 2, containersList.size());
     }
 }

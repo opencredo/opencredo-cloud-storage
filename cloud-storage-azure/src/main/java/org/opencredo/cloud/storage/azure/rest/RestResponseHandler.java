@@ -17,14 +17,15 @@ package org.opencredo.cloud.storage.azure.rest;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
-import org.opencredo.cloud.storage.BlobObject;
+import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.ContainerStatus;
 import org.opencredo.cloud.storage.azure.model.Blob;
 import org.opencredo.cloud.storage.azure.model.InputStreamBlob;
 
 /**
- * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
+ * Interface defining response handling methods.
  * 
+ * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  */
 public interface RestResponseHandler {
 
@@ -32,27 +33,29 @@ public interface RestResponseHandler {
      * 
      * @param response
      * @param containerName
-     * @throws AzureRestServiceException
+     * @throws AzureRestCommunicationException
      */
-    void handleCreateContainerResponse(HttpResponse response, String containerName) throws AzureRestServiceException;
+    void handleCreateContainerResponse(HttpResponse response, String containerName)
+            throws AzureRestResponseHandlingException;
 
     /**
      * 
      * @param response
      * @param containerName
-     * @throws AzureRestServiceException
+     * @throws AzureRestResponseHandlingException
      */
-    void handleDeleteContainerResponse(HttpResponse response, String containerName) throws AzureRestServiceException;
+    void handleDeleteContainerResponse(HttpResponse response, String containerName)
+            throws AzureRestResponseHandlingException;
 
     /**
      * 
      * @param response
      * @param containerName
      * @param blobName
-     * @throws AzureRestServiceException
+     * @throws AzureRestResponseHandlingException
      */
     void handleDeleteObjectResponse(HttpResponse response, String containerName, String blobName)
-            throws AzureRestServiceException;
+            throws AzureRestResponseHandlingException;
 
     /**
      * 
@@ -60,48 +63,49 @@ public interface RestResponseHandler {
      * @param containerName
      * @param blobName
      * @return
-     * @throws AzureRestServiceException
+     * @throws AzureRestResponseHandlingException
      * @throws AzureRestResponseHandlingException
      */
     InputStreamBlob handleGetObjectResponse(HttpResponse response, String containerName, String blobName)
-            throws AzureRestServiceException, AzureRestResponseHandlingException;
+            throws AzureRestResponseHandlingException, AzureRestResponseHandlingException;
 
     /**
      * 
      * @param response
      * @return
-     * @throws AzureRestServiceException
+     * @throws AzureRestResponseHandlingException
      * @throws AzureRestResponseHandlingException
      */
-    List<String> handleListContainersResponse(HttpResponse response) throws AzureRestServiceException, AzureRestResponseHandlingException;
+    List<String> handleListContainerNamesResponse(HttpResponse response) throws AzureRestResponseHandlingException,
+            AzureRestResponseHandlingException;
 
     /**
      * 
      * @param response
      * @param containerName
      * @return
-     * @throws AzureRestServiceException
      * @throws AzureRestResponseHandlingException
      */
-    List<BlobObject> handleListContainerObjectsResponse(HttpResponse response, String containerName)
-            throws AzureRestServiceException, AzureRestResponseHandlingException;
+    List<BlobDetails> handleListContainerObjectDetailsResponse(HttpResponse response, String containerName)
+            throws AzureRestResponseHandlingException;
 
     /**
      * 
      * @param response
      * @param containerName
      * @param blob
-     * @throws AzureRestServiceException
+     * @throws AzureRestResponseHandlingException
      */
     void handlePutObjectResponse(HttpResponse response, String containerName, Blob<?> blob)
-            throws AzureRestServiceException;
+            throws AzureRestResponseHandlingException;
 
     /**
      * 
      * @param response
      * @param containerName
      * @return
-     * @throws AzureRestServiceException
+     * @throws AzureRestResponseHandlingException
      */
-    ContainerStatus handleCheckContainerStatus(HttpResponse response, String containerName) throws AzureRestServiceException;
+    ContainerStatus handleCheckContainerStatus(HttpResponse response, String containerName)
+            throws AzureRestResponseHandlingException;
 }

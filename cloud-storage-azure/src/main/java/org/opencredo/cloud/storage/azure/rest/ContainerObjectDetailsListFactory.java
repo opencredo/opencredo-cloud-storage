@@ -17,13 +17,15 @@ package org.opencredo.cloud.storage.azure.rest;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
-import org.opencredo.cloud.storage.BlobObject;
+import org.opencredo.cloud.storage.BlobDetails;
 
 /**
- * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
+ * Factory for creating container object details list from Azure REST API response.
  * 
+ * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  */
-public interface ContainerObjectListFactory {
+public interface ContainerObjectDetailsListFactory {
 
-    List<BlobObject> createContainerObjectsList(String containerName, HttpEntity entity) throws AzureRestResponseHandlingException;
+    List<BlobDetails> createContainerObjectDetailsList(String containerName, HttpEntity entity)
+            throws AzureRestResponseHandlingException;
 }

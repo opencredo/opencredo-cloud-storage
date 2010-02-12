@@ -19,6 +19,8 @@ import java.io.InputStream;
 import java.util.List;
 
 /**
+ * This is core interface defining possible interactions with Cloud Storage.
+ * 
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  * 
  */
@@ -29,21 +31,24 @@ public interface StorageOperations {
     // **********************************
 
     /**
-     * List all containers in the cloud storage.
+     * List all container names in the cloud storage.
      * 
-     * @return
+     * @return Return list of container names or empty list if no containers
+     *         exist.
      * @throws StorageCommunicationException
      */
-    public String[] listContainers() throws StorageCommunicationException;
+    public List<String> listContainerNames() throws StorageCommunicationException;
 
     /**
      * List all objects in the cloud storage container.
      * 
      * @param containerName
-     * @return
+     * @return Return list of container object (blob) details or empty list if
+     *         container does not have any objects (blobs).
+     * 
      * @throws StorageCommunicationException
      */
-    public List<BlobObject> listContainerObjects(String containerName) throws StorageCommunicationException;
+    public List<BlobDetails> listContainerObjectDetails(String containerName) throws StorageCommunicationException;
 
     /**
      * Get the status of the bucket.
@@ -74,11 +79,10 @@ public interface StorageOperations {
     // **********************************
 
     /**
-     * Send string data to the cloud storage container. Default container name
-     * must be provided in the template.
+     * Invokes {@link #send(String, String, String)} with default container name
+     * which must be provided in template (implementation class).
      * 
      * @param objectName
-     *            The name of object in the cloud storage container.
      * @param stringToSend
      */
     public void send(String objectName, String stringToSend) throws StorageCommunicationException;
@@ -96,19 +100,20 @@ public interface StorageOperations {
     public void send(String containerName, String objectName, String stringToSend) throws StorageCommunicationException;
 
     /**
-     * Send File to the cloud storage container. Default container name must be
-     * provided in the template.
+     * Invokes {@link #send(String, File)} with default container name which
+     * must be provided in template (implementation class).
      * 
      * @param fileToSend
      * @throws StorageCommunicationException
+     * 
      */
     public void send(File fileToSend) throws StorageCommunicationException;
 
     /**
-     * Send File to the cloud storage container.
+     * Invokes {@link #send(String, String, File)} where object name is File
+     * name.
      * 
      * @param containerName
-     *            The name of the cloud storage container.
      * @param fileToSend
      * @throws StorageCommunicationException
      */
@@ -127,11 +132,10 @@ public interface StorageOperations {
     public void send(String containerName, String objectName, File fileToSend) throws StorageCommunicationException;
 
     /**
-     * Send InputStream to the cloud storage container. Default container name
-     * must be provided in the template.
+     * Invokes {@link #send(String, String, InputStream)} with default container
+     * name which must be provided in template (implementation class).
      * 
      * @param objectName
-     *            The name of object in default container.
      * @param is
      * @throws StorageCommunicationException
      */
@@ -145,22 +149,20 @@ public interface StorageOperations {
      * @param objectName
      *            The name of object in the cloud storage container.
      * @param is
+     *            Input stream as container object content.
      * 
      * @throws StorageCommunicationException
      */
     public void send(String containerName, String objectName, InputStream is) throws StorageCommunicationException;
 
     /**
-     * Receive the object as String from cloud storage container. Default bucket
-     * name must be provided in the template.
+     * Invokes {@link #receiveAsString(String, String)} with default container
+     * name which must be provided in template (implementation class).
      * 
      * @param objectName
-     *            The name of object in the cloud storage container to be
-     *            received.
      * @return
      * @throws StorageCommunicationException
      * @throws StorageResponseHandlingException
-     *             TODO
      */
     public String receiveAsString(String objectName) throws StorageCommunicationException,
             StorageResponseHandlingException;
@@ -173,26 +175,23 @@ public interface StorageOperations {
      * @param objectName
      *            The name of object in the cloud storage container to be
      *            received.
-     * @return
+     * @return Container object data as a string.
      * @throws StorageCommunicationException
      * @throws StorageResponseHandlingException
-     *             TODO
+     *             Will be thrown if handling of response data fails (e.g.
+     *             Failure to convert response byte stream to String).
      */
     public String receiveAsString(String containerName, String objectName) throws StorageCommunicationException,
             StorageResponseHandlingException;
 
     /**
-     * Receive the object as File from cloud storage container. Default bucket
-     * name must be provided in the template.
+     * Invokes {@link #receiveAndSaveToFile(String, String, File)} with default
+     * container name which must be provided in template (implementation class).
      * 
      * @param objectName
-     *            The name of object in the cloud storage container to be
-     *            received.
      * @param toFile
-     *            TODO
      * @throws StorageCommunicationException
      * @throws StorageResponseHandlingException
-     *             TODO
      */
     public void receiveAndSaveToFile(String objectName, File toFile) throws StorageCommunicationException,
             StorageResponseHandlingException;
@@ -207,25 +206,23 @@ public interface StorageOperations {
      *            The name of object in the cloud storage container to be
      *            received.
      * @param toFile
-     *            TODO
+     *            The file where response should be saved.
      * @throws StorageCommunicationException
      * @throws StorageResponseHandlingException
-     *             TODO
+     *             Will be thrown if handling of response data fails (e.g.
+     *             Failure to write response byte stream to File).
      */
     public void receiveAndSaveToFile(String containerName, String objectName, File toFile)
             throws StorageCommunicationException, StorageResponseHandlingException;
 
     /**
-     * Receive the object as InputStream from cloud storage container. Default
-     * bucket name must be provided in the template.
+     * Invokes {@link #receiveAsInputStream(String, String)} with default
+     * container name which must be provided in template (implementation class).
      * 
      * @param objectName
-     *            The name of object in the cloud storage container to be
-     *            received.
      * @return
      * @throws StorageCommunicationException
      * @throws StorageResponseHandlingException
-     *             TODO
      */
     public InputStream receiveAsInputStream(String objectName) throws StorageCommunicationException,
             StorageResponseHandlingException;
@@ -241,10 +238,20 @@ public interface StorageOperations {
      * @return
      * @throws StorageCommunicationException
      * @throws StorageResponseHandlingException
-     *             TODO
+     *             Will be thrown if handling of response data fails (e.g.
+     *             Failure to close response byte stream).
      */
     public InputStream receiveAsInputStream(String containerName, String objectName)
             throws StorageCommunicationException, StorageResponseHandlingException;
+
+    /**
+     * Invokes {@link #deleteObject(String, String)} with default container name
+     * which must be provided in template (implementation class).
+     * 
+     * @param objectName
+     * @throws StorageCommunicationException
+     */
+    public void deleteObject(String objectName) throws StorageCommunicationException;
 
     /**
      * Delete the object from cloud storage container.

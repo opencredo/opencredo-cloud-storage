@@ -20,19 +20,22 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
-import org.opencredo.cloud.storage.BlobObject;
+import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.ContainerStatus;
 import org.opencredo.cloud.storage.StorageCommunicationException;
 import org.opencredo.cloud.storage.StorageOperations;
 import org.opencredo.cloud.storage.StorageResponseHandlingException;
-import org.opencredo.cloud.storage.StorageResponseUtils;
+import org.opencredo.cloud.storage.StorageUtils;
 import org.opencredo.cloud.storage.azure.model.FileBlob;
 import org.opencredo.cloud.storage.azure.model.InputStreamBlob;
 import org.opencredo.cloud.storage.azure.model.StringBlob;
+import org.opencredo.cloud.storage.azure.rest.AzureRestCommunicationException;
+import org.opencredo.cloud.storage.azure.rest.AzureRestRequestCreationException;
+import org.opencredo.cloud.storage.azure.rest.AzureRestResponseHandlingException;
 import org.opencredo.cloud.storage.azure.rest.AzureRestService;
 import org.opencredo.cloud.storage.azure.rest.internal.DefaultAzureRestService;
-import org.opencredo.cloud.storage.azure.rest.internal.XPathContainerListFactory;
-import org.opencredo.cloud.storage.azure.rest.internal.XPathContainerObjectListFactory;
+import org.opencredo.cloud.storage.azure.rest.internal.XPathContainerNamesListFactory;
+import org.opencredo.cloud.storage.azure.rest.internal.XPathContainerObjectDetailsListFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
@@ -40,36 +43,45 @@ import org.springframework.xml.xpath.Jaxp13XPathTemplate;
 import org.springframework.xml.xpath.XPathOperations;
 
 /**
+ * This is template class for interacting with Azure cloud storage.
+ * 
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  * 
  */
 public class AzureTemplate implements StorageOperations {
     private final static Logger LOG = LoggerFactory.getLogger(AzureTemplate.class);
 
-    private static final String DEFAULT_CONATINER_NAME = "container1";
+    public static final String DEFAULT_CONTAINER_NAME = "container1";
 
     private final String defaultContainerName;
 
     private final AzureRestService restService;
 
     /**
+     * Constructor with Azure credentials. Default container name is set to
+     * {@link #DEFAULT_CONTAINER_NAME}.
      * 
+     * @param credentials
      */
     public AzureTemplate(final AzureCredentials credentials) {
-        this(credentials, DEFAULT_CONATINER_NAME);
+        this(credentials, DEFAULT_CONTAINER_NAME);
     }
 
     /**
+     * 
+     * @param credentials
+     *            Azure credentials
      * @param defaultContainerName
-     * @param restService
+     *            Default container name.
      */
     public AzureTemplate(final AzureCredentials credentials, String defaultContainerName) {
         super();
+        Assert.hasText(defaultContainerName, "Default container name is not provided");
         this.defaultContainerName = defaultContainerName;
 
         XPathOperations xpathOperations = new Jaxp13XPathTemplate();
-        restService = new DefaultAzureRestService(credentials, new XPathContainerListFactory(xpathOperations),
-                new XPathContainerObjectListFactory(xpathOperations));
+        restService = new DefaultAzureRestService(credentials, new XPathContainerNamesListFactory(xpathOperations),
+                new XPathContainerObjectDetailsListFactory(xpathOperations));
     }
 
     /**
@@ -79,7 +91,27 @@ public class AzureTemplate implements StorageOperations {
      * @see org.opencredo.cloud.storage.StorageOperations#checkContainerStatus(java.lang.String)
      */
     public ContainerStatus checkContainerStatus(String containerName) throws StorageCommunicationException {
-        return restService.checkContainerStatus(containerName);
+        try {
+            return restService.checkContainerStatus(containerName);
+        } catch (AzureRestCommunicationException e) {
+            throw new StorageCommunicationException(e,
+                    "Azure cloud storage request 'check container status' has failed [container: '%s'].", containerName);
+        } catch (AzureRestResponseHandlingException e) {
+            throw new StorageCommunicationException(
+                    e,
+                    "Response handling for Azure cloud storage request 'check container status' has failed [container: '%s'].",
+                    containerName);
+        }
+    }
+
+    /**
+     * 
+     * @param objectName
+     * @throws StorageCommunicationException
+     * @see org.opencredo.cloud.storage.StorageOperations#deleteObject(java.lang.String)
+     */
+    public void deleteObject(String objectName) throws StorageCommunicationException {
+        deleteObject(defaultContainerName, objectName);
     }
 
     /**
@@ -90,30 +122,55 @@ public class AzureTemplate implements StorageOperations {
      *      java.lang.String)
      */
     public void deleteObject(String containerName, String objectName) throws StorageCommunicationException {
-        restService.deleteObject(containerName, objectName);
+        try {
+            restService.deleteObject(containerName, objectName);
+        } catch (AzureRestCommunicationException e) {
+            throw new StorageCommunicationException(e,
+                    "Azure cloud storage request 'delete object' has failed [container: '%s', blob: '%s']",
+                    containerName, objectName);
+        } catch (AzureRestResponseHandlingException e) {
+            throw new StorageCommunicationException(
+                    e,
+                    "Response handling for Azure cloud storage request 'delete object' has failed [container: '%s', blob: '%s']",
+                    containerName, objectName);
+        }
     }
 
     /**
      * @param containerName
      * @return
      * @throws StorageCommunicationException
-     * @see org.opencredo.cloud.storage.StorageOperations#listContainerObjects(java.lang.String)
+     * @see org.opencredo.cloud.storage.StorageOperations#listContainerObjectDetails(java.lang.String)
      */
-    public List<BlobObject> listContainerObjects(String containerName) throws StorageCommunicationException {
-        return restService.listContainerObjects(containerName);
+    public List<BlobDetails> listContainerObjectDetails(String containerName) throws StorageCommunicationException {
+        try {
+            return restService.listContainerObjectDetails(containerName);
+        } catch (AzureRestCommunicationException e) {
+            throw new StorageCommunicationException(e,
+                    "Azure cloud storage request 'list container object details' has failed [container: '%s'].",
+                    containerName);
+        } catch (AzureRestResponseHandlingException e) {
+            throw new StorageCommunicationException(
+                    e,
+                    "Response handling for Azure cloud storage request 'list container object details' has failed [container: '%s'].",
+                    containerName);
+        }
     }
 
     /**
      * @return
      * @throws StorageCommunicationException
-     * @see org.opencredo.cloud.storage.StorageOperations#listContainers()
+     * @see org.opencredo.cloud.storage.StorageOperations#listContainerNames()
      */
-    public String[] listContainers() throws StorageCommunicationException {
-        List<String> listContainers = restService.listContainers();
-
-        String[] c = new String[listContainers.size()];
-
-        return listContainers.toArray(c);
+    public List<String> listContainerNames() throws StorageCommunicationException {
+        try {
+            return restService.listContainerNames();
+        } catch (AzureRestCommunicationException e) {
+            throw new StorageCommunicationException("Azure cloud storage request 'list container names' has failed", e);
+        } catch (AzureRestResponseHandlingException e) {
+            throw new StorageCommunicationException(
+                    "Response handling for Azure cloud storage request 'list container names' has failed has failed", e);
+        }
     }
 
     /**
@@ -122,7 +179,17 @@ public class AzureTemplate implements StorageOperations {
      * @see org.opencredo.cloud.storage.StorageOperations#createContainer(java.lang.String)
      */
     public void createContainer(String containerName) throws StorageCommunicationException {
-        restService.createContainer(containerName);
+        try {
+            restService.createContainer(containerName);
+        } catch (AzureRestCommunicationException e) {
+            throw new StorageCommunicationException(e,
+                    "Azure cloud storage request 'create container' has failed [container: '%s'].", containerName);
+        } catch (AzureRestResponseHandlingException e) {
+            throw new StorageCommunicationException(
+                    e,
+                    "Response handling for Azure cloud storage request 'create container' has failed [container: '%s'].",
+                    containerName);
+        }
     }
 
     /**
@@ -131,7 +198,17 @@ public class AzureTemplate implements StorageOperations {
      * @see org.opencredo.cloud.storage.StorageOperations#deleteContainer(java.lang.String)
      */
     public void deleteContainer(String containerName) throws StorageCommunicationException {
-        restService.deleteContainer(containerName);
+        try {
+            restService.deleteContainer(containerName);
+        } catch (AzureRestCommunicationException e) {
+            throw new StorageCommunicationException(e,
+                    "Azure cloud storage request 'delete container' has failed [container: '%s'].", containerName);
+        } catch (AzureRestResponseHandlingException e) {
+            throw new StorageCommunicationException(
+                    e,
+                    "Response handling for Azure cloud storage request 'delete container' has failed [container: '%s'].",
+                    containerName);
+        }
     }
 
     /**
@@ -157,19 +234,33 @@ public class AzureTemplate implements StorageOperations {
         Assert.notNull(toFile, "File to save received data must be specified");
         Assert.isTrue(toFile.isFile(), "File to save received data does not exist");
         LOG.debug("Receive file from from blob '{}' in container '{}'", objectName, containerName);
-        InputStreamBlob streamBlob = restService.getObject(containerName, objectName);
+        InputStreamBlob streamBlob;
+
         try {
-            StorageResponseUtils.responseStreamToFile(streamBlob.getData(), toFile);
+            streamBlob = restService.getObject(containerName, objectName);
+        } catch (AzureRestCommunicationException e) {
+            throw new StorageCommunicationException(e,
+                    "Azure cloud storage request 'receive and save as file' has failed [container: '%s', blob: '%s']",
+                    containerName, objectName);
+        } catch (AzureRestResponseHandlingException e) {
+            throw new StorageCommunicationException(
+                    e,
+                    "Response handling for Azure cloud storage request 'receive and save as file' has failed [container: '%s', blob: '%s']",
+                    containerName, objectName);
+        }
+
+        try {
+            StorageUtils.writeStreamToFile(streamBlob.getData(), toFile);
         } catch (IOException e) {
             throw new StorageResponseHandlingException(e,
-                    "Converting response from container '{}' blob '{}' to file IO problem", containerName, objectName);
+                    "Converting response from container '%s' blob '%s' to file IO problem", containerName, objectName);
         } finally {
             if (streamBlob != null && streamBlob.getData() != null) {
                 try {
                     streamBlob.getData().close();
                 } catch (IOException e) {
                     throw new StorageResponseHandlingException(e,
-                            "Container '{}' blob '{}' response stream close IO problem", containerName, objectName);
+                            "Container '%s' blob '%s' response stream close IO problem", containerName, objectName);
                 }
             }
         }
@@ -183,7 +274,6 @@ public class AzureTemplate implements StorageOperations {
      */
     public InputStream receiveAsInputStream(String objectName) throws StorageCommunicationException,
             StorageResponseHandlingException {
-        Assert.notNull(this.defaultContainerName, "Default container name is not provided");
         return receiveAsInputStream(defaultContainerName, objectName);
     }
 
@@ -197,7 +287,18 @@ public class AzureTemplate implements StorageOperations {
      */
     public InputStream receiveAsInputStream(String containerName, String objectName)
             throws StorageCommunicationException, StorageResponseHandlingException {
-        return restService.getObject(containerName, objectName).getData();
+        try {
+            return restService.getObject(containerName, objectName).getData();
+        } catch (AzureRestCommunicationException e) {
+            throw new StorageCommunicationException(e,
+                    "Azure cloud storage request 'receive as input stream' has failed [container: '%s', blob: '%s']",
+                    containerName, objectName);
+        } catch (AzureRestResponseHandlingException e) {
+            throw new StorageCommunicationException(
+                    e,
+                    "Response handling for Azure cloud storage request 'receive as input stream' has failed [container: '%s', blob: '%s']",
+                    containerName, objectName);
+        }
     }
 
     /**
@@ -208,7 +309,6 @@ public class AzureTemplate implements StorageOperations {
      */
     public String receiveAsString(String objectName) throws StorageCommunicationException,
             StorageResponseHandlingException {
-        Assert.notNull(this.defaultContainerName, "Default container name is not provided");
         return receiveAsString(defaultContainerName, objectName);
     }
 
@@ -223,19 +323,32 @@ public class AzureTemplate implements StorageOperations {
     public String receiveAsString(String containerName, String objectName) throws StorageCommunicationException,
             StorageResponseHandlingException {
         LOG.debug("Receive string from from blob '{}' in container '{}'", objectName, containerName);
-        InputStreamBlob streamBlob = restService.getObject(containerName, objectName);
+        InputStreamBlob streamBlob;
+        try {
+            streamBlob = restService.getObject(containerName, objectName);
+        } catch (AzureRestCommunicationException e) {
+            throw new StorageCommunicationException(e,
+                    "Azure cloud storage request 'receive as string' has failed [container: '%s', blob: '%s']",
+                    containerName, objectName);
+        } catch (AzureRestResponseHandlingException e) {
+            throw new StorageCommunicationException(
+                    e,
+                    "Response handling for Azure cloud storage request 'receive as string' has failed [container: '%s', blob: '%s']",
+                    containerName, objectName);
+        }
+
         try {
             return IOUtils.toString(streamBlob.getData());
         } catch (IOException e) {
             throw new StorageResponseHandlingException(e,
-                    "Converting response from container '{}' blob '{}' to string IO problem", containerName, objectName);
+                    "Converting response from container '%s' blob '%s' to string IO problem", containerName, objectName);
         } finally {
             if (streamBlob != null && streamBlob.getData() != null) {
                 try {
                     streamBlob.getData().close();
                 } catch (IOException e) {
                     throw new StorageResponseHandlingException(e,
-                            "Container '{}' blob '{}' response stream close IO problem", containerName, objectName);
+                            "Container '%s' blob '%s' response stream close IO problem", containerName, objectName);
                 }
             }
         }
@@ -249,7 +362,6 @@ public class AzureTemplate implements StorageOperations {
      *      java.lang.String)
      */
     public void send(String objectName, String stringToSend) throws StorageCommunicationException {
-        Assert.notNull(this.defaultContainerName, "Default container name is not provided");
         send(defaultContainerName, objectName, stringToSend);
     }
 
@@ -262,7 +374,22 @@ public class AzureTemplate implements StorageOperations {
      *      java.lang.String, java.lang.String)
      */
     public void send(String containerName, String objectName, String stringToSend) throws StorageCommunicationException {
-        restService.putObject(containerName, new StringBlob(objectName, stringToSend));
+        try {
+            restService.putObject(containerName, new StringBlob(objectName, stringToSend));
+        } catch (AzureRestRequestCreationException e) {
+            throw new StorageCommunicationException(e,
+                    "Creation of Azure cloud storage request from string has failed [container: '%s', blob: '%s']", containerName,
+                    objectName);
+        } catch (AzureRestCommunicationException e) {
+            throw new StorageCommunicationException(e,
+                    "Azure cloud storage request 'send from string' has failed [container: '%s', blob: '%s']",
+                    containerName, objectName);
+        } catch (AzureRestResponseHandlingException e) {
+            throw new StorageCommunicationException(
+                    e,
+                    "Response handling for Azure cloud storage request 'send from string' has failed [container: '%s', blob: '%s']",
+                    containerName, objectName);
+        }
     }
 
     /**
@@ -271,7 +398,6 @@ public class AzureTemplate implements StorageOperations {
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.io.File)
      */
     public void send(File fileToSend) throws StorageCommunicationException {
-        Assert.notNull(this.defaultContainerName, "Default container name is not provided");
         send(defaultContainerName, fileToSend);
     }
 
@@ -283,7 +409,7 @@ public class AzureTemplate implements StorageOperations {
      *      java.io.File)
      */
     public void send(String containerName, File fileToSend) throws StorageCommunicationException {
-        Assert.notNull(this.defaultContainerName, "Default container name is not provided");
+        Assert.notNull(fileToSend, "File to send can not be null");
         send(defaultContainerName, fileToSend.getName(), fileToSend);
     }
 
@@ -296,8 +422,23 @@ public class AzureTemplate implements StorageOperations {
      *      java.lang.String, java.io.File)
      */
     public void send(String containerName, String objectName, File fileToSend) throws StorageCommunicationException {
-        restService.putObject(containerName, new FileBlob(objectName, fileToSend));
-
+        Assert.notNull(fileToSend, "File to send can not be null");
+        try {
+            restService.putObject(containerName, new FileBlob(objectName, fileToSend));
+        } catch (AzureRestRequestCreationException e) {
+            throw new StorageCommunicationException(e,
+                    "Creation of Azure cloud storage request from file has failed [container: '%s', blob: '%s', file: '%s']",
+                    containerName, objectName, fileToSend.getAbsolutePath());
+        } catch (AzureRestCommunicationException e) {
+            throw new StorageCommunicationException(e,
+                    "Azure cloud storage request 'send from file' has failed [container: '%s', blob: '%s', file: '%s']",
+                    containerName, objectName, fileToSend.getAbsolutePath());
+        } catch (AzureRestResponseHandlingException e) {
+            throw new StorageCommunicationException(
+                    e,
+                    "Response handling for Azure cloud storage request 'send from file' has failed [container: '%s', blob: '%s', file: '%s']",
+                    containerName, objectName, fileToSend.getAbsolutePath());
+        }
     }
 
     /**
@@ -308,7 +449,6 @@ public class AzureTemplate implements StorageOperations {
      *      java.io.InputStream)
      */
     public void send(String objectName, InputStream is) throws StorageCommunicationException {
-        Assert.notNull(this.defaultContainerName, "Default container name is not provided");
         send(defaultContainerName, objectName, is);
     }
 
@@ -321,7 +461,28 @@ public class AzureTemplate implements StorageOperations {
      *      java.lang.String, java.io.InputStream)
      */
     public void send(String containerName, String objectName, InputStream is) throws StorageCommunicationException {
-        restService.putObject(containerName, new InputStreamBlob(objectName, is));
+        try {
+            restService.putObject(containerName, new InputStreamBlob(objectName, is));
+        } catch (AzureRestRequestCreationException e) {
+            throw new StorageCommunicationException(e,
+                    "Creation of Azure cloud storage request from input stream has failed [container: '%s', blob: '%s']", containerName,
+                    objectName);
+        } catch (AzureRestCommunicationException e) {
+            throw new StorageCommunicationException(e,
+                    "Azure cloud storage request 'send from input stream' has failed [container: '%s', blob: '%s']",
+                    containerName, objectName);
+        } catch (AzureRestResponseHandlingException e) {
+            throw new StorageCommunicationException(
+                    e,
+                    "Response handling for Azure cloud storage request 'send from input stream' has failed [container: '%s', blob: '%s']",
+                    containerName, objectName);
+        }
     }
 
+    /**
+     * @return the defaultContainerName
+     */
+    public String getDefaultContainerName() {
+        return defaultContainerName;
+    }
 }

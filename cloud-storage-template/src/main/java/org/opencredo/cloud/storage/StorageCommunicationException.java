@@ -16,6 +16,9 @@
 package org.opencredo.cloud.storage;
 
 /**
+ * This exception encapsulates communication problems which might occur during
+ * communication with Cloud Storage.
+ * 
  * @author Eren Aykin (eren.aykin@opencredo.com)
  */
 public class StorageCommunicationException extends StorageException {

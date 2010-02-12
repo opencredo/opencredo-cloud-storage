@@ -25,7 +25,7 @@ import javax.xml.transform.dom.DOMSource;
 
 import org.apache.http.HttpEntity;
 import org.opencredo.cloud.storage.azure.rest.AzureRestResponseHandlingException;
-import org.opencredo.cloud.storage.azure.rest.ContainerListFactory;
+import org.opencredo.cloud.storage.azure.rest.ContainerNamesListFactory;
 import org.springframework.xml.xpath.XPathException;
 import org.springframework.xml.xpath.XPathOperations;
 import org.w3c.dom.Document;
@@ -36,14 +36,14 @@ import org.xml.sax.SAXException;
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  * 
  */
-public class XPathContainerListFactory implements ContainerListFactory {
+public class XPathContainerNamesListFactory implements ContainerNamesListFactory {
 
     private final XPathOperations xpathOperations;
 
     /**
      * @param xpathOperations
      */
-    public XPathContainerListFactory(XPathOperations xpathOperations) {
+    public XPathContainerNamesListFactory(XPathOperations xpathOperations) {
         super();
         this.xpathOperations = xpathOperations;
     }
@@ -52,10 +52,10 @@ public class XPathContainerListFactory implements ContainerListFactory {
      * @param entity
      * @return
      * @throws AzureRestResponseHandlingException
-     * @see org.opencredo.cloud.storage.azure.rest.ContainerListFactory#createContainersList(org.apache.http.HttpEntity)
+     * @see org.opencredo.cloud.storage.azure.rest.ContainerNamesListFactory#createContainerNamesList(org.apache.http.HttpEntity)
      */
     @SuppressWarnings("unchecked")
-    public List<String> createContainersList(HttpEntity entity) throws AzureRestResponseHandlingException {
+    public List<String> createContainerNamesList(HttpEntity entity) throws AzureRestResponseHandlingException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         try {
             DocumentBuilder builder = factory.newDocumentBuilder();

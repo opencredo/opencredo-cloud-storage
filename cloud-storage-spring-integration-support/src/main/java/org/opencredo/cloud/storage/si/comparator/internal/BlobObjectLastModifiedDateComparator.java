@@ -16,7 +16,7 @@ package org.opencredo.cloud.storage.si.comparator.internal;
 
 import java.util.Date;
 
-import org.opencredo.cloud.storage.BlobObject;
+import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.si.comparator.BlobObjectComparator;
 
 /**
@@ -25,7 +25,7 @@ import org.opencredo.cloud.storage.si.comparator.BlobObjectComparator;
  */
 public class BlobObjectLastModifiedDateComparator implements BlobObjectComparator {
 
-    public int compare(BlobObject b1, BlobObject b2) {
+    public int compare(BlobDetails b1, BlobDetails b2) {
         Date b1LastModifiedDate = b1.getLastModified();
         Date b2LastModifiedDate = b2.getLastModified();
 

@@ -16,12 +16,12 @@ package org.opencredo.cloud.storage.si.comparator;
 
 import java.util.Comparator;
 
-import org.opencredo.cloud.storage.BlobObject;
+import org.opencredo.cloud.storage.BlobDetails;
 
 /**
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  * 
  */
-public interface BlobObjectComparator extends Comparator<BlobObject> {
+public interface BlobObjectComparator extends Comparator<BlobDetails> {
 
 }

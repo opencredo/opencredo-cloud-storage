@@ -19,7 +19,7 @@ package org.opencredo.cloud.storage.si.filter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.opencredo.cloud.storage.BlobObject;
+import org.opencredo.cloud.storage.BlobDetails;
 
 /**
  * @author Eren Aykin (eren.aykin@opencredo.com)
@@ -33,10 +33,10 @@ public abstract class AbstractBucketObjectFilter implements BlobObjectFilter {
      * @return
      * @see org.opencredo.cloud.storage.si.filter.BlobObjectFilter#filter(java.util.List)
      */
-    public final List<BlobObject> filter(List<BlobObject> objects) {
-        List<BlobObject> accepted = new ArrayList<BlobObject>();
+    public final List<BlobDetails> filter(List<BlobDetails> objects) {
+        List<BlobDetails> accepted = new ArrayList<BlobDetails>();
         if (objects != null) {
-            for (BlobObject obj : objects) {
+            for (BlobDetails obj : objects) {
                 if (this.accept(obj)) {
                     accepted.add(obj);
                 }
@@ -50,6 +50,6 @@ public abstract class AbstractBucketObjectFilter implements BlobObjectFilter {
      * @param s3Object
      * @return
      */
-    protected abstract boolean accept(BlobObject s3Object);
+    protected abstract boolean accept(BlobDetails s3Object);
 
 }

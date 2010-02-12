@@ -17,7 +17,7 @@ package org.opencredo.cloud.storage.si.filter;
 
 import java.util.List;
 
-import org.opencredo.cloud.storage.BlobObject;
+import org.opencredo.cloud.storage.BlobDetails;
 
 /**
  * @author Eren Aykin (eren.aykin@opencredo.com)
@@ -30,6 +30,6 @@ public interface BlobObjectFilter {
      * @param objects
      * @return
      */
-    List<BlobObject> filter(List<BlobObject> objects);
+    List<BlobDetails> filter(List<BlobDetails> objects);
 
 }

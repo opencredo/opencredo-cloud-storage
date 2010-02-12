@@ -19,7 +19,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.Date;
 
 import org.junit.Test;
-import org.opencredo.cloud.storage.BlobObject;
+import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.si.comparator.BlobObjectComparator;
 import org.opencredo.cloud.storage.si.comparator.internal.BlobObjectLastModifiedDateComparator;
 
@@ -37,8 +37,8 @@ public class BlobObjectLastModifiedDateComparatorTest {
         long currentMils = System.currentTimeMillis();
         long dayInMils = 24 * 60 * 60 * 1000;
 
-        BlobObject bo1 = new BlobObject("bucketName", "key", "eTag", new Date(currentMils - dayInMils * 1));
-        BlobObject bo2 = new BlobObject("bucketName", "key", "eTag", new Date(currentMils - dayInMils * 2));
+        BlobDetails bo1 = new BlobDetails("bucketName", "key", "eTag", new Date(currentMils - dayInMils * 1));
+        BlobDetails bo2 = new BlobDetails("bucketName", "key", "eTag", new Date(currentMils - dayInMils * 2));
 
         assertEquals(1, comparator.compare(bo1, bo2));
         assertEquals(0, comparator.compare(bo1, bo1));

@@ -19,14 +19,14 @@ import java.util.List;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.opencredo.cloud.storage.BlobObject;
+import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.ContainerStatus;
 import org.opencredo.cloud.storage.azure.model.Blob;
 import org.opencredo.cloud.storage.azure.model.InputStreamBlob;
 import org.opencredo.cloud.storage.azure.rest.AzureRestResponseHandlingException;
-import org.opencredo.cloud.storage.azure.rest.AzureRestServiceException;
-import org.opencredo.cloud.storage.azure.rest.ContainerListFactory;
-import org.opencredo.cloud.storage.azure.rest.ContainerObjectListFactory;
+import org.opencredo.cloud.storage.azure.rest.AzureRestCommunicationException;
+import org.opencredo.cloud.storage.azure.rest.ContainerNamesListFactory;
+import org.opencredo.cloud.storage.azure.rest.ContainerObjectDetailsListFactory;
 import org.opencredo.cloud.storage.azure.rest.RestResponseHandler;
 
 /**
@@ -35,31 +35,31 @@ import org.opencredo.cloud.storage.azure.rest.RestResponseHandler;
  */
 public class DefaultRestResponseHandler implements RestResponseHandler {
 
-    private final ContainerListFactory containerListFactory;
-    private final ContainerObjectListFactory containerObjectListFactory;
+    private final ContainerNamesListFactory containerNamesListFactory;
+    private final ContainerObjectDetailsListFactory containerObjectDetailsListFactory;
 
     /**
-     * @param containerListFactory
-     * @param containerObjectListFactory
+     * @param containerNamesListFactory
+     * @param containerObjectDetailsListFactory
      */
-    public DefaultRestResponseHandler(ContainerListFactory containerListFactory,
-                                      ContainerObjectListFactory containerObjectListFactory) {
+    public DefaultRestResponseHandler(ContainerNamesListFactory containerNamesListFactory,
+                                      ContainerObjectDetailsListFactory containerObjectDetailsListFactory) {
         super();
-        this.containerListFactory = containerListFactory;
-        this.containerObjectListFactory = containerObjectListFactory;
+        this.containerNamesListFactory = containerNamesListFactory;
+        this.containerObjectDetailsListFactory = containerObjectDetailsListFactory;
     }
 
     /**
      * @param response
      * @param containerName
-     * @throws AzureRestServiceException
+     * @throws AzureRestCommunicationException
      * @see org.opencredo.cloud.storage.azure.rest.RestResponseHandler#handleCreateContainerResponse(org.apache.http.HttpResponse,
      *      java.lang.String)
      */
     public void handleCreateContainerResponse(HttpResponse response, String containerName)
-            throws AzureRestServiceException {
+            throws AzureRestResponseHandlingException {
         if (response.getStatusLine().getStatusCode() != HttpStatus.SC_CREATED) {
-            throw new AzureRestServiceException("Failed to create Azure container '%s'. Reason: '%s %d: %s'",
+            throw new AzureRestResponseHandlingException("Failed to create Azure container '%s'. Reason: '%s %d: %s'",
                     containerName, response.getStatusLine().getProtocolVersion().getProtocol(), response
                             .getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase());
         }
@@ -68,14 +68,14 @@ public class DefaultRestResponseHandler implements RestResponseHandler {
     /**
      * @param response
      * @param containerName
-     * @throws AzureRestServiceException
+     * @throws AzureRestResponseHandlingException
      * @see org.opencredo.cloud.storage.azure.rest.RestResponseHandler#handleDeleteContainerResponse(org.apache.http.HttpResponse,
      *      java.lang.String)
      */
     public void handleDeleteContainerResponse(HttpResponse response, String containerName)
-            throws AzureRestServiceException {
+            throws AzureRestResponseHandlingException {
         if (response.getStatusLine().getStatusCode() != HttpStatus.SC_ACCEPTED) {
-            throw new AzureRestServiceException("Failed to delete Azure container '%s'. Reason: '%s %d: %s'",
+            throw new AzureRestResponseHandlingException("Failed to delete Azure container '%s'. Reason: '%s %d: %s'",
                     containerName, response.getStatusLine().getProtocolVersion().getProtocol(), response
                             .getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase());
         }
@@ -85,14 +85,14 @@ public class DefaultRestResponseHandler implements RestResponseHandler {
      * @param response
      * @param containerName
      * @param blobName
-     * @throws AzureRestServiceException
+     * @throws AzureRestResponseHandlingException
      * @see org.opencredo.cloud.storage.azure.rest.RestResponseHandler#handleDeleteObjectResponse(org.apache.http.HttpResponse,
      *      java.lang.String, java.lang.String)
      */
     public void handleDeleteObjectResponse(HttpResponse response, String containerName, String blobName)
-            throws AzureRestServiceException {
+            throws AzureRestResponseHandlingException {
         if (response.getStatusLine().getStatusCode() != HttpStatus.SC_ACCEPTED) {
-            throw new AzureRestServiceException(
+            throw new AzureRestResponseHandlingException(
                     "Failed to delete blob '%s' in Azure container '%s'. Reason: '%s %d: %s'", blobName, containerName,
                     response.getStatusLine().getProtocolVersion().getProtocol(), response.getStatusLine()
                             .getStatusCode(), response.getStatusLine().getReasonPhrase());
@@ -103,16 +103,17 @@ public class DefaultRestResponseHandler implements RestResponseHandler {
      * @param response
      * @param containerName
      * @param blob
-     * @throws AzureRestServiceException
+     * @throws AzureRestResponseHandlingException
      * @see org.opencredo.cloud.storage.azure.rest.RestResponseHandler#handlePutObjectResponse(org.apache.http.HttpResponse,
      *      java.lang.String, org.opencredo.cloud.storage.azure.model.Blob)
      */
     public void handlePutObjectResponse(HttpResponse response, String containerName, Blob<?> blob)
-            throws AzureRestServiceException {
+            throws AzureRestResponseHandlingException {
         if (response.getStatusLine().getStatusCode() != HttpStatus.SC_CREATED) {
-            throw new AzureRestServiceException("Failed to add blob '%s' in Azure container '%s'. Reason: '%s %d: %s'",
-                    blob.getName(), containerName, response.getStatusLine().getProtocolVersion().getProtocol(),
-                    response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase());
+            throw new AzureRestResponseHandlingException(
+                    "Failed to add blob '%s' in Azure container '%s'. Reason: '%s %d: %s'", blob.getName(),
+                    containerName, response.getStatusLine().getProtocolVersion().getProtocol(), response
+                            .getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase());
         }
     }
 
@@ -121,17 +122,17 @@ public class DefaultRestResponseHandler implements RestResponseHandler {
      * @param containerName
      * @param blobName
      * @return
-     * @throws AzureRestServiceException
      * @throws AzureRestResponseHandlingException
      * @see org.opencredo.cloud.storage.azure.rest.RestResponseHandler#handleGetObjectResponse(org.apache.http.HttpResponse,
      *      java.lang.String, java.lang.String)
      */
     public InputStreamBlob handleGetObjectResponse(HttpResponse response, String containerName, String blobName)
-            throws AzureRestServiceException, AzureRestResponseHandlingException {
+            throws AzureRestResponseHandlingException {
         if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-            throw new AzureRestServiceException("Failed to get blob '%s' in Azure container '%s'. Reason: '%s %d: %s'",
-                    blobName, containerName, response.getStatusLine().getProtocolVersion().getProtocol(), response
-                            .getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase());
+            throw new AzureRestResponseHandlingException(
+                    "Failed to get blob '%s' in Azure container '%s'. Reason: '%s %d: %s'", blobName, containerName,
+                    response.getStatusLine().getProtocolVersion().getProtocol(), response.getStatusLine()
+                            .getStatusCode(), response.getStatusLine().getReasonPhrase());
         }
 
         try {
@@ -147,23 +148,24 @@ public class DefaultRestResponseHandler implements RestResponseHandler {
      * @param response
      * @param containerName
      * @return
-     * @throws AzureRestServiceException
      * @throws AzureRestResponseHandlingException
-     * @see org.opencredo.cloud.storage.azure.rest.RestResponseHandler#handleListContainerObjectsResponse(org.apache.http.HttpResponse,
+     * @throws AzureRestResponseHandlingException
+     * @see org.opencredo.cloud.storage.azure.rest.RestResponseHandler#handleListContainerObjectDetailsResponse(org.apache.http.HttpResponse,
      *      java.lang.String)
      */
-    public List<BlobObject> handleListContainerObjectsResponse(HttpResponse response, String containerName)
-            throws AzureRestServiceException, AzureRestResponseHandlingException {
+    public List<BlobDetails> handleListContainerObjectDetailsResponse(HttpResponse response, String containerName)
+            throws AzureRestResponseHandlingException, AzureRestResponseHandlingException {
 
         if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-            throw new AzureRestServiceException(
+            throw new AzureRestResponseHandlingException(
                     "Failed to get list of blobs from Azure container '%s'. Reason: '%s %d: %s'", containerName,
                     response.getStatusLine().getProtocolVersion().getProtocol(), response.getStatusLine()
                             .getStatusCode(), response.getStatusLine().getReasonPhrase());
         }
 
         try {
-            return containerObjectListFactory.createContainerObjectsList(containerName, response.getEntity());
+            return containerObjectDetailsListFactory.createContainerObjectDetailsList(containerName, response
+                    .getEntity());
         } catch (AzureRestResponseHandlingException e) {
             throw new AzureRestResponseHandlingException(
                     "Failed to load blobs list from Azure container's '%s' response.", e);
@@ -173,20 +175,20 @@ public class DefaultRestResponseHandler implements RestResponseHandler {
     /**
      * @param response
      * @return
-     * @throws AzureRestServiceException
      * @throws AzureRestResponseHandlingException
-     * @see org.opencredo.cloud.storage.azure.rest.RestResponseHandler#handleListContainersResponse(org.apache.http.HttpResponse)
+     * @throws AzureRestResponseHandlingException
+     * @see org.opencredo.cloud.storage.azure.rest.RestResponseHandler#handleListContainerNamesResponse(org.apache.http.HttpResponse)
      */
-    public List<String> handleListContainersResponse(HttpResponse response) throws AzureRestServiceException,
-            AzureRestResponseHandlingException {
+    public List<String> handleListContainerNamesResponse(HttpResponse response)
+            throws AzureRestResponseHandlingException, AzureRestResponseHandlingException {
         if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-            throw new AzureRestServiceException("Failed to get Azure containers list. Reason: '%s %d: %s'", response
-                    .getStatusLine().getProtocolVersion().getProtocol(), response.getStatusLine().getStatusCode(),
-                    response.getStatusLine().getReasonPhrase());
+            throw new AzureRestResponseHandlingException("Failed to get Azure containers list. Reason: '%s %d: %s'",
+                    response.getStatusLine().getProtocolVersion().getProtocol(), response.getStatusLine()
+                            .getStatusCode(), response.getStatusLine().getReasonPhrase());
         }
 
         try {
-            return containerListFactory.createContainersList(response.getEntity());
+            return containerNamesListFactory.createContainerNamesList(response.getEntity());
         } catch (AzureRestResponseHandlingException e) {
             throw new AzureRestResponseHandlingException("Failed to load Azure containers list from response.", e);
         }
@@ -197,12 +199,12 @@ public class DefaultRestResponseHandler implements RestResponseHandler {
      * @param response
      * @param containerName
      * @return
-     * @throws AzureRestServiceException
+     * @throws AzureRestResponseHandlingException
      * @see org.opencredo.cloud.storage.azure.rest.RestResponseHandler#handleCheckContainerStatus(org.apache.http.HttpResponse,
      *      java.lang.String)
      */
     public ContainerStatus handleCheckContainerStatus(HttpResponse response, String containerName)
-            throws AzureRestServiceException {
+            throws AzureRestResponseHandlingException {
         if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
             return ContainerStatus.MINE;
         }
@@ -211,7 +213,7 @@ public class DefaultRestResponseHandler implements RestResponseHandler {
             return ContainerStatus.DOES_NOT_EXIST;
         }
 
-        throw new AzureRestServiceException("Unexpected Azure containers '{}' status. Reason: '%s %d: %s'",
+        throw new AzureRestResponseHandlingException("Unexpected Azure containers '{}' status. Reason: '%s %d: %s'",
                 containerName, response.getStatusLine().getProtocolVersion().getProtocol(), response.getStatusLine()
                         .getStatusCode(), response.getStatusLine().getReasonPhrase());
     }

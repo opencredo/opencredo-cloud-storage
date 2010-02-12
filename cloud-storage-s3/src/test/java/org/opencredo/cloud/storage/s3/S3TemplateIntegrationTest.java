@@ -28,7 +28,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.opencredo.cloud.storage.BlobObject;
+import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.StorageCommunicationException;
 import org.opencredo.cloud.storage.StorageOperations;
 import org.opencredo.cloud.storage.s3.AwsCredentials;
@@ -69,8 +69,8 @@ public class S3TemplateIntegrationTest {
     public void after() {
         try {
 
-            List<BlobObject> objects = template.listContainerObjects(BUCKET_NAME);
-            for (BlobObject blobObject : objects) {
+            List<BlobDetails> objects = template.listContainerObjectDetails(BUCKET_NAME);
+            for (BlobDetails blobObject : objects) {
                 template.deleteObject(BUCKET_NAME, blobObject.getName());
             }
 

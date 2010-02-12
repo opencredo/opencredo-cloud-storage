@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.opencredo.cloud.storage.BlobObject;
+import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.si.filter.internal.AcceptOnceBlobObjectFilter;
 
 /**
@@ -35,9 +35,9 @@ public class AcceptOnceBlobObjectFilterTest {
     @Test
     public void testUnseenS3ObjectAdded() {
         sut = new AcceptOnceBlobObjectFilter();
-        sut.filter(Arrays.asList(new BlobObject[] { new BlobObject("", "a", "", currentDate),
-                new BlobObject("", "b", "", currentDate) }));
-        List<BlobObject> acceptedObjects = sut.filter(Arrays.asList(new BlobObject[] { new BlobObject("", "c", "",
+        sut.filter(Arrays.asList(new BlobDetails[] { new BlobDetails("", "a", "", currentDate),
+                new BlobDetails("", "b", "", currentDate) }));
+        List<BlobDetails> acceptedObjects = sut.filter(Arrays.asList(new BlobDetails[] { new BlobDetails("", "c", "",
                 currentDate) }));
         Assert.assertEquals(1, acceptedObjects.size());
     }
@@ -45,9 +45,9 @@ public class AcceptOnceBlobObjectFilterTest {
     @Test
     public void testSeenS3ObjectNotAdded() {
         sut = new AcceptOnceBlobObjectFilter();
-        sut.filter(Arrays.asList(new BlobObject[] { new BlobObject("", "a", "", currentDate),
-                new BlobObject("", "b", "", currentDate) }));
-        List<BlobObject> acceptedObjects = sut.filter(Arrays.asList(new BlobObject[] { new BlobObject("", "a", "",
+        sut.filter(Arrays.asList(new BlobDetails[] { new BlobDetails("", "a", "", currentDate),
+                new BlobDetails("", "b", "", currentDate) }));
+        List<BlobDetails> acceptedObjects = sut.filter(Arrays.asList(new BlobDetails[] { new BlobDetails("", "a", "",
                 currentDate) }));
         Assert.assertEquals(0, acceptedObjects.size());
     }
