@@ -18,6 +18,8 @@ package org.opencredo.cloud.storage.si.transformer;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
+import static org.opencredo.cloud.storage.si.Constants.CONTAINER_NAME;
+import static org.opencredo.cloud.storage.si.Constants.CONATINER_OBJECT_NAME;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -31,7 +33,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.opencredo.cloud.storage.StorageOperations;
-import org.opencredo.cloud.storage.si.transformer.ToByteArrayTransformer;
 import org.springframework.integration.core.Message;
 import org.springframework.integration.message.MessageBuilder;
 
@@ -46,7 +47,7 @@ public class ToByteArrayTransformerTest {
     @Mock
     private StorageOperations template;
 
-    private final String bucketName = "testBucket";
+    private final String containerName = "testConatiner";
     private final String key = "testFile.test";
 
     String testData = "some test data";
@@ -55,7 +56,7 @@ public class ToByteArrayTransformerTest {
     public void init() throws IOException {
         transformer = new ToByteArrayTransformer(template);
 
-        when(template.receiveAsInputStream(bucketName, key)).thenReturn(
+        when(template.receiveAsInputStream(containerName, key)).thenReturn(
                 new ByteArrayInputStream(testData.getBytes("UTF-8")));
     }
 
@@ -63,8 +64,8 @@ public class ToByteArrayTransformerTest {
     public void testTransformToByteArrayMessage() throws IOException {
 
         Map<String, Object> testMetaData = new HashMap<String, Object>();
-        testMetaData.put("bucketName", bucketName);
-        testMetaData.put("key", key);
+        testMetaData.put(CONTAINER_NAME, containerName);
+        testMetaData.put(CONATINER_OBJECT_NAME, key);
         Message<Map<String, Object>> message = MessageBuilder.withPayload(testMetaData).build();
         Message<byte[]> messageTransformed = transformer.transform(message);
 
@@ -74,6 +75,6 @@ public class ToByteArrayTransformerTest {
 
     @After
     public void after() {
-        template.deleteObject(bucketName, key);
+        template.deleteObject(containerName, key);
     }
 }

@@ -25,13 +25,13 @@ import org.opencredo.cloud.storage.BlobDetails;
  * @author Eren Aykin (eren.aykin@opencredo.com)
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  */
-public abstract class AbstractBucketObjectFilter implements BlobObjectFilter {
+public abstract class AbstractBlobDetailsFilter implements BlobDetailsFilter {
 
     /**
      * 
      * @param objects
      * @return
-     * @see org.opencredo.cloud.storage.si.filter.BlobObjectFilter#filter(java.util.List)
+     * @see org.opencredo.cloud.storage.si.filter.BlobDetailsFilter#filter(java.util.List)
      */
     public final List<BlobDetails> filter(List<BlobDetails> objects) {
         List<BlobDetails> accepted = new ArrayList<BlobDetails>();

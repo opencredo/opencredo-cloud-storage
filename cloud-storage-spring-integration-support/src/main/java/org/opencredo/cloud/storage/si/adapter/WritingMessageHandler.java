@@ -19,8 +19,8 @@ import java.io.File;
 
 import org.opencredo.cloud.storage.ContainerStatus;
 import org.opencredo.cloud.storage.StorageOperations;
-import org.opencredo.cloud.storage.si.BlobObjectIdGenerator;
-import org.opencredo.cloud.storage.si.internal.DefaultBlobObjectIdGenerator;
+import org.opencredo.cloud.storage.si.BlobNameGenerator;
+import org.opencredo.cloud.storage.si.internal.DefaultBlobNameGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -30,11 +30,8 @@ import org.springframework.integration.message.MessageHandlingException;
 import org.springframework.util.Assert;
 
 /**
- * MessageHandler for writing S3Objects to a Bucket. Depending on the Message's
- * payload, the relevant handler turns the payload into an S3Object. If the
- * payload is string, the content is written to a default destination. If the
- * payload is S3Object or File, it should have the filename property in it's
- * header.
+ * MessageHandler for writing blobs to the cloud storage. Depending on the
+ * Message's payload, the relevant handler turns the payload into an Blob.
  * 
  * @author Eren Aykin (eren.aykin@opencredo.com)
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
@@ -43,34 +40,34 @@ public class WritingMessageHandler implements MessageHandler, InitializingBean {
     private final static Logger LOG = LoggerFactory.getLogger(WritingMessageHandler.class);
 
     private final StorageOperations template;
-    private final String bucketName;
-    private final BlobObjectIdGenerator idGenerator;
+    private final String containerName;
+    private final BlobNameGenerator blobNameGenerator;
 
     /**
      * @param template
-     * @param bucketName
+     * @param containerName
      */
-    public WritingMessageHandler(StorageOperations template, String bucketName) {
-        this(template, bucketName, new DefaultBlobObjectIdGenerator());
+    public WritingMessageHandler(StorageOperations template, String containerName) {
+        this(template, containerName, new DefaultBlobNameGenerator());
     }
 
     /**
      * @param template
-     * @param bucketName
-     * @param idGenerator
+     * @param containerName
+     * @param blobNameGenerator
      */
-    public WritingMessageHandler(StorageOperations template, String bucketName, BlobObjectIdGenerator idGenerator) {
+    public WritingMessageHandler(StorageOperations template, String containerName, BlobNameGenerator blobNameGenerator) {
         super();
         Assert.notNull(template, "'template' should not be null");
-        Assert.notNull(idGenerator, "'idGenerator' should not be null");
+        Assert.notNull(blobNameGenerator, "'blob name generator' should not be null");
         this.template = template;
-        this.bucketName = bucketName;
-        this.idGenerator = idGenerator;
+        this.containerName = containerName;
+        this.blobNameGenerator = blobNameGenerator;
     }
 
     /**
-     * write the content of Message to S3 Bucket with handlers that convert the
-     * message payload to s3object.
+     * write the content of Message to the cloud storage with handlers that
+     * convert the message payload to Blob.
      * 
      * @param message
      */
@@ -79,26 +76,26 @@ public class WritingMessageHandler implements MessageHandler, InitializingBean {
         Assert.notNull(message.getPayload(), "message payload must not be null");
         Object payload = message.getPayload();
 
-        String blobObjectId = idGenerator.generateBlobObjectId(message);
-        LOG.debug("Message to send '{}' with id '{}'", message, blobObjectId);
+        String blobName = blobNameGenerator.generateBlobName(message);
+        LOG.debug("Message to send '{}' with name '{}'", message, blobName);
 
         if ((payload instanceof File)) {
-            template.send(bucketName, blobObjectId, (File) payload);
+            template.send(containerName, blobName, (File) payload);
         } else if (payload instanceof String) {
-            template.send(bucketName, blobObjectId, (String) payload);
+            template.send(containerName, blobName, (String) payload);
         } else {
             throw new MessageHandlingException(message, "unsupported Message payload type ["
                     + payload.getClass().getName() + "]");
         }
     }
 
-    public String getBucketName() {
-        return bucketName;
+    public String getContainerName() {
+        return containerName;
     }
 
     public void afterPropertiesSet() throws Exception {
-        Assert.isTrue(template.checkContainerStatus(bucketName) == ContainerStatus.MINE, "Bucket '" + bucketName
-                + "' is not accessible.");
+        Assert.isTrue(template.checkContainerStatus(containerName) == ContainerStatus.MINE, "Container '"
+                + containerName + "' is not accessible.");
     }
 
 }

@@ -46,11 +46,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration
 public class ReadingMessageSourceTest {
 
-    private static final String BUCKET_NAME_PREFIX = "bucketName-";
+    private static final String CONTAINER_NAME_PREFIX = "containerName-";
     private static final String ID_PREFIX = "id-";
     private static final String E_TAG_PREFIX = "eTag-";
 
-    private final String bucketName = TestPropertiesAccessor.getS3DefaultBucketName();
+    private final String containerName = TestPropertiesAccessor.getS3DefaultBucketName();
 
     private BlobDetails[] blobObjs;
     private long currentTime;
@@ -73,7 +73,7 @@ public class ReadingMessageSourceTest {
         blobObjs = new BlobDetails[msgCount];
 
         for (int i = 0; i < msgCount; i++) {
-            blobObjs[i] = new BlobDetails(BUCKET_NAME_PREFIX + i, ID_PREFIX + i, E_TAG_PREFIX + i, new Date(currentTime
+            blobObjs[i] = new BlobDetails(CONTAINER_NAME_PREFIX + i, ID_PREFIX + i, E_TAG_PREFIX + i, new Date(currentTime
                     - (dayInMils * (i + 1))));
         }
     }
@@ -84,7 +84,7 @@ public class ReadingMessageSourceTest {
         assertNotNull(template);
         assertNotNull(inputChannel);
 
-        when(template.listContainerObjectDetails(bucketName)).thenReturn(Arrays.asList(blobObjs));
+        when(template.listContainerObjectDetails(containerName)).thenReturn(Arrays.asList(blobObjs));
 
         Thread.sleep(3000);
 
@@ -96,12 +96,12 @@ public class ReadingMessageSourceTest {
             assertNotNull("Message expected", msg);
 
             payload = msg.getPayload();
-            assertNotNull("Message map should contain: " + Constants.BUCKET_NAME, payload.get(Constants.BUCKET_NAME));
-            assertTrue("Message bucket name should start with prefix: " + BUCKET_NAME_PREFIX, payload.get(
-                    Constants.BUCKET_NAME).toString().startsWith(BUCKET_NAME_PREFIX));
+            assertNotNull("Message map should contain: " + Constants.CONTAINER_NAME, payload.get(Constants.CONTAINER_NAME));
+            assertTrue("Message container name should start with prefix: " + CONTAINER_NAME_PREFIX, payload.get(
+                    Constants.CONTAINER_NAME).toString().startsWith(CONTAINER_NAME_PREFIX));
 
-            assertNotNull("Message map should contain: " + Constants.ID, payload.get(Constants.ID));
-            assertTrue("Message id should start with prefix: " + ID_PREFIX, payload.get(Constants.ID).toString()
+            assertNotNull("Message map should contain: " + Constants.CONATINER_OBJECT_NAME, payload.get(Constants.CONATINER_OBJECT_NAME));
+            assertTrue("Message id should start with prefix: " + ID_PREFIX, payload.get(Constants.CONATINER_OBJECT_NAME).toString()
                     .startsWith(ID_PREFIX));
 
             assertNotNull("Message map should contain: " + Constants.DELETE_WHEN_RECEIVED, payload

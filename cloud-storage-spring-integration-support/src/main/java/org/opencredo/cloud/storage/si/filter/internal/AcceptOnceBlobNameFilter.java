@@ -19,19 +19,19 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.opencredo.cloud.storage.BlobDetails;
-import org.opencredo.cloud.storage.si.filter.AbstractBucketObjectFilter;
+import org.opencredo.cloud.storage.si.filter.AbstractBlobDetailsFilter;
 
 /**
  * Filters S3Objects based on key values
  * 
  * @author Eren Aykin (eren.aykin@opencredo.com)
  */
-public class AcceptOnceBlobObjectFilter extends AbstractBucketObjectFilter {
+public class AcceptOnceBlobNameFilter extends AbstractBlobDetailsFilter {
 
     private final Set<String> seenKeys;
     private final Object monitor = new Object();
 
-    public AcceptOnceBlobObjectFilter() {
+    public AcceptOnceBlobNameFilter() {
         this.seenKeys = new HashSet<String>();
     }
 
@@ -39,7 +39,7 @@ public class AcceptOnceBlobObjectFilter extends AbstractBucketObjectFilter {
      * 
      * @param obj
      * @return
-     * @see org.opencredo.cloud.storage.si.filter.AbstractBucketObjectFilter#accept(org.opencredo.cloud.storage.BlobDetails)
+     * @see org.opencredo.cloud.storage.si.filter.AbstractBlobDetailsFilter#accept(org.opencredo.cloud.storage.BlobDetails)
      */
     protected boolean accept(BlobDetails obj) {
         synchronized (this.monitor) {

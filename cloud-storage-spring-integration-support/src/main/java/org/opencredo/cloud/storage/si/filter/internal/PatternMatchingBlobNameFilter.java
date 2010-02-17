@@ -19,20 +19,20 @@ package org.opencredo.cloud.storage.si.filter.internal;
 import java.util.regex.Pattern;
 
 import org.opencredo.cloud.storage.BlobDetails;
-import org.opencredo.cloud.storage.si.filter.AbstractBucketObjectFilter;
+import org.opencredo.cloud.storage.si.filter.AbstractBlobDetailsFilter;
 import org.springframework.util.Assert;
 
 /**
  * @author Eren Aykin (eren.aykin@opencredo.com)
  */
-public class PatternMatchingBlobObjectIdFilter extends AbstractBucketObjectFilter {
+public class PatternMatchingBlobNameFilter extends AbstractBlobDetailsFilter {
 
     private final Pattern pattern;
 
     /**
      * @param pattern
      */
-    public PatternMatchingBlobObjectIdFilter(String regex) {
+    public PatternMatchingBlobNameFilter(String regex) {
         Assert.hasText(regex, "'regex' must not be null");
         this.pattern = Pattern.compile(regex);
     }

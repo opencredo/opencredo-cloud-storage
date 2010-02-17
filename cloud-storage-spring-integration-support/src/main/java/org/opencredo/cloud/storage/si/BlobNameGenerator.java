@@ -12,16 +12,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.opencredo.cloud.storage.si.comparator;
 
-import java.util.Comparator;
+package org.opencredo.cloud.storage.si;
 
-import org.opencredo.cloud.storage.BlobDetails;
+import org.springframework.integration.core.Message;
 
 /**
- * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
- * 
+ * @author Eren Aykin (eren.aykin@opencredo.com)
  */
-public interface BlobObjectComparator extends Comparator<BlobDetails> {
+public interface BlobNameGenerator {
+
+    /**
+     * @param message
+     */
+    String generateBlobName(Message<?> message);
 
 }

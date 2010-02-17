@@ -14,7 +14,7 @@
 
 	<!-- Inbound adapter -->
 	<cloud:outbound-channel-adapter id="outbound-adapter"
-		bucket="${awsS3DefaultBucketName}" channel="outputChannel" />
+		container="${awsS3DefaultBucketName}" channel="outputChannel" />
 
 </beans:beans>
 

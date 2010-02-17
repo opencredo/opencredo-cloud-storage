@@ -15,7 +15,7 @@
 
 	<!-- Inbound adapter -->
 	<beans:bean id="testFilter"
-		class="org.opencredo.cloud.storage.si.filter.internal.PatternMatchingBlobObjectIdFilter">
+		class="org.opencredo.cloud.storage.si.filter.internal.PatternMatchingBlobNameFilter">
 		<beans:constructor-arg value="object*" />
 	</beans:bean>
 
@@ -23,7 +23,7 @@
 		class="org.opencredo.cloud.storage.si.adapter.config.InboundChannelAdapterParserTest$MockBlobObjectComparator" />
 
 	<cloud:inbound-channel-adapter id="inbound-adapter"
-		channel="inputChannel" template="mockTemplate" bucket="${awsS3DefaultBucketName}"
+		channel="inputChannel" template="mockTemplate" container="${awsS3DefaultBucketName}"
 		filter="testFilter" comparator="testComparator" delete-when-received="true">
 		<poller>
 			<interval-trigger interval="5000" />

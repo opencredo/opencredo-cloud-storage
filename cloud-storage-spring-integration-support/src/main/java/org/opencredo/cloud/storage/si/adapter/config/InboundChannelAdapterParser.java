@@ -39,13 +39,13 @@ public class InboundChannelAdapterParser extends AbstractPollingInboundChannelAd
                 .getName());
 
         String templateRef = element.getAttribute(AdapterParserUtils.TEMPLATE_REF_ATTRIBUTE);
-        String bucket = element.getAttribute(AdapterParserUtils.BUCKET_NAME_ATTRIBUTE);
+        String containerName = element.getAttribute(AdapterParserUtils.CONTAINER_NAME_ATTRIBUTE);
         String deleteReceived = element.getAttribute(AdapterParserUtils.DELETE_WHEN_RECEIVED_ATTRIBUTE);
         String filterRef = element.getAttribute(AdapterParserUtils.FILTER_ATTRIBUTE);
         String comparatorRef = element.getAttribute(AdapterParserUtils.COMPARATOR_ATTRIBUTE);
 
         builder.addConstructorArgReference(templateRef);
-        builder.addConstructorArgValue(bucket);
+        builder.addConstructorArgValue(containerName);
 
         if (StringUtils.hasText(filterRef)) {
             builder.addConstructorArgReference(filterRef);

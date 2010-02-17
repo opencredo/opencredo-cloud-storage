@@ -17,32 +17,32 @@ package org.opencredo.cloud.storage.si.internal;
 
 import java.util.Date;
 
-import org.opencredo.cloud.storage.si.BlobObjectIdGenerator;
+import org.opencredo.cloud.storage.si.BlobNameGenerator;
 import org.springframework.integration.core.Message;
 
 /**
  * @author Eren Aykin (eren.aykin@opencredo.com)
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  */
-public class DefaultBlobObjectIdGenerator implements BlobObjectIdGenerator {
+public class DefaultBlobNameGenerator implements BlobNameGenerator {
 
     private final String keyPrefix;
 
-    public DefaultBlobObjectIdGenerator() {
+    public DefaultBlobNameGenerator() {
         this("object.");
     }
 
     /**
      * @param keyPrefix
      */
-    public DefaultBlobObjectIdGenerator(String keyPrefix) {
+    public DefaultBlobNameGenerator(String keyPrefix) {
         this.keyPrefix = keyPrefix;
     }
 
     /**
      * @param message
      */
-    public String generateBlobObjectId(Message<?> message) {
+    public String generateBlobName(Message<?> message) {
         return keyPrefix + (new Date().getTime());
     }
 

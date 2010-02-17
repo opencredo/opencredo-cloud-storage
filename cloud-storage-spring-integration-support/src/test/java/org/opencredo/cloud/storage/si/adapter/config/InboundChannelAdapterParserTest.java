@@ -24,9 +24,9 @@ import static org.junit.Assert.fail;
 import org.junit.Test;
 import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.si.adapter.ReadingMessageSource;
-import org.opencredo.cloud.storage.si.comparator.BlobObjectComparator;
-import org.opencredo.cloud.storage.si.filter.internal.AcceptOnceBlobObjectFilter;
-import org.opencredo.cloud.storage.si.filter.internal.PatternMatchingBlobObjectIdFilter;
+import org.opencredo.cloud.storage.si.comparator.BlobDetailsComparator;
+import org.opencredo.cloud.storage.si.filter.internal.AcceptOnceBlobNameFilter;
+import org.opencredo.cloud.storage.si.filter.internal.PatternMatchingBlobNameFilter;
 import org.opencredo.cloud.storage.test.TestPropertiesAccessor;
 import org.springframework.beans.DirectFieldAccessor;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
@@ -54,8 +54,8 @@ public class InboundChannelAdapterParserTest {
         DirectFieldAccessor adapterDirect = new DirectFieldAccessor(rms);
         assertNotNull("'template' not found", adapterDirect.getPropertyValue("template"));
         assertNotNull("'filter' queue not found", adapterDirect.getPropertyValue("filter"));
-        assertTrue(adapterDirect.getPropertyValue("filter") instanceof AcceptOnceBlobObjectFilter);
-        assertEquals(TestPropertiesAccessor.getS3DefaultBucketName(), adapterDirect.getPropertyValue("bucketName"));
+        assertTrue(adapterDirect.getPropertyValue("filter") instanceof AcceptOnceBlobNameFilter);
+        assertEquals(TestPropertiesAccessor.getS3DefaultBucketName(), adapterDirect.getPropertyValue("containerName"));
         assertFalse((Boolean) adapterDirect.getPropertyValue("deleteWhenReceived"));
     }
 
@@ -76,15 +76,15 @@ public class InboundChannelAdapterParserTest {
         DirectFieldAccessor adapterDirect = new DirectFieldAccessor(rms);
         assertNotNull("'template' not found", adapterDirect.getPropertyValue("template"));
         assertNotNull("'filter' queue not found", adapterDirect.getPropertyValue("filter"));
-        assertTrue(adapterDirect.getPropertyValue("filter") instanceof PatternMatchingBlobObjectIdFilter);
-        assertEquals(TestPropertiesAccessor.getS3DefaultBucketName(), adapterDirect.getPropertyValue("bucketName"));
+        assertTrue(adapterDirect.getPropertyValue("filter") instanceof PatternMatchingBlobNameFilter);
+        assertEquals(TestPropertiesAccessor.getS3DefaultBucketName(), adapterDirect.getPropertyValue("containerName"));
         assertFalse((Boolean) adapterDirect.getPropertyValue("deleteWhenReceived"));
     }
 
     @Test(expected = BeanDefinitionStoreException.class)
-    public void testInboundAdapterLoadWithoutBucket() {
+    public void testInboundAdapterLoadWithoutContainer() {
         try {
-            new ClassPathXmlApplicationContext("InboundChannelAdapterParserTest-noBucket-context.xml", this.getClass());
+            new ClassPathXmlApplicationContext("InboundChannelAdapterParserTest-noContainer-context.xml", this.getClass());
             fail("Context load should fail");
         } catch (BeanDefinitionStoreException e) {
             System.err.println(e.getMessage());
@@ -121,8 +121,8 @@ public class InboundChannelAdapterParserTest {
         DirectFieldAccessor adapterDirect = new DirectFieldAccessor(rms);
         assertNotNull("'template' not found", adapterDirect.getPropertyValue("template"));
         assertNotNull("'filter' queue not found", adapterDirect.getPropertyValue("filter"));
-        assertTrue(adapterDirect.getPropertyValue("filter") instanceof AcceptOnceBlobObjectFilter);
-        assertEquals(TestPropertiesAccessor.getS3DefaultBucketName(), adapterDirect.getPropertyValue("bucketName"));
+        assertTrue(adapterDirect.getPropertyValue("filter") instanceof AcceptOnceBlobNameFilter);
+        assertEquals(TestPropertiesAccessor.getS3DefaultBucketName(), adapterDirect.getPropertyValue("containerName"));
         assertFalse((Boolean) adapterDirect.getPropertyValue("deleteWhenReceived"));
     }
 
@@ -143,8 +143,8 @@ public class InboundChannelAdapterParserTest {
         DirectFieldAccessor adapterDirect = new DirectFieldAccessor(rms);
         assertNotNull("'template' not found", adapterDirect.getPropertyValue("template"));
         assertNotNull("'filter' queue not found", adapterDirect.getPropertyValue("filter"));
-        assertTrue(adapterDirect.getPropertyValue("filter") instanceof PatternMatchingBlobObjectIdFilter);
-        assertEquals(TestPropertiesAccessor.getS3DefaultBucketName(), adapterDirect.getPropertyValue("bucketName"));
+        assertTrue(adapterDirect.getPropertyValue("filter") instanceof PatternMatchingBlobNameFilter);
+        assertEquals(TestPropertiesAccessor.getS3DefaultBucketName(), adapterDirect.getPropertyValue("containerName"));
         assertTrue((Boolean) adapterDirect.getPropertyValue("deleteWhenReceived"));
     }
 
@@ -154,7 +154,7 @@ public class InboundChannelAdapterParserTest {
      * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
      * 
      */
-    static class MockBlobObjectComparator implements BlobObjectComparator {
+    static class MockBlobObjectComparator implements BlobDetailsComparator {
 
         public int compare(BlobDetails o1, BlobDetails o2) {
             return 0;

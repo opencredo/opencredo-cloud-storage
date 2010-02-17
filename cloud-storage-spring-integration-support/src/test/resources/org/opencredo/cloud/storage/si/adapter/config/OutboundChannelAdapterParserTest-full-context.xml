@@ -15,11 +15,12 @@
 	<channel id="outputChannel" />
 
 	<!-- Inbound adapter -->
-	<beans:bean id="testIdGenerator" class="org.opencredo.cloud.storage.si.adapter.config.OutboundChannelAdapterParserTest$MockBlobObjectIdGenerator" />
+	<beans:bean id="testNameGenerator"
+		class="org.opencredo.cloud.storage.si.adapter.config.OutboundChannelAdapterParserTest$MockBlobNameGenerator" />
 
 	<cloud:outbound-channel-adapter id="outbound-adapter"
-		template="mockTemplate" bucket="${awsS3DefaultBucketName}" channel="outputChannel"
-		id-generator="testIdGenerator" />
+		template="mockTemplate" container="${awsS3DefaultBucketName}" channel="outputChannel"
+		name-generator="testNameGenerator" />
 
 </beans:beans>
 

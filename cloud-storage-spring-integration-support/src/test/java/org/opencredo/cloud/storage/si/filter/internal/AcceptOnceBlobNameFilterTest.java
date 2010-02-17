@@ -22,19 +22,19 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 import org.opencredo.cloud.storage.BlobDetails;
-import org.opencredo.cloud.storage.si.filter.internal.AcceptOnceBlobObjectFilter;
+import org.opencredo.cloud.storage.si.filter.internal.AcceptOnceBlobNameFilter;
 
 /**
  * @author Eren Aykin (eren.aykin@opencredo.com)
  */
-public class AcceptOnceBlobObjectFilterTest {
+public class AcceptOnceBlobNameFilterTest {
 
     private Date currentDate = new Date(System.currentTimeMillis());
-    AcceptOnceBlobObjectFilter sut;
+    AcceptOnceBlobNameFilter sut;
 
     @Test
     public void testUnseenS3ObjectAdded() {
-        sut = new AcceptOnceBlobObjectFilter();
+        sut = new AcceptOnceBlobNameFilter();
         sut.filter(Arrays.asList(new BlobDetails[] { new BlobDetails("", "a", "", currentDate),
                 new BlobDetails("", "b", "", currentDate) }));
         List<BlobDetails> acceptedObjects = sut.filter(Arrays.asList(new BlobDetails[] { new BlobDetails("", "c", "",
@@ -44,7 +44,7 @@ public class AcceptOnceBlobObjectFilterTest {
 
     @Test
     public void testSeenS3ObjectNotAdded() {
-        sut = new AcceptOnceBlobObjectFilter();
+        sut = new AcceptOnceBlobNameFilter();
         sut.filter(Arrays.asList(new BlobDetails[] { new BlobDetails("", "a", "", currentDate),
                 new BlobDetails("", "b", "", currentDate) }));
         List<BlobDetails> acceptedObjects = sut.filter(Arrays.asList(new BlobDetails[] { new BlobDetails("", "a", "",

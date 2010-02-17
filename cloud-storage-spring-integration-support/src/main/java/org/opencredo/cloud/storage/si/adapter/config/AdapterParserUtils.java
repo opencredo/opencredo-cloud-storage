@@ -24,7 +24,7 @@ public class AdapterParserUtils {
 
     static final String TEMPLATE_REF_ATTRIBUTE = "template";
 
-    static final String BUCKET_NAME_ATTRIBUTE = "bucket";
+    static final String CONTAINER_NAME_ATTRIBUTE = "container";
 
     // Inbound Properties
     static final String FILTER_ATTRIBUTE = "filter";
@@ -35,6 +35,6 @@ public class AdapterParserUtils {
     static final String COMPARATOR_ATTRIBUTE = "comparator";
 
     // Outbound Properties
-    static final String ID_GENERATOR_ATTRIBUTE = "id-generator";
+    static final String NAME_GENERATOR_ATTRIBUTE = "name-generator";
 
 }

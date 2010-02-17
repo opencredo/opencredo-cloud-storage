@@ -20,16 +20,16 @@ import java.util.Date;
 
 import org.junit.Test;
 import org.opencredo.cloud.storage.BlobDetails;
-import org.opencredo.cloud.storage.si.comparator.BlobObjectComparator;
-import org.opencredo.cloud.storage.si.comparator.internal.BlobObjectLastModifiedDateComparator;
+import org.opencredo.cloud.storage.si.comparator.BlobDetailsComparator;
+import org.opencredo.cloud.storage.si.comparator.internal.BlobLastModifiedDateComparator;
 
 /**
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  * 
  */
-public class BlobObjectLastModifiedDateComparatorTest {
+public class BlobLastModifiedDateComparatorTest {
 
-    private BlobObjectComparator comparator = new BlobObjectLastModifiedDateComparator();
+    private BlobDetailsComparator comparator = new BlobLastModifiedDateComparator();
 
     @Test
     public void compareBlobObjects() {
@@ -37,8 +37,8 @@ public class BlobObjectLastModifiedDateComparatorTest {
         long currentMils = System.currentTimeMillis();
         long dayInMils = 24 * 60 * 60 * 1000;
 
-        BlobDetails bo1 = new BlobDetails("bucketName", "key", "eTag", new Date(currentMils - dayInMils * 1));
-        BlobDetails bo2 = new BlobDetails("bucketName", "key", "eTag", new Date(currentMils - dayInMils * 2));
+        BlobDetails bo1 = new BlobDetails("containerName", "blobName1", "eTag", new Date(currentMils - dayInMils * 1));
+        BlobDetails bo2 = new BlobDetails("containerName", "blobName2", "eTag", new Date(currentMils - dayInMils * 2));
 
         assertEquals(1, comparator.compare(bo1, bo2));
         assertEquals(0, comparator.compare(bo1, bo1));

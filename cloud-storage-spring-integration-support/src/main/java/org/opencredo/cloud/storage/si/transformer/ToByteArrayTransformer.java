@@ -15,9 +15,9 @@
 
 package org.opencredo.cloud.storage.si.transformer;
 
-import static org.opencredo.cloud.storage.si.Constants.BUCKET_NAME;
+import static org.opencredo.cloud.storage.si.Constants.CONTAINER_NAME;
 import static org.opencredo.cloud.storage.si.Constants.DELETE_WHEN_RECEIVED;
-import static org.opencredo.cloud.storage.si.Constants.ID;
+import static org.opencredo.cloud.storage.si.Constants.CONATINER_OBJECT_NAME;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -56,9 +56,9 @@ public class ToByteArrayTransformer {
         Map<String, Object> payload = message.getPayload();
 
         MessageBuilder<byte[]> builder;
-        String key = payload.get(ID).toString();
-        String bucketName = payload.get(BUCKET_NAME).toString();
-        InputStream input = template.receiveAsInputStream(bucketName, key);
+        String key = payload.get(CONATINER_OBJECT_NAME).toString();
+        String containerName = payload.get(CONTAINER_NAME).toString();
+        InputStream input = template.receiveAsInputStream(containerName, key);
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         IOUtils.copy(input, output);
 
@@ -67,7 +67,7 @@ public class ToByteArrayTransformer {
 
         Boolean delete = (Boolean) payload.get(DELETE_WHEN_RECEIVED);
         if (delete != null && delete == true) {
-            template.deleteObject(payload.get(BUCKET_NAME).toString(), payload.get(ID).toString());
+            template.deleteObject(payload.get(CONTAINER_NAME).toString(), payload.get(CONATINER_OBJECT_NAME).toString());
         }
 
         return transformedMessage;

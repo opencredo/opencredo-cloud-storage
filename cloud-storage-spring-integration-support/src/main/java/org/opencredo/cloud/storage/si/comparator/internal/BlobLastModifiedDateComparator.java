@@ -17,13 +17,13 @@ package org.opencredo.cloud.storage.si.comparator.internal;
 import java.util.Date;
 
 import org.opencredo.cloud.storage.BlobDetails;
-import org.opencredo.cloud.storage.si.comparator.BlobObjectComparator;
+import org.opencredo.cloud.storage.si.comparator.BlobDetailsComparator;
 
 /**
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  * 
  */
-public class BlobObjectLastModifiedDateComparator implements BlobObjectComparator {
+public class BlobLastModifiedDateComparator implements BlobDetailsComparator {
 
     public int compare(BlobDetails b1, BlobDetails b2) {
         Date b1LastModifiedDate = b1.getLastModified();

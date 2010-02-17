@@ -27,35 +27,35 @@ import org.opencredo.cloud.storage.BlobDetails;
  * @author Eren Aykin (eren.aykin@opencredo.com)
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  */
-public class CompositeBlobObjectFilter implements BlobObjectFilter {
+public class CompositeBlobDetailsFilter implements BlobDetailsFilter {
 
-    private final List<BlobObjectFilter> s3ObjectFilters;
+    private final List<BlobDetailsFilter> s3ObjectFilters;
 
     /**
      * @param s3ObjectFilters
      */
-    public CompositeBlobObjectFilter(BlobObjectFilter... s3ObjectFilters) {
-        this.s3ObjectFilters = new ArrayList<BlobObjectFilter>(Arrays.asList(s3ObjectFilters));
+    public CompositeBlobDetailsFilter(BlobDetailsFilter... s3ObjectFilters) {
+        this.s3ObjectFilters = new ArrayList<BlobDetailsFilter>(Arrays.asList(s3ObjectFilters));
     }
 
     /**
      * @param s3ObjectFilters
      */
-    public CompositeBlobObjectFilter(Collection<BlobObjectFilter> s3ObjectFilters) {
-        this.s3ObjectFilters = new ArrayList<BlobObjectFilter>(s3ObjectFilters);
+    public CompositeBlobDetailsFilter(Collection<BlobDetailsFilter> s3ObjectFilters) {
+        this.s3ObjectFilters = new ArrayList<BlobDetailsFilter>(s3ObjectFilters);
     }
 
     /**
      * @param filters
      */
-    public CompositeBlobObjectFilter addFilter(BlobObjectFilter... filters) {
+    public CompositeBlobDetailsFilter addFilter(BlobDetailsFilter... filters) {
         return addFilters(Arrays.asList(filters));
     }
 
     /**
      * @param filtersToAdd
      */
-    public CompositeBlobObjectFilter addFilters(Collection<BlobObjectFilter> filtersToAdd) {
+    public CompositeBlobDetailsFilter addFilters(Collection<BlobDetailsFilter> filtersToAdd) {
         this.s3ObjectFilters.addAll(filtersToAdd);
         return this;
     }
@@ -63,7 +63,7 @@ public class CompositeBlobObjectFilter implements BlobObjectFilter {
     /**
      * @param objects
      * @return
-     * @see org.opencredo.cloud.storage.si.filter.BlobObjectFilter#filter(java.util.List)
+     * @see org.opencredo.cloud.storage.si.filter.BlobDetailsFilter#filter(java.util.List)
      */
     public List<BlobDetails> filter(final List<BlobDetails> objects) {
 

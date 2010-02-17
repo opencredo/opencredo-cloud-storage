@@ -38,14 +38,14 @@ public class OutboundChannelAdapterParser extends AbstractOutboundChannelAdapter
                 .getName());
 
         String templateRef = element.getAttribute(AdapterParserUtils.TEMPLATE_REF_ATTRIBUTE);
-        String bucket = element.getAttribute(AdapterParserUtils.BUCKET_NAME_ATTRIBUTE);
-        String idGeneratorRef = element.getAttribute(AdapterParserUtils.ID_GENERATOR_ATTRIBUTE);
+        String containerName = element.getAttribute(AdapterParserUtils.CONTAINER_NAME_ATTRIBUTE);
+        String nameGeneratorRef = element.getAttribute(AdapterParserUtils.NAME_GENERATOR_ATTRIBUTE);
 
         builder.addConstructorArgReference(templateRef);
-        builder.addConstructorArgValue(bucket);
+        builder.addConstructorArgValue(containerName);
 
-        if (StringUtils.hasText(idGeneratorRef)) {
-            builder.addConstructorArgReference(idGeneratorRef);
+        if (StringUtils.hasText(nameGeneratorRef)) {
+            builder.addConstructorArgReference(nameGeneratorRef);
         }
 
         return builder.getBeanDefinition();

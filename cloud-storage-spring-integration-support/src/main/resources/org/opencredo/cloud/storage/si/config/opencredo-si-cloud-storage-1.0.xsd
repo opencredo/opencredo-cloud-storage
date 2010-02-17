@@ -40,7 +40,7 @@
 					</appinfo>
 				</annotation>
 			</attribute>
-			<attribute name="bucket" type="string" use="required" />
+			<attribute name="container" type="string" use="required" />
 			<attribute name="filter" type="string" use="optional">
 				<annotation>
 					<documentation>
@@ -95,12 +95,12 @@
 					</appinfo>
 				</annotation>
 			</attribute>
-			<attribute name="bucket" type="string" use="required" />
-			<attribute name="id-generator" type="string" use="optional">
+			<attribute name="container" type="string" use="required" />
+			<attribute name="name-generator" type="string" use="optional">
 				<annotation>
 					<appinfo>
 						<tool:annotation kind="ref">
-							<tool:expected-type type="org.opencredo.cloud.storage.si.BlobObjectIdGenerator" />
+							<tool:expected-type type="org.opencredo.cloud.storage.si.BlobNameGenerator" />
 						</tool:annotation>
 					</appinfo>
 				</annotation>

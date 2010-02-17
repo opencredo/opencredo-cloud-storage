@@ -15,9 +15,9 @@
 
 package org.opencredo.cloud.storage.si.adapter;
 
-import static org.opencredo.cloud.storage.si.Constants.BUCKET_NAME;
+import static org.opencredo.cloud.storage.si.Constants.CONTAINER_NAME;
 import static org.opencredo.cloud.storage.si.Constants.DELETE_WHEN_RECEIVED;
-import static org.opencredo.cloud.storage.si.Constants.ID;
+import static org.opencredo.cloud.storage.si.Constants.CONATINER_OBJECT_NAME;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -29,12 +29,11 @@ import java.util.concurrent.PriorityBlockingQueue;
 import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.ContainerStatus;
 import org.opencredo.cloud.storage.StorageCommunicationException;
-import org.opencredo.cloud.storage.StorageException;
 import org.opencredo.cloud.storage.StorageOperations;
-import org.opencredo.cloud.storage.si.comparator.BlobObjectComparator;
-import org.opencredo.cloud.storage.si.comparator.internal.BlobObjectLastModifiedDateComparator;
-import org.opencredo.cloud.storage.si.filter.BlobObjectFilter;
-import org.opencredo.cloud.storage.si.filter.internal.AcceptOnceBlobObjectFilter;
+import org.opencredo.cloud.storage.si.comparator.BlobDetailsComparator;
+import org.opencredo.cloud.storage.si.comparator.internal.BlobLastModifiedDateComparator;
+import org.opencredo.cloud.storage.si.filter.BlobDetailsFilter;
+import org.opencredo.cloud.storage.si.filter.internal.AcceptOnceBlobNameFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -44,12 +43,12 @@ import org.springframework.integration.message.MessageSource;
 import org.springframework.util.Assert;
 
 /**
- * {@link MessageSource} that creates messages containing meta-data maps of
- * S3Objects. To prevent messages for certain s3 Objects, you may supply an
- * {@link BlobObjectFilter}. By default, an {@link AcceptOnceBlobObjectFilter}
- * is used. It ensures s3 objects are picked up only once from the directory. A
- * {@link Comparator} can be used to ensure internal ordering of the S3 objects
- * in a queue.
+ * {@link MessageSource} that creates messages containing meta-data maps of blob
+ * objects from cloud storage. To prevent messages for certain s3 Objects, you
+ * may supply an {@link BlobDetailsFilter}. By default, an
+ * {@link AcceptOnceBlobNameFilter} is used. It ensures s3 objects are picked
+ * up only once from the directory. A {@link Comparator} can be used to ensure
+ * internal ordering of the S3 objects in a queue.
  * 
  * @author Eren Aykin (eren.aykin@opencredo.com)
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
@@ -60,8 +59,8 @@ public class ReadingMessageSource implements MessageSource<Map<String, Object>>,
     private static final int INTERNAL_QUEUE_CAPACITY = 5;
 
     private final StorageOperations template;
-    private final String bucketName;
-    private final BlobObjectFilter filter;
+    private final String containerName;
+    private final BlobDetailsFilter filter;
 
     private boolean deleteWhenReceived;
 
@@ -70,43 +69,44 @@ public class ReadingMessageSource implements MessageSource<Map<String, Object>>,
     /**
      * 
      * @param template
-     * @param bucketName
+     * @param containerName
      */
-    public ReadingMessageSource(final StorageOperations template, String bucketName) {
-        this(template, bucketName, new AcceptOnceBlobObjectFilter());
+    public ReadingMessageSource(final StorageOperations template, String containerName) {
+        this(template, containerName, new AcceptOnceBlobNameFilter());
     }
 
-    public ReadingMessageSource(final StorageOperations template, String bucketName, final BlobObjectFilter filter) {
-        this(template, bucketName, filter, new BlobObjectLastModifiedDateComparator());
+    public ReadingMessageSource(final StorageOperations template, String containerName, final BlobDetailsFilter filter) {
+        this(template, containerName, filter, new BlobLastModifiedDateComparator());
     }
 
-    public ReadingMessageSource(final StorageOperations template, String bucketName, final BlobObjectComparator comparator) {
-        this(template, bucketName, new AcceptOnceBlobObjectFilter(), comparator);
+    public ReadingMessageSource(final StorageOperations template, String containerName,
+                                final BlobDetailsComparator comparator) {
+        this(template, containerName, new AcceptOnceBlobNameFilter(), comparator);
     }
 
     /**
      * 
      * @param template
-     * @param bucketName
+     * @param containerName
      * @param filter
      * @param comparator
      */
-    public ReadingMessageSource(final StorageOperations template, String bucketName, final BlobObjectFilter filter,
-                                final BlobObjectComparator comparator) {
+    public ReadingMessageSource(final StorageOperations template, String containerName, final BlobDetailsFilter filter,
+                                final BlobDetailsComparator comparator) {
         Assert.notNull(template, "'template' should not be null");
         Assert.notNull(filter, "'filter' should not be null");
         Assert.notNull(comparator, "'comparator' should not be null");
 
         this.template = template;
-        this.bucketName = bucketName;
+        this.containerName = containerName;
         this.deleteWhenReceived = false;
         this.filter = filter;
         this.toBeReceived = new PriorityBlockingQueue<BlobDetails>(INTERNAL_QUEUE_CAPACITY, comparator);
     }
 
     public void afterPropertiesSet() {
-        Assert.isTrue(template.checkContainerStatus(bucketName) == ContainerStatus.MINE, "Bucket '" + bucketName
-                + "' is not accessible.");
+        Assert.isTrue(template.checkContainerStatus(containerName) == ContainerStatus.MINE, "Container '"
+                + containerName + "' is not accessible.");
     }
 
     /**
@@ -121,8 +121,8 @@ public class ReadingMessageSource implements MessageSource<Map<String, Object>>,
         if (!toBeReceived.isEmpty()) {
             BlobDetails obj = toBeReceived.poll();
             Map<String, Object> map = new HashMap<String, Object>(3);
-            map.put(BUCKET_NAME, obj.getContainerName());
-            map.put(ID, obj.getName());
+            map.put(CONTAINER_NAME, obj.getContainerName());
+            map.put(CONATINER_OBJECT_NAME, obj.getName());
             map.put(DELETE_WHEN_RECEIVED, deleteWhenReceived);
 
             MessageBuilder<Map<String, Object>> builder = MessageBuilder.withPayload(map);
@@ -134,21 +134,21 @@ public class ReadingMessageSource implements MessageSource<Map<String, Object>>,
     }
 
     /**
-     * @param bucketName
+     * @param containerName
      * @return
      */
     public void doReceive() throws StorageCommunicationException {
-        LOG.debug("Receive objects from bucket '{}'", bucketName);
+        LOG.debug("Receive objects from container '{}'", containerName);
 
-        List<BlobDetails> bucketObjects = template.listContainerObjectDetails(bucketName);
+        List<BlobDetails> cod = template.listContainerObjectDetails(containerName);
 
         if (filter != null) {
-            // Filter bucket objects with provided filter
-            bucketObjects = filter.filter(bucketObjects);
+            // Filter container object details with provided filter
+            cod = filter.filter(cod);
         }
 
-        if (bucketObjects != null) {
-            toBeReceived.addAll(bucketObjects);
+        if (cod != null) {
+            toBeReceived.addAll(cod);
         }
     }
 
@@ -156,8 +156,8 @@ public class ReadingMessageSource implements MessageSource<Map<String, Object>>,
         return toBeReceived;
     }
 
-    public String getBucketName() {
-        return bucketName;
+    public String getContainerName() {
+        return containerName;
     }
 
     /**

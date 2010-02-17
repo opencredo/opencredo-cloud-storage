@@ -19,7 +19,7 @@ package org.opencredo.cloud.storage.si;
  * 
  */
 public interface Constants {
-    public static final String BUCKET_NAME = "bucketName";
-    public static final String ID = "key";
+    public static final String CONTAINER_NAME = "containerName";
+    public static final String CONATINER_OBJECT_NAME = "containerObjectName";
     public static final String DELETE_WHEN_RECEIVED = "deleteWhenReceived";
 }
