@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.opencredo.cloud.storage.si.filter;
+package org.opencredo.cloud.storage.si.filter.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -30,7 +30,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.si.filter.BlobDetailsFilter;
-import org.opencredo.cloud.storage.si.filter.CompositeBlobDetailsFilter;
+import org.opencredo.cloud.storage.si.filter.internal.CompositeBlobDetailsFilter;
 
 /**
  * @author Eren Aykin (eren.aykin@opencredo.com)

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.opencredo.cloud.storage.si.filter;
+package org.opencredo.cloud.storage.si.filter.internal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.opencredo.cloud.storage.BlobDetails;
+import org.opencredo.cloud.storage.si.filter.BlobDetailsFilter;
 
 /**
  * @author Eren Aykin (eren.aykin@opencredo.com)
