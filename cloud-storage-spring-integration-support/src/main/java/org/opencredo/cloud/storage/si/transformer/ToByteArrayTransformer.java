@@ -41,8 +41,8 @@ public class ToByteArrayTransformer {
 
     private StorageOperations template;
 
-    public ToByteArrayTransformer(StorageOperations s3Template) {
-        this.template = s3Template;
+    public ToByteArrayTransformer(StorageOperations template) {
+        this.template = template;
     }
 
     /**

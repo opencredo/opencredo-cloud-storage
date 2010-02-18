@@ -47,9 +47,9 @@ public abstract class AbstractBlobDetailsFilter implements BlobDetailsFilter {
 
     /**
      * 
-     * @param s3Object
+     * @param blobDetails
      * @return
      */
-    protected abstract boolean accept(BlobDetails s3Object);
+    protected abstract boolean accept(BlobDetails blobDetails);
 
 }

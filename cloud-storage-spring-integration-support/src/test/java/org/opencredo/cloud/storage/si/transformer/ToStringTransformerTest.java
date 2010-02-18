@@ -46,7 +46,7 @@ public class ToStringTransformerTest {
     private ToStringTransformer transformer;
 
     @Mock
-    private StorageOperations s3Template;
+    private StorageOperations template;
     private final String containerName = TestPropertiesAccessor.getS3DefaultBucketName();
     private final String key = "testStringTransformer";
     private final String text = "String Transformer Test";
@@ -54,9 +54,9 @@ public class ToStringTransformerTest {
 
     @Before
     public void init() {
-        transformer = new ToStringTransformer(s3Template);
+        transformer = new ToStringTransformer(template);
 
-        when(s3Template.receiveAsString(containerName, key)).thenReturn(text);
+        when(template.receiveAsString(containerName, key)).thenReturn(text);
     }
 
     @Test

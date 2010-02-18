@@ -33,7 +33,7 @@ public class AcceptOnceBlobNameFilterTest {
     AcceptOnceBlobNameFilter sut;
 
     @Test
-    public void testUnseenS3ObjectAdded() {
+    public void testUnseenBlobDetailsAdded() {
         sut = new AcceptOnceBlobNameFilter();
         sut.filter(Arrays.asList(new BlobDetails[] { new BlobDetails("", "a", "", currentDate),
                 new BlobDetails("", "b", "", currentDate) }));
@@ -43,7 +43,7 @@ public class AcceptOnceBlobNameFilterTest {
     }
 
     @Test
-    public void testSeenS3ObjectNotAdded() {
+    public void testSeenBlobDetailsNotAdded() {
         sut = new AcceptOnceBlobNameFilter();
         sut.filter(Arrays.asList(new BlobDetails[] { new BlobDetails("", "a", "", currentDate),
                 new BlobDetails("", "b", "", currentDate) }));

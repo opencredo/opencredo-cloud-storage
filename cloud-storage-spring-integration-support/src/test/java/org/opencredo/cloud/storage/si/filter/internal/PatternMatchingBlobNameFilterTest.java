@@ -40,9 +40,9 @@ public class PatternMatchingBlobNameFilterTest {
     @Test
     public void matchSingleObject() {
 
-        BlobDetails[] s3Objects = new BlobDetails[] { new BlobDetails("", testKey, "", currentDate) };
+        BlobDetails[] blobDetails = new BlobDetails[] { new BlobDetails("", testKey, "", currentDate) };
         PatternMatchingBlobNameFilter filter = new PatternMatchingBlobNameFilter(testKey);
-        List<BlobDetails> accepted = filter.filter(Arrays.asList(s3Objects));
+        List<BlobDetails> accepted = filter.filter(Arrays.asList(blobDetails));
 
         assertEquals(1, accepted.size());
     }
@@ -50,10 +50,10 @@ public class PatternMatchingBlobNameFilterTest {
     @Test
     public void matchSubset() {
 
-        BlobDetails[] s3Objects = new BlobDetails[] { new BlobDetails("", testKey, "", currentDate),
+        BlobDetails[] blobDetails = new BlobDetails[] { new BlobDetails("", testKey, "", currentDate),
                 new BlobDetails("", "a", "", currentDate) };
         PatternMatchingBlobNameFilter filter = new PatternMatchingBlobNameFilter(testKey);
-        List<BlobDetails> accepted = filter.filter(Arrays.asList(s3Objects));
+        List<BlobDetails> accepted = filter.filter(Arrays.asList(blobDetails));
 
         assertEquals(1, accepted.size());
     }

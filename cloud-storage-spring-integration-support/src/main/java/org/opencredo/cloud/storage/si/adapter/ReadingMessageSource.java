@@ -15,11 +15,10 @@
 
 package org.opencredo.cloud.storage.si.adapter;
 
+import static org.opencredo.cloud.storage.si.Constants.CONATINER_OBJECT_NAME;
 import static org.opencredo.cloud.storage.si.Constants.CONTAINER_NAME;
 import static org.opencredo.cloud.storage.si.Constants.DELETE_WHEN_RECEIVED;
-import static org.opencredo.cloud.storage.si.Constants.CONATINER_OBJECT_NAME;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,11 +43,11 @@ import org.springframework.util.Assert;
 
 /**
  * {@link MessageSource} that creates messages containing meta-data maps of blob
- * objects from cloud storage. To prevent messages for certain s3 Objects, you
+ * objects from cloud storage. To prevent messages for certain blob objects, you
  * may supply an {@link BlobDetailsFilter}. By default, an
- * {@link AcceptOnceBlobNameFilter} is used. It ensures s3 objects are picked
- * up only once from the directory. A {@link Comparator} can be used to ensure
- * internal ordering of the S3 objects in a queue.
+ * {@link AcceptOnceBlobNameFilter} is used. It ensures blob objects are picked
+ * up only once from the container. A {@link BlobDetailsComparator} can be used
+ * to ensure internal ordering of the blob objects in a queue.
  * 
  * @author Eren Aykin (eren.aykin@opencredo.com)
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)

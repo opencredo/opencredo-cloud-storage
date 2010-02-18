@@ -29,20 +29,20 @@ import org.opencredo.cloud.storage.BlobDetails;
  */
 public class CompositeBlobDetailsFilter implements BlobDetailsFilter {
 
-    private final List<BlobDetailsFilter> s3ObjectFilters;
+    private final List<BlobDetailsFilter> blobDetailsFilters;
 
     /**
-     * @param s3ObjectFilters
+     * @param blobDetailsFilters
      */
-    public CompositeBlobDetailsFilter(BlobDetailsFilter... s3ObjectFilters) {
-        this.s3ObjectFilters = new ArrayList<BlobDetailsFilter>(Arrays.asList(s3ObjectFilters));
+    public CompositeBlobDetailsFilter(BlobDetailsFilter... blobDetailsFilters) {
+        this.blobDetailsFilters = new ArrayList<BlobDetailsFilter>(Arrays.asList(blobDetailsFilters));
     }
 
     /**
-     * @param s3ObjectFilters
+     * @param blobDetailsFilters
      */
-    public CompositeBlobDetailsFilter(Collection<BlobDetailsFilter> s3ObjectFilters) {
-        this.s3ObjectFilters = new ArrayList<BlobDetailsFilter>(s3ObjectFilters);
+    public CompositeBlobDetailsFilter(Collection<BlobDetailsFilter> blobDetailsFilters) {
+        this.blobDetailsFilters = new ArrayList<BlobDetailsFilter>(blobDetailsFilters);
     }
 
     /**
@@ -56,7 +56,7 @@ public class CompositeBlobDetailsFilter implements BlobDetailsFilter {
      * @param filtersToAdd
      */
     public CompositeBlobDetailsFilter addFilters(Collection<BlobDetailsFilter> filtersToAdd) {
-        this.s3ObjectFilters.addAll(filtersToAdd);
+        this.blobDetailsFilters.addAll(filtersToAdd);
         return this;
     }
 
@@ -73,8 +73,8 @@ public class CompositeBlobDetailsFilter implements BlobDetailsFilter {
 
         List<BlobDetails> accepted = new ArrayList<BlobDetails>(objects);
 
-        for (int i = 0; i < s3ObjectFilters.size() && !accepted.isEmpty(); i++) {
-            accepted = s3ObjectFilters.get(0).filter(accepted);
+        for (int i = 0; i < blobDetailsFilters.size() && !accepted.isEmpty(); i++) {
+            accepted = blobDetailsFilters.get(0).filter(accepted);
         }
 
         return accepted;

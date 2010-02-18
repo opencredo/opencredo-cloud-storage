@@ -22,7 +22,7 @@ import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.si.filter.AbstractBlobDetailsFilter;
 
 /**
- * Filters S3Objects based on key values
+ * Filters blob objects based on name values.
  * 
  * @author Eren Aykin (eren.aykin@opencredo.com)
  */
