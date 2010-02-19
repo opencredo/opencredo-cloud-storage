@@ -15,18 +15,12 @@
 
 package org.opencredo.cloud.storage.si.transformer;
 
-import static org.opencredo.cloud.storage.si.Constants.CONTAINER_NAME;
-import static org.opencredo.cloud.storage.si.Constants.DELETE_WHEN_RECEIVED;
-import static org.opencredo.cloud.storage.si.Constants.CONATINER_OBJECT_NAME;
-
-import java.util.Map;
-
+import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.StorageOperations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.integration.core.Message;
 import org.springframework.integration.message.MessageBuilder;
-import org.springframework.util.Assert;
 
 /**
  * @author Eren Aykin (eren.aykin@opencredo.com)
@@ -48,26 +42,18 @@ public class ToStringTransformer {
     /**
      * @param message
      */
-    public Message<String> transform(Message<Map<String, Object>> message) {
+    public Message<String> transform(Message<BlobDetails> message) {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Transform to string: '{}'", String.valueOf(message.getPayload()));
         }
 
-        Map<String, Object> payload = message.getPayload();
+        BlobDetails payload = message.getPayload();
 
-        Assert.notNull(payload.get(CONTAINER_NAME), "Container name must be specified in the header");
-        Assert.notNull(payload.get(CONATINER_OBJECT_NAME), "Container object name must be specified in the header");
-
-        String transformedString = template.receiveAsString(payload.get(CONTAINER_NAME).toString(), payload.get(CONATINER_OBJECT_NAME)
-                .toString());
+        String transformedString = template.receiveAsString(payload.getContainerName(), payload.getName());
 
         MessageBuilder<String> builder = (MessageBuilder<String>) MessageBuilder.withPayload(transformedString);
         Message<String> transformedMessage = builder.build();
 
-        Boolean delete = (Boolean) payload.get(DELETE_WHEN_RECEIVED);
-        if (delete != null && delete == true) {
-            template.deleteObject(payload.get(CONTAINER_NAME).toString(), payload.get(CONATINER_OBJECT_NAME).toString());
-        }
         return transformedMessage;
 
     }

@@ -16,7 +16,6 @@
 package org.opencredo.cloud.storage.si.adapter.config;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -56,7 +55,6 @@ public class InboundChannelAdapterParserTest {
         assertNotNull("'filter' queue not found", adapterDirect.getPropertyValue("filter"));
         assertTrue(adapterDirect.getPropertyValue("filter") instanceof AcceptOnceBlobNameFilter);
         assertEquals(TestPropertiesAccessor.getS3DefaultBucketName(), adapterDirect.getPropertyValue("containerName"));
-        assertFalse((Boolean) adapterDirect.getPropertyValue("deleteWhenReceived"));
     }
 
     @Test
@@ -78,7 +76,6 @@ public class InboundChannelAdapterParserTest {
         assertNotNull("'filter' queue not found", adapterDirect.getPropertyValue("filter"));
         assertTrue(adapterDirect.getPropertyValue("filter") instanceof PatternMatchingBlobNameFilter);
         assertEquals(TestPropertiesAccessor.getS3DefaultBucketName(), adapterDirect.getPropertyValue("containerName"));
-        assertFalse((Boolean) adapterDirect.getPropertyValue("deleteWhenReceived"));
     }
 
     @Test(expected = BeanDefinitionStoreException.class)
@@ -123,7 +120,6 @@ public class InboundChannelAdapterParserTest {
         assertNotNull("'filter' queue not found", adapterDirect.getPropertyValue("filter"));
         assertTrue(adapterDirect.getPropertyValue("filter") instanceof AcceptOnceBlobNameFilter);
         assertEquals(TestPropertiesAccessor.getS3DefaultBucketName(), adapterDirect.getPropertyValue("containerName"));
-        assertFalse((Boolean) adapterDirect.getPropertyValue("deleteWhenReceived"));
     }
 
     @Test
@@ -145,7 +141,6 @@ public class InboundChannelAdapterParserTest {
         assertNotNull("'filter' queue not found", adapterDirect.getPropertyValue("filter"));
         assertTrue(adapterDirect.getPropertyValue("filter") instanceof PatternMatchingBlobNameFilter);
         assertEquals(TestPropertiesAccessor.getS3DefaultBucketName(), adapterDirect.getPropertyValue("containerName"));
-        assertTrue((Boolean) adapterDirect.getPropertyValue("deleteWhenReceived"));
     }
 
     /**

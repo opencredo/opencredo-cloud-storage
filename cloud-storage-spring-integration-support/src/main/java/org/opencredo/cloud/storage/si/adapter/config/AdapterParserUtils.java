@@ -28,10 +28,6 @@ public class AdapterParserUtils {
 
     // Inbound Properties
     static final String FILTER_ATTRIBUTE = "filter";
-
-    static final String DELETE_WHEN_RECEIVED_ATTRIBUTE = "delete-when-received";
-    static final String DELETE_WHEN_RECEIVED_PROPERTY = "deleteWhenReceived";
-
     static final String COMPARATOR_ATTRIBUTE = "comparator";
 
     // Outbound Properties

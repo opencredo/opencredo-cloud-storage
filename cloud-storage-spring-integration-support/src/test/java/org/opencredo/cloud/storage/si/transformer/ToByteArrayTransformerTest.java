@@ -18,13 +18,10 @@ package org.opencredo.cloud.storage.si.transformer;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
-import static org.opencredo.cloud.storage.si.Constants.CONTAINER_NAME;
-import static org.opencredo.cloud.storage.si.Constants.CONATINER_OBJECT_NAME;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Date;
 
 import org.junit.After;
 import org.junit.Before;
@@ -32,6 +29,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.StorageOperations;
 import org.springframework.integration.core.Message;
 import org.springframework.integration.message.MessageBuilder;
@@ -48,7 +46,7 @@ public class ToByteArrayTransformerTest {
     private StorageOperations template;
 
     private final String containerName = "testConatiner";
-    private final String key = "testFile.test";
+    private final String blobName = "testFile.test";
 
     String testData = "some test data";
 
@@ -56,17 +54,15 @@ public class ToByteArrayTransformerTest {
     public void init() throws IOException {
         transformer = new ToByteArrayTransformer(template);
 
-        when(template.receiveAsInputStream(containerName, key)).thenReturn(
+        when(template.receiveAsInputStream(containerName, blobName)).thenReturn(
                 new ByteArrayInputStream(testData.getBytes("UTF-8")));
     }
 
     @Test
     public void testTransformToByteArrayMessage() throws IOException {
 
-        Map<String, Object> testMetaData = new HashMap<String, Object>();
-        testMetaData.put(CONTAINER_NAME, containerName);
-        testMetaData.put(CONATINER_OBJECT_NAME, key);
-        Message<Map<String, Object>> message = MessageBuilder.withPayload(testMetaData).build();
+        BlobDetails payload = new BlobDetails(containerName, blobName, ""+System.currentTimeMillis(), new Date());
+        Message<BlobDetails> message = MessageBuilder.withPayload(payload).build();
         Message<byte[]> messageTransformed = transformer.transform(message);
 
         assertNotNull(messageTransformed);
@@ -75,6 +71,6 @@ public class ToByteArrayTransformerTest {
 
     @After
     public void after() {
-        template.deleteObject(containerName, key);
+        template.deleteObject(containerName, blobName);
     }
 }

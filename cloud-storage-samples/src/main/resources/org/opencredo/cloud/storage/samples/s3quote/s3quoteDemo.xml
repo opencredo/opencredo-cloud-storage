@@ -33,11 +33,11 @@
 		service-interface="org.opencredo.cloud.storage.samples.s3quote.S3TickerUploader"
 		default-request-channel="tickers" />
 
-	<cloud:outbound-channel-adapter bucket="${awsS3QuoteBucketName}"
+	<cloud:outbound-channel-adapter container="${awsS3QuoteBucketName}"
 		template="s3Template" channel="tickers" />
 
 	<channel id="s3tickers" />
-	<cloud:inbound-channel-adapter bucket="${awsS3QuoteBucketName}"
+	<cloud:inbound-channel-adapter container="${awsS3QuoteBucketName}"
 		template="s3Template" channel="s3tickers" filter="acceptOnceS3ObjectListFilter">
 		<poller>
 			<interval-trigger interval="5000" />
@@ -59,5 +59,5 @@
 		class="org.opencredo.cloud.storage.samples.s3quote.S3QuoteService" />
 
 	<beans:bean id="acceptOnceS3ObjectListFilter"
-		class="org.opencredo.cloud.storage.si.filter.internal.AcceptOnceBlobObjectFilter" />
+		class="org.opencredo.cloud.storage.si.filter.internal.AcceptOnceBlobNameFilter" />
 </beans:beans>

@@ -18,19 +18,16 @@ package org.opencredo.cloud.storage.si.transformer;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
-import static org.opencredo.cloud.storage.si.Constants.CONTAINER_NAME;
-import static org.opencredo.cloud.storage.si.Constants.DELETE_WHEN_RECEIVED;
-import static org.opencredo.cloud.storage.si.Constants.CONATINER_OBJECT_NAME;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.StorageOperations;
 import org.opencredo.cloud.storage.test.TestPropertiesAccessor;
 import org.springframework.integration.core.Message;
@@ -48,25 +45,21 @@ public class ToStringTransformerTest {
     @Mock
     private StorageOperations template;
     private final String containerName = TestPropertiesAccessor.getS3DefaultBucketName();
-    private final String key = "testStringTransformer";
+    private final String blobName = "testStringTransformer";
     private final String text = "String Transformer Test";
-    private final Boolean deleteWhenReceived = true;
 
     @Before
     public void init() {
         transformer = new ToStringTransformer(template);
 
-        when(template.receiveAsString(containerName, key)).thenReturn(text);
+        when(template.receiveAsString(containerName, blobName)).thenReturn(text);
     }
 
     @Test
     public void testTransformToStringMessage() throws IOException {
 
-        Map<String, Object> testMetaData = new HashMap<String, Object>();
-        testMetaData.put(CONTAINER_NAME, containerName);
-        testMetaData.put(CONATINER_OBJECT_NAME, key);
-        testMetaData.put(DELETE_WHEN_RECEIVED, deleteWhenReceived);
-        Message<Map<String, Object>> message = MessageBuilder.withPayload(testMetaData).build();
+        BlobDetails payload = new BlobDetails(containerName, blobName, ""+System.currentTimeMillis(), new Date());
+        Message<BlobDetails> message = MessageBuilder.withPayload(payload).build();
         Message<String> messageTransformed = transformer.transform(message);
 
         assertNotNull(messageTransformed);

@@ -15,13 +15,7 @@
 
 package org.opencredo.cloud.storage.si.adapter;
 
-import static org.opencredo.cloud.storage.si.Constants.CONATINER_OBJECT_NAME;
-import static org.opencredo.cloud.storage.si.Constants.CONTAINER_NAME;
-import static org.opencredo.cloud.storage.si.Constants.DELETE_WHEN_RECEIVED;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.PriorityBlockingQueue;
 
@@ -52,7 +46,7 @@ import org.springframework.util.Assert;
  * @author Eren Aykin (eren.aykin@opencredo.com)
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  */
-public class ReadingMessageSource implements MessageSource<Map<String, Object>>, InitializingBean {
+public class ReadingMessageSource implements MessageSource<BlobDetails>, InitializingBean {
     private final static Logger LOG = LoggerFactory.getLogger(ReadingMessageSource.class);
 
     private static final int INTERNAL_QUEUE_CAPACITY = 5;
@@ -60,8 +54,6 @@ public class ReadingMessageSource implements MessageSource<Map<String, Object>>,
     private final StorageOperations template;
     private final String containerName;
     private final BlobDetailsFilter filter;
-
-    private boolean deleteWhenReceived;
 
     private final Queue<BlobDetails> toBeReceived;
 
@@ -98,7 +90,6 @@ public class ReadingMessageSource implements MessageSource<Map<String, Object>>,
 
         this.template = template;
         this.containerName = containerName;
-        this.deleteWhenReceived = false;
         this.filter = filter;
         this.toBeReceived = new PriorityBlockingQueue<BlobDetails>(INTERNAL_QUEUE_CAPACITY, comparator);
     }
@@ -111,7 +102,7 @@ public class ReadingMessageSource implements MessageSource<Map<String, Object>>,
     /**
 	 * 
 	 */
-    public Message<Map<String, Object>> receive() throws StorageCommunicationException {
+    public Message<BlobDetails> receive() throws StorageCommunicationException {
 
         if (toBeReceived.isEmpty()) {
             doReceive();
@@ -119,13 +110,7 @@ public class ReadingMessageSource implements MessageSource<Map<String, Object>>,
 
         if (!toBeReceived.isEmpty()) {
             BlobDetails obj = toBeReceived.poll();
-            Map<String, Object> map = new HashMap<String, Object>(3);
-            map.put(CONTAINER_NAME, obj.getContainerName());
-            map.put(CONATINER_OBJECT_NAME, obj.getName());
-            map.put(DELETE_WHEN_RECEIVED, deleteWhenReceived);
-
-            MessageBuilder<Map<String, Object>> builder = MessageBuilder.withPayload(map);
-
+            MessageBuilder<BlobDetails> builder = MessageBuilder.withPayload(obj);
             return builder.build();
         } else {
             return null;
@@ -157,20 +142,5 @@ public class ReadingMessageSource implements MessageSource<Map<String, Object>>,
 
     public String getContainerName() {
         return containerName;
-    }
-
-    /**
-     * @return the deleteWhenReceived
-     */
-    public boolean isDeleteWhenReceived() {
-        return deleteWhenReceived;
-    }
-
-    /**
-     * @param deleteWhenReceived
-     *            the deleteWhenReceived to set
-     */
-    public void setDeleteWhenReceived(boolean deleteWhenReceived) {
-        this.deleteWhenReceived = deleteWhenReceived;
     }
 }

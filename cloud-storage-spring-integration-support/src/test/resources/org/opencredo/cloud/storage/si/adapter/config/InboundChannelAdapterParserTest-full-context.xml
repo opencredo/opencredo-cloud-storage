@@ -24,7 +24,7 @@
 
 	<cloud:inbound-channel-adapter id="inbound-adapter"
 		channel="inputChannel" template="mockTemplate" container="${awsS3DefaultBucketName}"
-		filter="testFilter" comparator="testComparator" delete-when-received="true">
+		filter="testFilter" comparator="testComparator">
 		<poller>
 			<interval-trigger interval="5000" />
 		</poller>

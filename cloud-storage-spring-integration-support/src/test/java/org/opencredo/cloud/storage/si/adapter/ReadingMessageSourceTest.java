@@ -15,21 +15,18 @@
 
 package org.opencredo.cloud.storage.si.adapter;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.StorageOperations;
-import org.opencredo.cloud.storage.si.Constants;
 import org.opencredo.cloud.storage.test.TestPropertiesAccessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -73,8 +70,8 @@ public class ReadingMessageSourceTest {
         blobObjs = new BlobDetails[msgCount];
 
         for (int i = 0; i < msgCount; i++) {
-            blobObjs[i] = new BlobDetails(CONTAINER_NAME_PREFIX + i, ID_PREFIX + i, E_TAG_PREFIX + i, new Date(currentTime
-                    - (dayInMils * (i + 1))));
+            blobObjs[i] = new BlobDetails(CONTAINER_NAME_PREFIX + i, ID_PREFIX + i, E_TAG_PREFIX + i, new Date(
+                    currentTime - (dayInMils * (i + 1))));
         }
     }
 
@@ -88,25 +85,22 @@ public class ReadingMessageSourceTest {
 
         Thread.sleep(3000);
 
-        Message<Map<String, Object>> msg;
-        Map<String, Object> payload;
+        Message<BlobDetails> msg;
+        BlobDetails payload;
         for (int i = 0; i < msgCount; i++) {
-            msg = (Message<Map<String, Object>>) inputChannel.receive(2000);
+            msg = (Message<BlobDetails>) inputChannel.receive(2000);
             System.out.println("Message from channel: " + msg);
             assertNotNull("Message expected", msg);
 
             payload = msg.getPayload();
-            assertNotNull("Message map should contain: " + Constants.CONTAINER_NAME, payload.get(Constants.CONTAINER_NAME));
-            assertTrue("Message container name should start with prefix: " + CONTAINER_NAME_PREFIX, payload.get(
-                    Constants.CONTAINER_NAME).toString().startsWith(CONTAINER_NAME_PREFIX));
+            assertNotNull("Message payload should be not null", payload);
+            assertNotNull("BlobDetails container name is missing", payload.getContainerName());
+            assertTrue("BlobDetails container name should start with prefix: " + CONTAINER_NAME_PREFIX, payload
+                    .getContainerName().startsWith(CONTAINER_NAME_PREFIX));
 
-            assertNotNull("Message map should contain: " + Constants.CONATINER_OBJECT_NAME, payload.get(Constants.CONATINER_OBJECT_NAME));
-            assertTrue("Message id should start with prefix: " + ID_PREFIX, payload.get(Constants.CONATINER_OBJECT_NAME).toString()
-                    .startsWith(ID_PREFIX));
-
-            assertNotNull("Message map should contain: " + Constants.DELETE_WHEN_RECEIVED, payload
-                    .get(Constants.DELETE_WHEN_RECEIVED));
-            assertFalse((Boolean) payload.get(Constants.DELETE_WHEN_RECEIVED));
+            assertNotNull("BlobDetails name is missing", payload.getName());
+            assertTrue("BlobDetails name should start with prefix: " + ID_PREFIX, payload.getName().startsWith(
+                    ID_PREFIX));
         }
 
     }

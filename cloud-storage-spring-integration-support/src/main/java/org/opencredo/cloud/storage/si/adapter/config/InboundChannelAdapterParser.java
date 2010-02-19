@@ -40,7 +40,6 @@ public class InboundChannelAdapterParser extends AbstractPollingInboundChannelAd
 
         String templateRef = element.getAttribute(AdapterParserUtils.TEMPLATE_REF_ATTRIBUTE);
         String containerName = element.getAttribute(AdapterParserUtils.CONTAINER_NAME_ATTRIBUTE);
-        String deleteReceived = element.getAttribute(AdapterParserUtils.DELETE_WHEN_RECEIVED_ATTRIBUTE);
         String filterRef = element.getAttribute(AdapterParserUtils.FILTER_ATTRIBUTE);
         String comparatorRef = element.getAttribute(AdapterParserUtils.COMPARATOR_ATTRIBUTE);
 
@@ -53,10 +52,6 @@ public class InboundChannelAdapterParser extends AbstractPollingInboundChannelAd
 
         if (StringUtils.hasText(comparatorRef)) {
             builder.addConstructorArgReference(comparatorRef);
-        }
-
-        if (StringUtils.hasText(deleteReceived)) {
-            builder.addPropertyValue(AdapterParserUtils.DELETE_WHEN_RECEIVED_PROPERTY, deleteReceived);
         }
 
         return BeanDefinitionReaderUtils.registerWithGeneratedName(builder.getBeanDefinition(), parserContext

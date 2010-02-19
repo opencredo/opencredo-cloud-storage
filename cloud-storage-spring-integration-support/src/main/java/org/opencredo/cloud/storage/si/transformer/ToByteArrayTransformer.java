@@ -15,16 +15,12 @@
 
 package org.opencredo.cloud.storage.si.transformer;
 
-import static org.opencredo.cloud.storage.si.Constants.CONTAINER_NAME;
-import static org.opencredo.cloud.storage.si.Constants.DELETE_WHEN_RECEIVED;
-import static org.opencredo.cloud.storage.si.Constants.CONATINER_OBJECT_NAME;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.StorageOperations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,26 +45,19 @@ public class ToByteArrayTransformer {
      * @param message
      * @throws IOException
      */
-    public Message<byte[]> transform(Message<Map<String, Object>> message) throws IOException {
+    public Message<byte[]> transform(Message<BlobDetails> message) throws IOException {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Transform to byte array: '{}'", String.valueOf(message.getPayload()));
         }
-        Map<String, Object> payload = message.getPayload();
+        BlobDetails payload = message.getPayload();
 
         MessageBuilder<byte[]> builder;
-        String key = payload.get(CONATINER_OBJECT_NAME).toString();
-        String containerName = payload.get(CONTAINER_NAME).toString();
-        InputStream input = template.receiveAsInputStream(containerName, key);
+        InputStream input = template.receiveAsInputStream(payload.getContainerName(), payload.getName());
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         IOUtils.copy(input, output);
 
         builder = (MessageBuilder<byte[]>) MessageBuilder.withPayload(output.toByteArray());
         Message<byte[]> transformedMessage = builder.build();
-
-        Boolean delete = (Boolean) payload.get(DELETE_WHEN_RECEIVED);
-        if (delete != null && delete == true) {
-            template.deleteObject(payload.get(CONTAINER_NAME).toString(), payload.get(CONATINER_OBJECT_NAME).toString());
-        }
 
         return transformedMessage;
     }
