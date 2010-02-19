@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.opencredo.cloud.storage.si.transformer;
+package org.opencredo.cloud.storage.si.enricher;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -29,6 +29,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.StorageOperations;
+import org.opencredo.cloud.storage.si.enricher.ToStringEnricher;
 import org.opencredo.cloud.storage.test.TestPropertiesAccessor;
 import org.springframework.integration.core.Message;
 import org.springframework.integration.message.MessageBuilder;
@@ -38,9 +39,9 @@ import org.springframework.integration.message.MessageBuilder;
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ToStringTransformerTest {
+public class ToStringEnricherTest {
 
-    private ToStringTransformer transformer;
+    private ToStringEnricher transformer;
 
     @Mock
     private StorageOperations template;
@@ -50,13 +51,13 @@ public class ToStringTransformerTest {
 
     @Before
     public void init() {
-        transformer = new ToStringTransformer(template);
+        transformer = new ToStringEnricher(template);
 
         when(template.receiveAsString(containerName, blobName)).thenReturn(text);
     }
 
     @Test
-    public void testTransformToStringMessage() throws IOException {
+    public void testEnrichToStringMessage() throws IOException {
 
         BlobDetails payload = new BlobDetails(containerName, blobName, ""+System.currentTimeMillis(), new Date());
         Message<BlobDetails> message = MessageBuilder.withPayload(payload).build();

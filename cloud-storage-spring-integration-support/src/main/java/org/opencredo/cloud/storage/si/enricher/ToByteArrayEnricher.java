@@ -13,8 +13,13 @@
  * limitations under the License.
  */
 
-package org.opencredo.cloud.storage.si.transformer;
+package org.opencredo.cloud.storage.si.enricher;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.apache.commons.io.IOUtils;
 import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.StorageOperations;
 import org.slf4j.Logger;
@@ -26,35 +31,35 @@ import org.springframework.integration.message.MessageBuilder;
  * @author Eren Aykin (eren.aykin@opencredo.com)
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  */
-public class ToStringTransformer {
+public class ToByteArrayEnricher {
 
-    private final static Logger LOG = LoggerFactory.getLogger(ToStringTransformer.class);
+    private final static Logger LOG = LoggerFactory.getLogger(ToByteArrayEnricher.class);
 
-    private final StorageOperations template;
+    private StorageOperations template;
 
-    /**
-     * @param template
-     */
-    public ToStringTransformer(StorageOperations template) {
+    public ToByteArrayEnricher(StorageOperations template) {
         this.template = template;
     }
 
     /**
      * @param message
+     * @throws IOException
      */
-    public Message<String> transform(Message<BlobDetails> message) {
+    public Message<byte[]> transform(Message<BlobDetails> message) throws IOException {
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Transform to string: '{}'", String.valueOf(message.getPayload()));
+            LOG.debug("Transform to byte array: '{}'", String.valueOf(message.getPayload()));
         }
-
         BlobDetails payload = message.getPayload();
 
-        String transformedString = template.receiveAsString(payload.getContainerName(), payload.getName());
+        MessageBuilder<byte[]> builder;
+        InputStream input = template.receiveAsInputStream(payload.getContainerName(), payload.getName());
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        IOUtils.copy(input, output);
 
-        MessageBuilder<String> builder = (MessageBuilder<String>) MessageBuilder.withPayload(transformedString);
-        Message<String> transformedMessage = builder.build();
+        builder = (MessageBuilder<byte[]>) MessageBuilder.withPayload(output.toByteArray());
+        Message<byte[]> transformedMessage = builder.build();
 
         return transformedMessage;
-
     }
+
 }

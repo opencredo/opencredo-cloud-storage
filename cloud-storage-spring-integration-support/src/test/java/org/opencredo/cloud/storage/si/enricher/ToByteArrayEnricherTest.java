@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.opencredo.cloud.storage.si.transformer;
+package org.opencredo.cloud.storage.si.enricher;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -31,6 +31,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.StorageOperations;
+import org.opencredo.cloud.storage.si.enricher.ToByteArrayEnricher;
 import org.springframework.integration.core.Message;
 import org.springframework.integration.message.MessageBuilder;
 
@@ -38,9 +39,9 @@ import org.springframework.integration.message.MessageBuilder;
  * @author Eren Aykin (eren.aykin@opencredo.com)
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ToByteArrayTransformerTest {
+public class ToByteArrayEnricherTest {
 
-    private ToByteArrayTransformer transformer;
+    private ToByteArrayEnricher transformer;
 
     @Mock
     private StorageOperations template;
@@ -52,14 +53,14 @@ public class ToByteArrayTransformerTest {
 
     @Before
     public void init() throws IOException {
-        transformer = new ToByteArrayTransformer(template);
+        transformer = new ToByteArrayEnricher(template);
 
         when(template.receiveAsInputStream(containerName, blobName)).thenReturn(
                 new ByteArrayInputStream(testData.getBytes("UTF-8")));
     }
 
     @Test
-    public void testTransformToByteArrayMessage() throws IOException {
+    public void testEnrichToByteArrayMessage() throws IOException {
 
         BlobDetails payload = new BlobDetails(containerName, blobName, ""+System.currentTimeMillis(), new Date());
         Message<BlobDetails> message = MessageBuilder.withPayload(payload).build();
