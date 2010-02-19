@@ -14,7 +14,7 @@
 	<!--  SI config -->
 	<channel id="outputChannel" />
 
-	<!-- Inbound adapter -->
+	<!-- Outbound adapter -->
 	<cloud:outbound-channel-adapter id="outbound-adapter"
 		template="mockTemplate" channel="outputChannel" />
 

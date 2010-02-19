@@ -14,7 +14,7 @@
 	<!--  SI config -->
 	<channel id="outputChannel" />
 
-	<!-- Inbound adapter -->
+	<!-- Outbound adapter -->
 	<beans:bean id="testBlobNameBuilder"
 		class="org.opencredo.cloud.storage.si.adapter.config.OutboundChannelAdapterParserTest$MockBlobNameBuilder" />
 
