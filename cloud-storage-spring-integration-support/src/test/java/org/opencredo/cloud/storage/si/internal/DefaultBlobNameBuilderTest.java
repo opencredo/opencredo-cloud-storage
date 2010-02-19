@@ -18,7 +18,7 @@ package org.opencredo.cloud.storage.si.internal;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.opencredo.cloud.storage.si.internal.DefaultBlobNameGenerator;
+import org.opencredo.cloud.storage.si.internal.DefaultBlobNameBuilder;
 import org.springframework.integration.core.Message;
 import org.springframework.integration.message.MessageBuilder;
 
@@ -26,7 +26,7 @@ import org.springframework.integration.message.MessageBuilder;
  * @author Eren Aykin (eren.aykin@opencredo.com)
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  */
-public class DefaultBlobNameGeneratorTest {
+public class DefaultBlobNameBuilderTest {
 
     Message<?> message;
 
@@ -34,9 +34,9 @@ public class DefaultBlobNameGeneratorTest {
     public void testKeyNameForString() {
         MessageBuilder<String> builder = MessageBuilder.withPayload(new String("test string"));
         message = builder.build();
-        DefaultBlobNameGenerator generator = new DefaultBlobNameGenerator();
+        DefaultBlobNameBuilder nameBuilder = new DefaultBlobNameBuilder();
 
-        assertTrue("not expected 'id' name", generator.generateBlobName(message).startsWith(
-                generator.getKeyPrefix()));
+        assertTrue("not expected 'id' name", nameBuilder.createBlobName(message).startsWith(
+                nameBuilder.getKeyPrefix()));
     }
 }

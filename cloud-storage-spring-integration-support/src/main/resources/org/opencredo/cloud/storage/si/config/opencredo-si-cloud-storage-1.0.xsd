@@ -96,11 +96,11 @@
 				</annotation>
 			</attribute>
 			<attribute name="container" type="string" use="required" />
-			<attribute name="name-generator" type="string" use="optional">
+			<attribute name="name-builder" type="string" use="optional">
 				<annotation>
 					<appinfo>
 						<tool:annotation kind="ref">
-							<tool:expected-type type="org.opencredo.cloud.storage.si.BlobNameGenerator" />
+							<tool:expected-type type="org.opencredo.cloud.storage.si.BlobNameBuilder" />
 						</tool:annotation>
 					</appinfo>
 				</annotation>

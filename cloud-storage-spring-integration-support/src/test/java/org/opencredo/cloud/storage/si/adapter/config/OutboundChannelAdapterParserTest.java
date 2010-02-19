@@ -21,9 +21,9 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
-import org.opencredo.cloud.storage.si.BlobNameGenerator;
+import org.opencredo.cloud.storage.si.BlobNameBuilder;
 import org.opencredo.cloud.storage.si.adapter.WritingMessageHandler;
-import org.opencredo.cloud.storage.si.internal.DefaultBlobNameGenerator;
+import org.opencredo.cloud.storage.si.internal.DefaultBlobNameBuilder;
 import org.opencredo.cloud.storage.test.TestPropertiesAccessor;
 import org.springframework.beans.DirectFieldAccessor;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
@@ -54,8 +54,8 @@ public class OutboundChannelAdapterParserTest {
         DirectFieldAccessor adapterDirect = new DirectFieldAccessor(a);
         assertNotNull("'template' not found", adapterDirect.getPropertyValue("template"));
         assertEquals(TestPropertiesAccessor.getS3DefaultBucketName(), adapterDirect.getPropertyValue("containerName"));
-        assertNotNull("'blobNameGenerator' queue not found", adapterDirect.getPropertyValue("blobNameGenerator"));
-        assertTrue(adapterDirect.getPropertyValue("blobNameGenerator") instanceof DefaultBlobNameGenerator);
+        assertNotNull("'blobNameBuilder' queue not found", adapterDirect.getPropertyValue("blobNameBuilder"));
+        assertTrue(adapterDirect.getPropertyValue("blobNameBuilder") instanceof DefaultBlobNameBuilder);
     }
 
     @Test
@@ -76,8 +76,8 @@ public class OutboundChannelAdapterParserTest {
         DirectFieldAccessor adapterDirect = new DirectFieldAccessor(a);
         assertNotNull("'template' not found", adapterDirect.getPropertyValue("template"));
         assertEquals(TestPropertiesAccessor.getS3DefaultBucketName(), adapterDirect.getPropertyValue("containerName"));
-        assertNotNull("'blobNameGenerator' queue not found", adapterDirect.getPropertyValue("blobNameGenerator"));
-        assertTrue(adapterDirect.getPropertyValue("blobNameGenerator") instanceof MockBlobNameGenerator);
+        assertNotNull("'blobNameBuilder' queue not found", adapterDirect.getPropertyValue("blobNameBuilder"));
+        assertTrue(adapterDirect.getPropertyValue("blobNameBuilder") instanceof MockBlobNameBuilder);
     }
 
     @Test(expected = BeanDefinitionStoreException.class)
@@ -109,8 +109,8 @@ public class OutboundChannelAdapterParserTest {
      * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
      * 
      */
-    static class MockBlobNameGenerator implements BlobNameGenerator {
-        public String generateBlobName(Message<?> message) {
+    static class MockBlobNameBuilder implements BlobNameBuilder {
+        public String createBlobName(Message<?> message) {
             throw new RuntimeException("Mock implementation");
         }
     }

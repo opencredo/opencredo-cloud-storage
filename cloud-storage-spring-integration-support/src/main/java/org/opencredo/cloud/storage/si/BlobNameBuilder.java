@@ -20,11 +20,11 @@ import org.springframework.integration.core.Message;
 /**
  * @author Eren Aykin (eren.aykin@opencredo.com)
  */
-public interface BlobNameGenerator {
+public interface BlobNameBuilder {
 
     /**
      * @param message
      */
-    String generateBlobName(Message<?> message);
+    String createBlobName(Message<?> message);
 
 }

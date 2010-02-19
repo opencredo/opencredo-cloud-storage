@@ -19,8 +19,8 @@ import java.io.File;
 
 import org.opencredo.cloud.storage.ContainerStatus;
 import org.opencredo.cloud.storage.StorageOperations;
-import org.opencredo.cloud.storage.si.BlobNameGenerator;
-import org.opencredo.cloud.storage.si.internal.DefaultBlobNameGenerator;
+import org.opencredo.cloud.storage.si.BlobNameBuilder;
+import org.opencredo.cloud.storage.si.internal.DefaultBlobNameBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -41,28 +41,28 @@ public class WritingMessageHandler implements MessageHandler, InitializingBean {
 
     private final StorageOperations template;
     private final String containerName;
-    private final BlobNameGenerator blobNameGenerator;
+    private final BlobNameBuilder blobNameBuilder;
 
     /**
      * @param template
      * @param containerName
      */
     public WritingMessageHandler(StorageOperations template, String containerName) {
-        this(template, containerName, new DefaultBlobNameGenerator());
+        this(template, containerName, new DefaultBlobNameBuilder());
     }
 
     /**
      * @param template
      * @param containerName
-     * @param blobNameGenerator
+     * @param blobNameBuilder
      */
-    public WritingMessageHandler(StorageOperations template, String containerName, BlobNameGenerator blobNameGenerator) {
+    public WritingMessageHandler(StorageOperations template, String containerName, BlobNameBuilder blobNameBuilder) {
         super();
         Assert.notNull(template, "'template' should not be null");
-        Assert.notNull(blobNameGenerator, "'blob name generator' should not be null");
+        Assert.notNull(blobNameBuilder, "'blob name builder' should not be null");
         this.template = template;
         this.containerName = containerName;
-        this.blobNameGenerator = blobNameGenerator;
+        this.blobNameBuilder = blobNameBuilder;
     }
 
     /**
@@ -76,7 +76,7 @@ public class WritingMessageHandler implements MessageHandler, InitializingBean {
         Assert.notNull(message.getPayload(), "message payload must not be null");
         Object payload = message.getPayload();
 
-        String blobName = blobNameGenerator.generateBlobName(message);
+        String blobName = blobNameBuilder.createBlobName(message);
         LOG.debug("Message to send '{}' with name '{}'", message, blobName);
 
         if ((payload instanceof File)) {

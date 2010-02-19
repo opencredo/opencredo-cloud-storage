@@ -35,6 +35,6 @@ public class AdapterParserUtils {
     static final String COMPARATOR_ATTRIBUTE = "comparator";
 
     // Outbound Properties
-    static final String NAME_GENERATOR_ATTRIBUTE = "name-generator";
+    static final String NAME_BUILDER_ATTRIBUTE = "name-builder";
 
 }
