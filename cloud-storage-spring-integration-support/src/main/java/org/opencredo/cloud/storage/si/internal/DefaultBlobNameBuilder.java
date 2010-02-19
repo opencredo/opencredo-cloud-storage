@@ -15,8 +15,6 @@
 
 package org.opencredo.cloud.storage.si.internal;
 
-import java.util.Date;
-
 import org.opencredo.cloud.storage.si.BlobNameBuilder;
 import org.springframework.integration.core.Message;
 
@@ -43,7 +41,7 @@ public class DefaultBlobNameBuilder implements BlobNameBuilder {
      * @param message
      */
     public String createBlobName(Message<?> message) {
-        return keyPrefix + (new Date().getTime());
+        return keyPrefix + System.currentTimeMillis();
     }
 
     public String getKeyPrefix() {
