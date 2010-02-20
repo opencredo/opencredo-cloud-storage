@@ -47,7 +47,7 @@ public class ToByteArrayEnricher {
      */
     public Message<byte[]> transform(Message<BlobDetails> message) throws IOException {
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Transform to byte array: '{}'", String.valueOf(message.getPayload()));
+            LOG.debug("Enrich to byte array: '{}'", String.valueOf(message.getPayload()));
         }
         BlobDetails payload = message.getPayload();
 
@@ -57,9 +57,9 @@ public class ToByteArrayEnricher {
         IOUtils.copy(input, output);
 
         builder = (MessageBuilder<byte[]>) MessageBuilder.withPayload(output.toByteArray());
-        Message<byte[]> transformedMessage = builder.build();
+        Message<byte[]> blobMessage = builder.build();
 
-        return transformedMessage;
+        return blobMessage;
     }
 
 }

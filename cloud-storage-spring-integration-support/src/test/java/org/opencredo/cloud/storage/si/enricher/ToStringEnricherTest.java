@@ -41,17 +41,17 @@ import org.springframework.integration.message.MessageBuilder;
 @RunWith(MockitoJUnitRunner.class)
 public class ToStringEnricherTest {
 
-    private ToStringEnricher transformer;
+    private ToStringEnricher enricher;
 
     @Mock
     private StorageOperations template;
     private final String containerName = TestPropertiesAccessor.getS3DefaultBucketName();
-    private final String blobName = "testStringTransformer";
-    private final String text = "String Transformer Test";
+    private final String blobName = "testStringEnricher";
+    private final String text = "String Enricher Test";
 
     @Before
     public void init() {
-        transformer = new ToStringEnricher(template);
+        enricher = new ToStringEnricher(template);
 
         when(template.receiveAsString(containerName, blobName)).thenReturn(text);
     }
@@ -60,10 +60,10 @@ public class ToStringEnricherTest {
     public void testEnrichToStringMessage() throws IOException {
 
         BlobDetails payload = new BlobDetails(containerName, blobName, ""+System.currentTimeMillis(), new Date());
-        Message<BlobDetails> message = MessageBuilder.withPayload(payload).build();
-        Message<String> messageTransformed = transformer.transform(message);
+        Message<BlobDetails> blobDetailsMessage = MessageBuilder.withPayload(payload).build();
+        Message<String> blobMessage = enricher.transform(blobDetailsMessage);
 
-        assertNotNull(messageTransformed);
-        assertEquals("String lengths do not match", text.length(), messageTransformed.getPayload().toString().length());
+        assertNotNull(blobMessage);
+        assertEquals("String lengths do not match", text.length(), blobMessage.getPayload().toString().length());
     }
 }

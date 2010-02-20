@@ -44,17 +44,17 @@ public class ToStringEnricher {
      */
     public Message<String> transform(Message<BlobDetails> message) {
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Transform to string: '{}'", String.valueOf(message.getPayload()));
+            LOG.debug("Enrich to string: '{}'", String.valueOf(message.getPayload()));
         }
 
         BlobDetails payload = message.getPayload();
 
-        String transformedString = template.receiveAsString(payload.getContainerName(), payload.getName());
+        String blobAsString = template.receiveAsString(payload.getContainerName(), payload.getName());
 
-        MessageBuilder<String> builder = (MessageBuilder<String>) MessageBuilder.withPayload(transformedString);
-        Message<String> transformedMessage = builder.build();
+        MessageBuilder<String> builder = (MessageBuilder<String>) MessageBuilder.withPayload(blobAsString);
+        Message<String> blobMessage = builder.build();
 
-        return transformedMessage;
+        return blobMessage;
 
     }
 }

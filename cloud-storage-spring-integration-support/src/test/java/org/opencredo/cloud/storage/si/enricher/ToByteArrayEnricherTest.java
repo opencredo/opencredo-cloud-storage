@@ -41,7 +41,7 @@ import org.springframework.integration.message.MessageBuilder;
 @RunWith(MockitoJUnitRunner.class)
 public class ToByteArrayEnricherTest {
 
-    private ToByteArrayEnricher transformer;
+    private ToByteArrayEnricher enricher;
 
     @Mock
     private StorageOperations template;
@@ -53,7 +53,7 @@ public class ToByteArrayEnricherTest {
 
     @Before
     public void init() throws IOException {
-        transformer = new ToByteArrayEnricher(template);
+        enricher = new ToByteArrayEnricher(template);
 
         when(template.receiveAsInputStream(containerName, blobName)).thenReturn(
                 new ByteArrayInputStream(testData.getBytes("UTF-8")));
@@ -63,11 +63,11 @@ public class ToByteArrayEnricherTest {
     public void testEnrichToByteArrayMessage() throws IOException {
 
         BlobDetails payload = new BlobDetails(containerName, blobName, ""+System.currentTimeMillis(), new Date());
-        Message<BlobDetails> message = MessageBuilder.withPayload(payload).build();
-        Message<byte[]> messageTransformed = transformer.transform(message);
+        Message<BlobDetails> blobDetailsMessage = MessageBuilder.withPayload(payload).build();
+        Message<byte[]> blobMessage = enricher.transform(blobDetailsMessage);
 
-        assertNotNull(messageTransformed);
-        assertEquals("Byte array not correctly formed ", testData, new String(messageTransformed.getPayload(), "UTF-8"));
+        assertNotNull(blobMessage);
+        assertEquals("Byte array not correctly formed ", testData, new String(blobMessage.getPayload(), "UTF-8"));
     }
 
     @After
