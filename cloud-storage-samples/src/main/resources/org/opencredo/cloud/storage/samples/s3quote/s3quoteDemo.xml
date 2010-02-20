@@ -18,7 +18,8 @@
 		</beans:property>
 	</beans:bean>
 
-	<beans:bean id="awsCredentials" class="org.opencredo.cloud.storage.s3.AwsCredentials">
+	<beans:bean id="awsCredentials"
+		class="org.opencredo.cloud.storage.s3.AwsCredentials">
 		<beans:constructor-arg value="${awsKey}" />
 		<beans:constructor-arg value="${awsSecretKey}" />
 	</beans:bean>
@@ -33,8 +34,8 @@
 		service-interface="org.opencredo.cloud.storage.samples.s3quote.S3TickerUploader"
 		default-request-channel="tickers" />
 
-	<cloud:outbound-channel-adapter container="${awsS3QuoteBucketName}"
-		template="s3Template" channel="tickers" />
+	<cloud:outbound-channel-adapter
+		container="${awsS3QuoteBucketName}" template="s3Template" channel="tickers" />
 
 	<channel id="s3tickers" />
 	<cloud:inbound-channel-adapter container="${awsS3QuoteBucketName}"
@@ -45,11 +46,13 @@
 	</cloud:inbound-channel-adapter>
 
 	<channel id="s3tickerMessageContents" />
+	<!-- BlobDetails enricher -->
 	<service-activator input-channel="s3tickers"
 		ref="s3MessageTransformer" method="transform" output-channel="s3tickerMessageContents" />
 
+	<!-- BlobDetails enricher -->
 	<beans:bean id="s3MessageTransformer"
-		class="org.opencredo.cloud.storage.si.transformer.ToStringTransformer">
+		class="org.opencredo.cloud.storage.si.enricher.ToStringEnricher">
 		<beans:constructor-arg ref="s3Template" />
 	</beans:bean>
 
