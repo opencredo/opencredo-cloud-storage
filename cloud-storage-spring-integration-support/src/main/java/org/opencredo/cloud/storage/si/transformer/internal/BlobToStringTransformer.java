@@ -13,12 +13,12 @@
  * limitations under the License.
  */
 
-package org.opencredo.cloud.storage.si.enricher.internal;
+package org.opencredo.cloud.storage.si.transformer.internal;
 
 import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.StorageOperations;
-import org.opencredo.cloud.storage.si.enricher.AbstractBlobEnricher;
-import org.opencredo.cloud.storage.si.enricher.BlobEnrichException;
+import org.opencredo.cloud.storage.si.transformer.AbstractBlobTransformer;
+import org.opencredo.cloud.storage.si.transformer.BlobTransformException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.integration.core.Message;
@@ -28,14 +28,14 @@ import org.springframework.integration.message.MessageBuilder;
  * @author Eren Aykin (eren.aykin@opencredo.com)
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  */
-public class BlobToStringEnricher extends AbstractBlobEnricher<String> {
+public class BlobToStringTransformer extends AbstractBlobTransformer<String> {
 
-    private final static Logger LOG = LoggerFactory.getLogger(BlobToStringEnricher.class);
+    private final static Logger LOG = LoggerFactory.getLogger(BlobToStringTransformer.class);
 
     /**
      * @param template
      */
-    public BlobToStringEnricher(StorageOperations template) {
+    public BlobToStringTransformer(StorageOperations template) {
         super(template);
     }
 
@@ -43,14 +43,14 @@ public class BlobToStringEnricher extends AbstractBlobEnricher<String> {
      * @param template
      * @param deleteBlob
      */
-    public BlobToStringEnricher(StorageOperations template, boolean deleteBlob) {
+    public BlobToStringTransformer(StorageOperations template, boolean deleteBlob) {
         super(template, deleteBlob);
     }
 
     /**
      * @param message
      */
-    public Message<String> transform(Message<BlobDetails> message) throws BlobEnrichException {
+    public Message<String> transform(Message<BlobDetails> message) throws BlobTransformException {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Enrich to string: '{}'", String.valueOf(message.getPayload()));
         }

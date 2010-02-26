@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.opencredo.cloud.storage.si.enricher.internal;
+package org.opencredo.cloud.storage.si.transformer.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -21,9 +21,11 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Date;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,42 +33,49 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.StorageOperations;
-import org.opencredo.cloud.storage.si.enricher.internal.BlobToStringEnricher;
-import org.opencredo.cloud.storage.test.TestPropertiesAccessor;
+import org.opencredo.cloud.storage.si.transformer.internal.BlobToByteArrayTransformer;
 import org.springframework.integration.core.Message;
 import org.springframework.integration.message.MessageBuilder;
 
 /**
  * @author Eren Aykin (eren.aykin@opencredo.com)
- * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  */
 @RunWith(MockitoJUnitRunner.class)
-public class BlobToStringEnricherTest {
+public class BlobToByteArrayTransformerTest {
 
-    private BlobToStringEnricher enricher;
+    private BlobToByteArrayTransformer enricher;
 
     @Mock
     private StorageOperations template;
-    private final String containerName = TestPropertiesAccessor.getS3DefaultBucketName();
-    private final String blobName = "testStringEnricher";
-    private final String text = "String Enricher Test";
+
+    private final String containerName = "testConatiner";
+    private final String blobName = "testFile.test";
+
+    String testData = "some test data";
 
     @Before
-    public void init() {
-        enricher = new BlobToStringEnricher(template, true);
+    public void init() throws IOException {
+        enricher = new BlobToByteArrayTransformer(template, true);
 
-        when(template.receiveAsString(containerName, blobName)).thenReturn(text);
+        when(template.receiveAsInputStream(containerName, blobName)).thenReturn(
+                new ByteArrayInputStream(testData.getBytes("UTF-8")));
     }
 
     @Test
-    public void testEnrichToStringMessage() throws IOException {
+    public void testEnrichToByteArrayMessage() throws IOException {
 
         BlobDetails payload = new BlobDetails(containerName, blobName, ""+System.currentTimeMillis(), new Date());
         Message<BlobDetails> blobDetailsMessage = MessageBuilder.withPayload(payload).build();
-        Message<String> blobMessage = enricher.transform(blobDetailsMessage);
+        Message<byte[]> blobMessage = enricher.transform(blobDetailsMessage);
 
         assertNotNull(blobMessage);
-        assertEquals("String lengths do not match", text.length(), blobMessage.getPayload().toString().length());
+        assertEquals("Byte array not correctly formed ", testData, new String(blobMessage.getPayload(), "UTF-8"));
+        assertEquals("Byte array not correctly formed ", testData, new String(blobMessage.getPayload(), "UTF-8"));
         verify(template).deleteObject(eq(containerName), eq(blobName));
+    }
+
+    @After
+    public void after() {
+        template.deleteObject(containerName, blobName);
     }
 }

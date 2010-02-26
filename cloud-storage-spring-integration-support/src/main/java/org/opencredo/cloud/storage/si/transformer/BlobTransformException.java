@@ -12,16 +12,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.opencredo.cloud.storage.si.enricher;
-
-import org.opencredo.cloud.storage.BlobDetails;
-import org.springframework.integration.core.Message;
+package org.opencredo.cloud.storage.si.transformer;
 
 /**
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
- *
+ * 
  */
-public interface BlobEnricher<T> {
+public class BlobTransformException extends RuntimeException {
 
-    Message<T> transform(Message<BlobDetails> message) throws BlobEnrichException;
+    private static final long serialVersionUID = 6115661721139432321L;
+
+    /**
+     * 
+     */
+    public BlobTransformException() {
+        super();
+    }
+
+    /**
+     * @param message
+     * @param cause
+     */
+    public BlobTransformException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    /**
+     * @param message
+     */
+    public BlobTransformException(String message) {
+        super(message);
+    }
+
+    /**
+     * @param cause
+     */
+    public BlobTransformException(Throwable cause) {
+        super(cause);
+    }
 }

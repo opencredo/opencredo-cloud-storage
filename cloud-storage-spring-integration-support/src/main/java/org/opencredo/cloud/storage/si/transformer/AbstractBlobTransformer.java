@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.opencredo.cloud.storage.si.enricher;
+package org.opencredo.cloud.storage.si.transformer;
 
 import org.opencredo.cloud.storage.StorageOperations;
 import org.springframework.util.Assert;
@@ -21,12 +21,12 @@ import org.springframework.util.Assert;
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  * 
  */
-public abstract class AbstractBlobEnricher<T> implements BlobEnricher<T> {
+public abstract class AbstractBlobTransformer<T> implements BlobTransformer<T> {
 
     private final StorageOperations template;
     private final boolean deleteBlob;
 
-    public AbstractBlobEnricher(StorageOperations template) {
+    public AbstractBlobTransformer(StorageOperations template) {
         this(template, false);
     }
 
@@ -34,7 +34,7 @@ public abstract class AbstractBlobEnricher<T> implements BlobEnricher<T> {
      * @param template
      * @param deleteBlob
      */
-    public AbstractBlobEnricher(StorageOperations template, boolean deleteBlob) {
+    public AbstractBlobTransformer(StorageOperations template, boolean deleteBlob) {
         super();
         Assert.notNull(template, "Template must be specified");
         this.template = template;

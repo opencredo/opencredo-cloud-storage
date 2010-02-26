@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.opencredo.cloud.storage.si.enricher.internal;
+package org.opencredo.cloud.storage.si.transformer.internal;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -22,8 +22,8 @@ import java.io.InputStream;
 import org.apache.commons.io.IOUtils;
 import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.StorageOperations;
-import org.opencredo.cloud.storage.si.enricher.AbstractBlobEnricher;
-import org.opencredo.cloud.storage.si.enricher.BlobEnrichException;
+import org.opencredo.cloud.storage.si.transformer.AbstractBlobTransformer;
+import org.opencredo.cloud.storage.si.transformer.BlobTransformException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.integration.core.Message;
@@ -33,14 +33,14 @@ import org.springframework.integration.message.MessageBuilder;
  * @author Eren Aykin (eren.aykin@opencredo.com)
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  */
-public class BlobToByteArrayEnricher extends AbstractBlobEnricher<byte[]> {
+public class BlobToByteArrayTransformer extends AbstractBlobTransformer<byte[]> {
 
-    private final static Logger LOG = LoggerFactory.getLogger(BlobToByteArrayEnricher.class);
+    private final static Logger LOG = LoggerFactory.getLogger(BlobToByteArrayTransformer.class);
 
     /**
      * @param template
      */
-    public BlobToByteArrayEnricher(StorageOperations template) {
+    public BlobToByteArrayTransformer(StorageOperations template) {
         super(template);
     }
 
@@ -48,7 +48,7 @@ public class BlobToByteArrayEnricher extends AbstractBlobEnricher<byte[]> {
      * @param template
      * @param deleteBlob
      */
-    public BlobToByteArrayEnricher(StorageOperations template, boolean deleteBlob) {
+    public BlobToByteArrayTransformer(StorageOperations template, boolean deleteBlob) {
         super(template, deleteBlob);
     }
 
@@ -56,7 +56,7 @@ public class BlobToByteArrayEnricher extends AbstractBlobEnricher<byte[]> {
      * @param message
      * @throws IOException
      */
-    public Message<byte[]> transform(Message<BlobDetails> message) throws BlobEnrichException {
+    public Message<byte[]> transform(Message<BlobDetails> message) throws BlobTransformException {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Enrich to byte array: '{}'", String.valueOf(message.getPayload()));
         }
@@ -68,7 +68,7 @@ public class BlobToByteArrayEnricher extends AbstractBlobEnricher<byte[]> {
         try {
             IOUtils.copy(input, output);
         } catch (IOException e) {
-            throw new BlobEnrichException("Failed to copy blob [" + payload + "] byte stream to byte array", e);
+            throw new BlobTransformException("Failed to copy blob [" + payload + "] byte stream to byte array", e);
         }
        
         deleteBlobIfNeeded(payload.getContainerName(), payload.getName());
