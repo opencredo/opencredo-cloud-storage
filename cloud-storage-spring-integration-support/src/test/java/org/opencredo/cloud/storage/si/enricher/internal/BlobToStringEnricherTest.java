@@ -13,10 +13,12 @@
  * limitations under the License.
  */
 
-package org.opencredo.cloud.storage.si.enricher;
+package org.opencredo.cloud.storage.si.enricher.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -29,7 +31,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.StorageOperations;
-import org.opencredo.cloud.storage.si.enricher.ToStringEnricher;
+import org.opencredo.cloud.storage.si.enricher.internal.BlobToStringEnricher;
 import org.opencredo.cloud.storage.test.TestPropertiesAccessor;
 import org.springframework.integration.core.Message;
 import org.springframework.integration.message.MessageBuilder;
@@ -39,9 +41,9 @@ import org.springframework.integration.message.MessageBuilder;
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ToStringEnricherTest {
+public class BlobToStringEnricherTest {
 
-    private ToStringEnricher enricher;
+    private BlobToStringEnricher enricher;
 
     @Mock
     private StorageOperations template;
@@ -51,7 +53,7 @@ public class ToStringEnricherTest {
 
     @Before
     public void init() {
-        enricher = new ToStringEnricher(template);
+        enricher = new BlobToStringEnricher(template, true);
 
         when(template.receiveAsString(containerName, blobName)).thenReturn(text);
     }
@@ -65,5 +67,6 @@ public class ToStringEnricherTest {
 
         assertNotNull(blobMessage);
         assertEquals("String lengths do not match", text.length(), blobMessage.getPayload().toString().length());
+        verify(template).deleteObject(eq(containerName), eq(blobName));
     }
 }

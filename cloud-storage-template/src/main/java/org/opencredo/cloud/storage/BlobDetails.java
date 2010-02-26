@@ -16,6 +16,8 @@ package org.opencredo.cloud.storage;
 
 import java.util.Date;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 /**
  * This simple bean class is used to represent basic details of blob object in
  * cloud storage.
@@ -75,4 +77,18 @@ public class BlobDetails {
         return lastModified;
     }
 
+   /**
+    * 
+    * @return
+    * @see java.lang.Object#toString()
+    */
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)//
+                .append("containerName", this.containerName)//
+                .append("name", this.name)//
+                .append("eTag", this.eTag)//
+                .append("lastModified", this.lastModified)//
+                .toString();
+    }
 }

@@ -52,7 +52,7 @@
 
 	<!-- BlobDetails enricher -->
 	<beans:bean id="s3MessageTransformer"
-		class="org.opencredo.cloud.storage.si.enricher.ToStringEnricher">
+		class="org.opencredo.cloud.storage.si.enricher.internal.BlobToStringEnricher">
 		<beans:constructor-arg ref="s3Template" />
 	</beans:bean>
 

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.opencredo.cloud.storage.si.enricher;
+package org.opencredo.cloud.storage.si.enricher.internal;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -22,6 +22,8 @@ import java.io.InputStream;
 import org.apache.commons.io.IOUtils;
 import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.StorageOperations;
+import org.opencredo.cloud.storage.si.enricher.AbstractBlobEnricher;
+import org.opencredo.cloud.storage.si.enricher.BlobEnrichException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.integration.core.Message;
@@ -31,35 +33,50 @@ import org.springframework.integration.message.MessageBuilder;
  * @author Eren Aykin (eren.aykin@opencredo.com)
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  */
-public class ToByteArrayEnricher {
+public class BlobToByteArrayEnricher extends AbstractBlobEnricher<byte[]> {
 
-    private final static Logger LOG = LoggerFactory.getLogger(ToByteArrayEnricher.class);
+    private final static Logger LOG = LoggerFactory.getLogger(BlobToByteArrayEnricher.class);
 
-    private StorageOperations template;
+    /**
+     * @param template
+     */
+    public BlobToByteArrayEnricher(StorageOperations template) {
+        super(template);
+    }
 
-    public ToByteArrayEnricher(StorageOperations template) {
-        this.template = template;
+    /**
+     * @param template
+     * @param deleteBlob
+     */
+    public BlobToByteArrayEnricher(StorageOperations template, boolean deleteBlob) {
+        super(template, deleteBlob);
     }
 
     /**
      * @param message
      * @throws IOException
      */
-    public Message<byte[]> transform(Message<BlobDetails> message) throws IOException {
+    public Message<byte[]> transform(Message<BlobDetails> message) throws BlobEnrichException {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Enrich to byte array: '{}'", String.valueOf(message.getPayload()));
         }
         BlobDetails payload = message.getPayload();
 
         MessageBuilder<byte[]> builder;
-        InputStream input = template.receiveAsInputStream(payload.getContainerName(), payload.getName());
+        InputStream input = getTemplate().receiveAsInputStream(payload.getContainerName(), payload.getName());
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        IOUtils.copy(input, output);
+        try {
+            IOUtils.copy(input, output);
+        } catch (IOException e) {
+            throw new BlobEnrichException("Failed to copy blob [" + payload + "] byte stream to byte array", e);
+        }
+       
+        deleteBlobIfNeeded(payload.getContainerName(), payload.getName());
 
-        builder = (MessageBuilder<byte[]>) MessageBuilder.withPayload(output.toByteArray());
+        builder = (MessageBuilder<byte[]>) MessageBuilder.withPayload(output.toByteArray())//
+                .copyHeaders(message.getHeaders());
         Message<byte[]> blobMessage = builder.build();
 
         return blobMessage;
     }
-
 }

@@ -13,10 +13,12 @@
  * limitations under the License.
  */
 
-package org.opencredo.cloud.storage.si.enricher;
+package org.opencredo.cloud.storage.si.enricher.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
@@ -31,7 +33,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.StorageOperations;
-import org.opencredo.cloud.storage.si.enricher.ToByteArrayEnricher;
 import org.springframework.integration.core.Message;
 import org.springframework.integration.message.MessageBuilder;
 
@@ -39,9 +40,9 @@ import org.springframework.integration.message.MessageBuilder;
  * @author Eren Aykin (eren.aykin@opencredo.com)
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ToByteArrayEnricherTest {
+public class BlobToByteArrayEnricherTest {
 
-    private ToByteArrayEnricher enricher;
+    private BlobToByteArrayEnricher enricher;
 
     @Mock
     private StorageOperations template;
@@ -53,7 +54,7 @@ public class ToByteArrayEnricherTest {
 
     @Before
     public void init() throws IOException {
-        enricher = new ToByteArrayEnricher(template);
+        enricher = new BlobToByteArrayEnricher(template, true);
 
         when(template.receiveAsInputStream(containerName, blobName)).thenReturn(
                 new ByteArrayInputStream(testData.getBytes("UTF-8")));
@@ -68,6 +69,8 @@ public class ToByteArrayEnricherTest {
 
         assertNotNull(blobMessage);
         assertEquals("Byte array not correctly formed ", testData, new String(blobMessage.getPayload(), "UTF-8"));
+        assertEquals("Byte array not correctly formed ", testData, new String(blobMessage.getPayload(), "UTF-8"));
+        verify(template).deleteObject(eq(containerName), eq(blobName));
     }
 
     @After
