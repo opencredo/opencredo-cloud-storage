@@ -46,11 +46,11 @@
 	</cloud:inbound-channel-adapter>
 
 	<channel id="s3tickerMessageContents" />
-	<!-- BlobDetails enricher -->
+	<!-- BlobDetails SI Transformer -->
 	<service-activator input-channel="s3tickers"
 		ref="s3MessageTransformer" method="transform" output-channel="s3tickerMessageContents" />
 
-	<!-- BlobDetails enricher -->
+	<!-- BlobDetails Transformer bean -->
 	<beans:bean id="s3MessageTransformer"
 		class="org.opencredo.cloud.storage.si.transformer.internal.BlobToStringTransformer">
 		<beans:constructor-arg ref="s3Template" />

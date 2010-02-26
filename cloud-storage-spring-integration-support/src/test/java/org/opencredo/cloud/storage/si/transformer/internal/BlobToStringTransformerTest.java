@@ -43,27 +43,27 @@ import org.springframework.integration.message.MessageBuilder;
 @RunWith(MockitoJUnitRunner.class)
 public class BlobToStringTransformerTest {
 
-    private BlobToStringTransformer enricher;
+    private BlobToStringTransformer transformer;
 
     @Mock
     private StorageOperations template;
     private final String containerName = TestPropertiesAccessor.getS3DefaultBucketName();
-    private final String blobName = "testStringEnricher";
-    private final String text = "String Enricher Test";
+    private final String blobName = "testStringTransformer";
+    private final String text = "String Transformer Test";
 
     @Before
     public void init() {
-        enricher = new BlobToStringTransformer(template, true);
+        transformer = new BlobToStringTransformer(template, true);
 
         when(template.receiveAsString(containerName, blobName)).thenReturn(text);
     }
 
     @Test
-    public void testEnrichToStringMessage() throws IOException {
+    public void testTransformToStringMessage() throws IOException {
 
         BlobDetails payload = new BlobDetails(containerName, blobName, ""+System.currentTimeMillis(), new Date());
         Message<BlobDetails> blobDetailsMessage = MessageBuilder.withPayload(payload).build();
-        Message<String> blobMessage = enricher.transform(blobDetailsMessage);
+        Message<String> blobMessage = transformer.transform(blobDetailsMessage);
 
         assertNotNull(blobMessage);
         assertEquals("String lengths do not match", text.length(), blobMessage.getPayload().toString().length());

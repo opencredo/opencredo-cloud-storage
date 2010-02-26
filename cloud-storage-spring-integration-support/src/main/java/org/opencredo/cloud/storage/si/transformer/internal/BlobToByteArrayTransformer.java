@@ -58,7 +58,7 @@ public class BlobToByteArrayTransformer extends AbstractBlobTransformer<byte[]> 
      */
     public Message<byte[]> doTransform(Message<BlobDetails> message) throws BlobTransformException {
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Enrich to byte array: '{}'", String.valueOf(message.getPayload()));
+            LOG.debug("Transform blob to byte array: '{}'", String.valueOf(message.getPayload()));
         }
         BlobDetails payload = message.getPayload();
 

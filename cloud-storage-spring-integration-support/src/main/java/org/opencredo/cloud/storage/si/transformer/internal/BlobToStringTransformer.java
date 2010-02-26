@@ -52,7 +52,7 @@ public class BlobToStringTransformer extends AbstractBlobTransformer<String> {
      */
     protected Message<String> doTransform(Message<BlobDetails> message) throws BlobTransformException {
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Enrich to string: '{}'", String.valueOf(message.getPayload()));
+            LOG.debug("Transform blob to string: '{}'", String.valueOf(message.getPayload()));
         }
 
         BlobDetails payload = message.getPayload();
