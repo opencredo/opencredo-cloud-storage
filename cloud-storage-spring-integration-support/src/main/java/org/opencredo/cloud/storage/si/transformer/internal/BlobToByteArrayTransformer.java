@@ -56,7 +56,7 @@ public class BlobToByteArrayTransformer extends AbstractBlobTransformer<byte[]> 
      * @param message
      * @throws IOException
      */
-    public Message<byte[]> transform(Message<BlobDetails> message) throws BlobTransformException {
+    public Message<byte[]> doTransform(Message<BlobDetails> message) throws BlobTransformException {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Enrich to byte array: '{}'", String.valueOf(message.getPayload()));
         }
@@ -71,8 +71,6 @@ public class BlobToByteArrayTransformer extends AbstractBlobTransformer<byte[]> 
             throw new BlobTransformException("Failed to copy blob [" + payload + "] byte stream to byte array", e);
         }
        
-        deleteBlobIfNeeded(payload.getContainerName(), payload.getName());
-
         builder = (MessageBuilder<byte[]>) MessageBuilder.withPayload(output.toByteArray())//
                 .copyHeaders(message.getHeaders());
         Message<byte[]> blobMessage = builder.build();

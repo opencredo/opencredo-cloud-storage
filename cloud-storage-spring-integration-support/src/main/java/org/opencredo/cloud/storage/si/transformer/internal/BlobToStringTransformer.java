@@ -50,7 +50,7 @@ public class BlobToStringTransformer extends AbstractBlobTransformer<String> {
     /**
      * @param message
      */
-    public Message<String> transform(Message<BlobDetails> message) throws BlobTransformException {
+    protected Message<String> doTransform(Message<BlobDetails> message) throws BlobTransformException {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Enrich to string: '{}'", String.valueOf(message.getPayload()));
         }
@@ -59,8 +59,6 @@ public class BlobToStringTransformer extends AbstractBlobTransformer<String> {
 
         String blobAsString = getTemplate().receiveAsString(payload.getContainerName(), payload.getName());
 
-        deleteBlobIfNeeded(payload.getContainerName(), payload.getName());
-        
         MessageBuilder<String> builder = (MessageBuilder<String>) MessageBuilder.withPayload(blobAsString)//
                 .copyHeaders(message.getHeaders());
         Message<String> blobMessage = builder.build();

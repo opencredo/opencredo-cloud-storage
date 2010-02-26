@@ -14,7 +14,9 @@
  */
 package org.opencredo.cloud.storage.si.transformer;
 
+import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.StorageOperations;
+import org.springframework.integration.core.Message;
 import org.springframework.util.Assert;
 
 /**
@@ -41,6 +43,29 @@ public abstract class AbstractBlobTransformer<T> implements BlobTransformer<T> {
         this.deleteBlob = deleteBlob;
     }
     
+    /**
+     * 
+     * @param message
+     * @return
+     * @throws BlobTransformException
+     * @see org.opencredo.cloud.storage.si.transformer.BlobTransformer#transform(org.springframework.integration.core.Message)
+     */
+    public Message<T> transform(Message<BlobDetails> message) throws BlobTransformException {
+        Assert.notNull(message.getPayload(), "Transformer expects message payload");
+        Message<T> result = doTransform(message);
+        
+        deleteBlobIfNeeded(message.getPayload().getContainerName(), message.getPayload().getName());
+        
+        return result;
+    }
+    
+    /**
+     * 
+     * @param message
+     * @return
+     * @throws BlobTransformException
+     */
+    protected abstract Message<T> doTransform(Message<BlobDetails> message) throws BlobTransformException;
 
     /**
      * @param containerName
