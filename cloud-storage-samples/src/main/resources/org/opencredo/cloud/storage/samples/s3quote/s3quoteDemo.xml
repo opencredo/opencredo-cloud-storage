@@ -10,6 +10,10 @@
 			http://www.opencredo.com/schema/si/cloud/storage
 			http://www.opencredo.com/schema/si/cloud/storage/opencredo-si-cloud-storage.xsd">
 
+	<!--
+		Properties with S3 credentials and default container (bucket) where
+		blobs will be saved.
+	-->
 	<beans:bean
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<beans:property name="locations">
@@ -18,37 +22,58 @@
 		</beans:property>
 	</beans:bean>
 
+	<!-- Credentials used to connect to S3 -->
 	<beans:bean id="awsCredentials"
 		class="org.opencredo.cloud.storage.s3.AwsCredentials">
 		<beans:constructor-arg value="${awsKey}" />
 		<beans:constructor-arg value="${awsSecretKey}" />
 	</beans:bean>
 
+	<!-- Template to access S3 cloud storage -->
 	<beans:bean id="s3Template" class="org.opencredo.cloud.storage.s3.S3Template">
 		<beans:constructor-arg ref="awsCredentials" />
 		<beans:constructor-arg value="${awsS3QuoteBucketName}" />
+		<beans:property name="createDefaultBucket" value="true" />
 	</beans:bean>
 
-	<channel id="tickers" />
+	<!-- ++++++++++++++++++++++++++++ -->
+	<!--             SEND             -->
+	<!-- ++++++++++++++++++++++++++++ -->
+
+	<!-- Gateway to send ticker to the channel -->
 	<gateway id="s3TickerUploader"
 		service-interface="org.opencredo.cloud.storage.samples.s3quote.S3TickerUploader"
-		default-request-channel="tickers" />
+		default-request-channel="tickersChannel" />
 
+	<!-- Ticker channel -->
+	<channel id="tickersChannel" />
+
+	<!-- Adapter which saves ticker to the cloud storage -->
 	<cloud:outbound-channel-adapter
-		container="${awsS3QuoteBucketName}" template="s3Template" channel="tickers" />
+		container="${awsS3QuoteBucketName}" template="s3Template" channel="tickersChannel" />
 
-	<channel id="s3tickers" />
+	<!-- ++++++++++++++++++++++++++++ -->
+	<!--            RECEIVE           -->
+	<!-- ++++++++++++++++++++++++++++ -->
+
+	<!-- Filter to accept blob once -->
+	<beans:bean id="acceptOnceBlobNameFilter"
+		class="org.opencredo.cloud.storage.si.filter.internal.AcceptOnceBlobNameFilter" />
+
+	<!-- Adapter which looks for blobs in cloud storage -->
 	<cloud:inbound-channel-adapter container="${awsS3QuoteBucketName}"
-		template="s3Template" channel="s3tickers" filter="acceptOnceS3ObjectListFilter">
+		template="s3Template" channel="blobDetailsChannel" filter="acceptOnceBlobNameFilter">
 		<poller>
 			<interval-trigger interval="5000" />
 		</poller>
 	</cloud:inbound-channel-adapter>
 
-	<channel id="s3tickerMessageContents" />
-	<!-- BlobDetails SI Transformer -->
-	<service-activator input-channel="s3tickers"
-		ref="s3MessageTransformer" method="transform" output-channel="s3tickerMessageContents" />
+	<!-- BlobDetails channel -->
+	<channel id="blobDetailsChannel" />
+
+	<!-- Download blob specified in BlobDetails -->
+	<service-activator input-channel="blobDetailsChannel"
+		ref="s3MessageTransformer" method="transform" output-channel="blobChannel" />
 
 	<!-- BlobDetails Transformer bean -->
 	<beans:bean id="s3MessageTransformer"
@@ -56,11 +81,14 @@
 		<beans:constructor-arg ref="s3Template" />
 	</beans:bean>
 
-	<service-activator input-channel="s3tickerMessageContents"
-		ref="s3quoteService" method="lookupQuote" />
+	<!-- Received blobs (tickers) channel -->
+	<channel id="blobChannel" />
+
+	<!-- Calculates quote for ticker -->
+	<service-activator input-channel="blobChannel" ref="s3quoteService"
+		method="lookupQuote" />
 	<beans:bean id="s3quoteService"
 		class="org.opencredo.cloud.storage.samples.s3quote.S3QuoteService" />
 
-	<beans:bean id="acceptOnceS3ObjectListFilter"
-		class="org.opencredo.cloud.storage.si.filter.internal.AcceptOnceBlobNameFilter" />
+
 </beans:beans>

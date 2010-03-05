@@ -23,7 +23,10 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.integration.message.MessageBuilder;
 
 /**
+ * TODO: Requirements to run this sample.
+ * 
  * @author Eren Aykin (eren.aykin@opencredo.com)
+ * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  */
 public class S3QuoteDemo {
     private final static Logger LOG = LoggerFactory.getLogger(S3QuoteDemo.class);
@@ -48,6 +51,6 @@ public class S3QuoteDemo {
         }
         
         // Exit required to kill Spring-Integration polling threads.
-        System.exit(0);
+//        System.exit(0);
     }
 }

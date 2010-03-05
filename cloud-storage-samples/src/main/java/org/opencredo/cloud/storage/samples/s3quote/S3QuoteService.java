@@ -19,23 +19,19 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Random;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.integration.core.Message;
 
 /**
  * @author Eren Aykin (eren.aykin@opencredo.com)
  */
 public class S3QuoteService {
+    private final static Logger LOG = LoggerFactory.getLogger(S3QuoteService.class);
 
     public void lookupQuote(Message<String> s3TickerMessage) {
         BigDecimal price = new BigDecimal(new Random().nextDouble() * 100);
-        /*
-         * BufferedReader br = new BufferedReader(new
-         * InputStreamReader(s3TickerMessage
-         * .getPayload().getDataInputStream())); Quote quote = new
-         * Quote(br.readLine(), price.setScale(2, RoundingMode.HALF_EVEN));
-         */
-        Quote quote = new Quote(s3TickerMessage.getPayload(), price.setScale(2, RoundingMode.HALF_EVEN));
-        System.out.println("Quote Update... " + quote);
+        LOG.info("Quote Update... {}: {}", s3TickerMessage.getPayload(), price.setScale(2, RoundingMode.HALF_EVEN));
     }
 
 }
