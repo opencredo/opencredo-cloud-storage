@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
 import org.jets3t.service.S3Service;
@@ -37,44 +38,42 @@ import org.opencredo.cloud.storage.StorageResponseHandlingException;
 import org.opencredo.cloud.storage.StorageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 
-//TODO: Verify data transmission
-//TODO: Add support for Access control lists
 /**
  * @author Eren Aykin (eren.aykin@opencredo.com)
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  */
-public class S3Template implements StorageOperations {
+public class S3Template implements StorageOperations, InitializingBean {
     private final static Logger LOG = LoggerFactory.getLogger(S3Template.class);
 
-    public static final String DEFAULT_BUCKET_NAME = "bucket1";
+    private final static String DEFAULT_BUCKET_PREFIX = "bucket-";
 
+    private boolean createDefaultBucket;
     private final S3Service s3Service;
-
     private final String defaultBucketName;
 
     /**
-     *  Constructor with AWS (Amazon Web Services) credentials. Default container name is set to
-     * {@link #DEFAULT_BUCKET_NAME}.
+     * Constructor with AWS (Amazon Web Services) credentials. Default container
+     * name is set to {@link #DEFAULT_BUCKET_PREFIX} + {@link UUID#randomUUID()}
+     * .
      * 
      * @param awsCredentials
      * @throws StorageException
      */
     public S3Template(final AwsCredentials awsCredentials) throws StorageException {
-        this(awsCredentials, DEFAULT_BUCKET_NAME);
+        this(awsCredentials, DEFAULT_BUCKET_PREFIX + UUID.randomUUID().toString());
     }
 
     /**
+     * 
      * @param awsCredentials
      * @param defaultBucketName
      * @throws StorageException
      */
     public S3Template(final AwsCredentials awsCredentials, final String defaultBucketName) throws StorageException {
         Assert.hasText(defaultBucketName, "Default bucket name is not provided");
-
-        Assert.notNull(awsCredentials.getAccessKey(), "Access key is not provided");
-        Assert.notNull(awsCredentials.getSecretAccessKey(), "Secret access key is not provided");
 
         this.defaultBucketName = defaultBucketName;
         try {
@@ -85,9 +84,41 @@ public class S3Template implements StorageOperations {
         }
     }
 
+    /**
+     * 
+     * 
+     * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
+     */
+    public void afterPropertiesSet() {
+        ContainerStatus containerStatus = checkContainerStatus(defaultBucketName);
+        Assert.isTrue(containerStatus != ContainerStatus.ALREADY_CLAIMED, "Default bucket '" + defaultBucketName
+                + "' already claimed.");
+
+        if (createDefaultBucket && containerStatus == ContainerStatus.DOES_NOT_EXIST) {
+            LOG.info("Create default bucket: {}", defaultBucketName);
+            createContainer(defaultBucketName);
+        }
+    }
+    
+
+    /**
+     * @return the createDefaultBucket
+     */
+    public boolean isCreateDefaultBucket() {
+        return createDefaultBucket;
+    }
+
+    /**
+     * @param createDefaultBucket the createDefaultBucket to set
+     */
+    public void setCreateDefaultBucket(boolean createDefaultBucket) {
+        this.createDefaultBucket = createDefaultBucket;
+    }
+
     // **********************************
     // CONFIGURATION
     // **********************************
+
 
     /**
      * 
@@ -491,5 +522,4 @@ public class S3Template implements StorageOperations {
     public String getDefaultBucketName() {
         return defaultBucketName;
     }
-
 }
