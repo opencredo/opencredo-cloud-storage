@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
 import org.jets3t.service.S3Service;
@@ -48,22 +47,17 @@ import org.springframework.util.Assert;
 public class S3Template implements StorageOperations, InitializingBean {
     private final static Logger LOG = LoggerFactory.getLogger(S3Template.class);
 
-    private final static String DEFAULT_BUCKET_PREFIX = "bucket-";
-
-    private boolean createDefaultBucket;
     private final S3Service s3Service;
-    private final String defaultBucketName;
+    private String defaultBucketName;
 
     /**
-     * Constructor with AWS (Amazon Web Services) credentials. Default container
-     * name is set to {@link #DEFAULT_BUCKET_PREFIX} + {@link UUID#randomUUID()}
-     * .
+     * Constructor with AWS (Amazon Web Services) credentials.
      * 
      * @param awsCredentials
      * @throws StorageException
      */
     public S3Template(final AwsCredentials awsCredentials) throws StorageException {
-        this(awsCredentials, DEFAULT_BUCKET_PREFIX + UUID.randomUUID().toString());
+        this(awsCredentials, null);
     }
 
     /**
@@ -73,8 +67,6 @@ public class S3Template implements StorageOperations, InitializingBean {
      * @throws StorageException
      */
     public S3Template(final AwsCredentials awsCredentials, final String defaultBucketName) throws StorageException {
-        Assert.hasText(defaultBucketName, "Default bucket name is not provided");
-
         this.defaultBucketName = defaultBucketName;
         try {
             s3Service = new RestS3Service(new org.jets3t.service.security.AWSCredentials(awsCredentials.getAccessKey(),
@@ -93,32 +85,11 @@ public class S3Template implements StorageOperations, InitializingBean {
         ContainerStatus containerStatus = checkContainerStatus(defaultBucketName);
         Assert.isTrue(containerStatus != ContainerStatus.ALREADY_CLAIMED, "Default bucket '" + defaultBucketName
                 + "' already claimed.");
-
-        if (createDefaultBucket && containerStatus == ContainerStatus.DOES_NOT_EXIST) {
-            LOG.info("Create default bucket: {}", defaultBucketName);
-            createContainer(defaultBucketName);
-        }
-    }
-    
-
-    /**
-     * @return the createDefaultBucket
-     */
-    public boolean isCreateDefaultBucket() {
-        return createDefaultBucket;
-    }
-
-    /**
-     * @param createDefaultBucket the createDefaultBucket to set
-     */
-    public void setCreateDefaultBucket(boolean createDefaultBucket) {
-        this.createDefaultBucket = createDefaultBucket;
     }
 
     // **********************************
     // CONFIGURATION
     // **********************************
-
 
     /**
      * 
@@ -206,6 +177,7 @@ public class S3Template implements StorageOperations, InitializingBean {
      * @see org.opencredo.cloud.storage.StorageOperations#checkContainerStatus(java.lang.String)
      */
     public ContainerStatus checkContainerStatus(String containerName) throws StorageCommunicationException {
+        Assert.notNull(containerName, "Bucket name cannot be null");
         LOG.debug("Get bucket '{}' status", containerName);
         try {
             int bucketStatus = this.s3Service.checkBucketStatus(containerName);
@@ -232,6 +204,7 @@ public class S3Template implements StorageOperations, InitializingBean {
      * @see org.opencredo.cloud.storage.StorageOperations#listContainerObjectDetails(java.lang.String)
      */
     public List<BlobDetails> listContainerObjectDetails(String containerName) throws StorageCommunicationException {
+        Assert.notNull(containerName, "Bucket name cannot be null");
         LOG.debug("Get objects list for bucket '{}'", containerName);
         try {
             S3Object[] s3Objects = this.s3Service.listObjects(new S3Bucket(containerName));
@@ -274,6 +247,7 @@ public class S3Template implements StorageOperations, InitializingBean {
      */
     public void send(String containerName, String objectName, String stringToSend) throws StorageCommunicationException {
         Assert.notNull(containerName, "Bucket name cannot be null");
+        Assert.hasText(objectName, "Blob name must be set");
         LOG.debug("Send string to bucket '{}' with key '{}'", containerName, objectName);
         try {
             s3Service.putObject(new S3Bucket(containerName), new S3Object(objectName, stringToSend));
@@ -323,6 +297,7 @@ public class S3Template implements StorageOperations, InitializingBean {
      */
     public void send(String containerName, String objectName, File fileToSend) throws StorageCommunicationException {
         Assert.notNull(containerName, "Bucket name can not be null");
+        Assert.hasText(objectName, "Blob name must be set");
         Assert.notNull(fileToSend, "File to send can not be null");
 
         if (LOG.isDebugEnabled()) {
@@ -368,6 +343,7 @@ public class S3Template implements StorageOperations, InitializingBean {
      */
     public void send(String containerName, String objectName, InputStream is) throws StorageCommunicationException {
         Assert.notNull(containerName, "Bucket name cannot be null");
+        Assert.hasText(objectName, "Blob name must be set");
         LOG.debug("Send input-stream to bucket '{}' with key '{}'", containerName, objectName);
         try {
             S3Object s3ObjectToSend = new S3Object(objectName);
@@ -409,6 +385,7 @@ public class S3Template implements StorageOperations, InitializingBean {
     public String receiveAsString(String containerName, String objectName) throws StorageCommunicationException,
             StorageResponseHandlingException {
         Assert.notNull(containerName, "Bucket name cannot be null");
+        Assert.hasText(objectName, "Blob name must be set");
         LOG.debug("Receive string from bucket '{}' with key '{}'", containerName, objectName);
         S3Object s3Object = null;
         try {
@@ -456,6 +433,7 @@ public class S3Template implements StorageOperations, InitializingBean {
     public void receiveAndSaveToFile(String containerName, String objectName, File toFile)
             throws StorageCommunicationException, StorageResponseHandlingException {
         Assert.notNull(containerName, "Bucket name cannot be null");
+        Assert.hasText(objectName, "Blob name must be set");
         Assert.notNull(toFile, "File to save received data must be specified");
         Assert.isTrue(toFile.isFile(), "File to save received data does not exist");
         if (LOG.isDebugEnabled()) {
@@ -508,12 +486,21 @@ public class S3Template implements StorageOperations, InitializingBean {
     public InputStream receiveAsInputStream(String containerName, String objectName)
             throws StorageCommunicationException, StorageResponseHandlingException {
         Assert.notNull(containerName, "Bucket name cannot be null");
+        Assert.hasText(objectName, "Blob name must be set");
         LOG.debug("Receive input-stream from bucket '{}' with key '{}'", containerName, objectName);
         try {
             return s3Service.getObject(new S3Bucket(containerName), objectName).getDataInputStream();
         } catch (S3ServiceException e) {
             throw new StorageCommunicationException("Receiving input stream problem", e);
         }
+    }
+
+    /**
+     * @param defaultBucketName
+     *            the defaultBucketName to set
+     */
+    public void setDefaultBucketName(String defaultBucketName) {
+        this.defaultBucketName = defaultBucketName;
     }
 
     /**
