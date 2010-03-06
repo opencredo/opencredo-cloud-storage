@@ -52,7 +52,7 @@
 		container="${defaultContainerName}" template="template" channel="tickersChannel" />
 
 	<!-- ++++++++++++++++++++++++++++ -->
-	<!--            RECEIVE           -->
+	<!--     RECEIVE BLOB DETAILS     -->
 	<!-- ++++++++++++++++++++++++++++ -->
 
 	<!-- Filter to accept blob once -->
@@ -70,12 +70,16 @@
 	<!-- BlobDetails channel -->
 	<channel id="blobDetailsChannel" />
 
+	<!-- ++++++++++++++++++++++++++++ -->
+	<!--         RECEIVE BLOB         -->
+	<!-- ++++++++++++++++++++++++++++ -->
+
 	<!-- Download blob specified in BlobDetails -->
 	<service-activator input-channel="blobDetailsChannel"
-		ref="s3MessageTransformer" method="transform" output-channel="blobChannel" />
+		ref="blobDetailsTransformer" method="transform" output-channel="blobChannel" />
 
 	<!-- BlobDetails Transformer bean -->
-	<beans:bean id="s3MessageTransformer"
+	<beans:bean id="blobDetailsTransformer"
 		class="org.opencredo.cloud.storage.si.transformer.internal.BlobToStringTransformer">
 		<beans:constructor-arg ref="template" />
 	</beans:bean>
