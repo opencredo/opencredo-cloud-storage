@@ -23,7 +23,11 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.integration.message.MessageBuilder;
 
 /**
- * TODO: Requirements to run this sample.
+ * In order to run this sample you have to have account in Amazon AWS.
+ * Amazon AWS account details should be specified in properties file:
+ * quote.properties.
+ * 
+ * This sample shows how to use cloud storage template programmatically.
  * 
  * @author Eren Aykin (eren.aykin@opencredo.com)
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)

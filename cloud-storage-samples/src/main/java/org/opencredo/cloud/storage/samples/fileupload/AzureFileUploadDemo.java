@@ -32,7 +32,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO: Requirements to run this sample.
+ * In order to run this sample you have to have account in Azure cloud. Azure
+ * account details should be specified in properties file:
+ * fileUpload.properties.
+ * 
+ * This sample shows how to use cloud storage template programmatically.
  * 
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  * 
@@ -40,7 +44,8 @@ import org.slf4j.LoggerFactory;
 public class AzureFileUploadDemo {
     private final static Logger LOG = LoggerFactory.getLogger(AzureFileUploadDemo.class);
 
-    // Properties file. To run this example you have to specify required properties.
+    // Properties file. To run this example you have to specify required
+    // properties.
     private static final String PROPERTIES_FILE = "fileUploadSample/fileUpload.properties";
 
     // Properties expected in properties file.
