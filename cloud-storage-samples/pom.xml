@@ -11,26 +11,11 @@
 	</parent>
 	<groupId>org.opencredo.cloud.storage</groupId>
 	<artifactId>cloud-storage-samples</artifactId>
+	<packaging>pom</packaging>
 	<version>${project.parent.version}</version>
 	<name>OpenCredo Cloud Storage Samples</name>
-	<dependencies>
-		<dependency>
-			<groupId>org.opencredo.cloud.storage</groupId>
-			<artifactId>cloud-storage-spring-integration-support</artifactId>
-			<version>${project.parent.version}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.opencredo.cloud.storage</groupId>
-			<artifactId>cloud-storage-s3</artifactId>
-			<version>${project.parent.version}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.opencredo.cloud.storage</groupId>
-			<artifactId>cloud-storage-azure</artifactId>
-			<version>${project.parent.version}</version>
-			<scope>compile</scope>
-		</dependency>
-	</dependencies>
+	<modules>
+		<module>file-upload-sample</module>
+		<module>quote-sample</module>
+	</modules>
 </project>

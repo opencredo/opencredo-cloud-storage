@@ -46,7 +46,7 @@ public class AzureFileUploadDemo {
 
     // Properties file. To run this example you have to specify required
     // properties.
-    private static final String PROPERTIES_FILE = "fileUploadSample/fileUpload.properties";
+    private static final String PROPERTIES_FILE = "fileUpload.properties";
 
     // Properties expected in properties file.
     private static final String AZURE_ACCOUNT = "azureAccount";
@@ -54,7 +54,7 @@ public class AzureFileUploadDemo {
     private static final String DEFAULT_CONTAINER_NAME = "defaultContainerName";
 
     // File to upload.
-    private static final String FILE_TO_UPLOAD = "fileUploadSample/cloud.jpg";
+    private static final String FILE_TO_UPLOAD = "cloud.jpg";
 
     // File to save received blob.
     private static final String BLOB_JPG = "blob.jpg";

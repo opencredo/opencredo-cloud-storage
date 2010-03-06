@@ -27,7 +27,7 @@ import org.springframework.integration.message.MessageBuilder;
  * Amazon AWS account details should be specified in properties file:
  * quote.properties.
  * 
- * This sample shows how to use cloud storage template programmatically.
+ * This sample shows how to integrate cloud storage with Spring-Integration.
  * 
  * @author Eren Aykin (eren.aykin@opencredo.com)
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
@@ -36,7 +36,7 @@ public class S3QuoteDemo {
     private final static Logger LOG = LoggerFactory.getLogger(S3QuoteDemo.class);
 
     public static void main(String[] args) {
-        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("quoteSample/quoteDemo.xml");
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("quoteDemo-context.xml");
 
         TickerUploader tickerUploader = (TickerUploader) context.getBean("tickerUploader");
         // sending requests for tickers to be uploaded to S3, so that they can

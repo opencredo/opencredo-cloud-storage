@@ -17,8 +17,7 @@
 	<beans:bean
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<beans:property name="locations">
-			<beans:value>classpath:quoteSample/quote.properties
-			</beans:value>
+			<beans:value>classpath:quote.properties</beans:value>
 		</beans:property>
 	</beans:bean>
 
