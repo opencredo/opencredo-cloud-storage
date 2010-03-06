@@ -9,7 +9,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.opencredo.cloud.storage</groupId>
 	<artifactId>quote-sample</artifactId>
-	<name>Quote sample using S3 cloud storage</name>
+	<name>OpenCredo Cloud Storage Samples - Quote</name>
 	<version>${project.parent.version}</version>
 	
 	<dependencies>

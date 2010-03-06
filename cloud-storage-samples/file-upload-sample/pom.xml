@@ -9,7 +9,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.opencredo.cloud.storage</groupId>
 	<artifactId>file-upload-sample</artifactId>
-	<name>File upload to Azure cloud storage sample</name>
+	<name>OpenCredo Cloud Storage Samples - File upload</name>
 	<version>${project.parent.version}</version>
 
 	<dependencies>
