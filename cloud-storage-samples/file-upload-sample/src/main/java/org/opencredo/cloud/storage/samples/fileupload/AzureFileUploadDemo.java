@@ -83,7 +83,7 @@ public class AzureFileUploadDemo {
         template.send(fileToUpload);
 
         List<BlobDetails> blobsInStorage = template.listContainerObjectDetails();
-        LOG.info("There is {} blob(s) in cloud storage", blobsInStorage.size());
+        LOG.info("Blob(s) count in cloud storage: {}", blobsInStorage.size());
         for (BlobDetails blobDetails : blobsInStorage) {
             LOG.info("Blob in cloud storage: {}", blobDetails);
         }
@@ -94,11 +94,12 @@ public class AzureFileUploadDemo {
 
         LOG.info("Downloaded blob saved to file: {}", toFile.getAbsolutePath());
 
+        LOG.info("Delete blob '{}'", fileToUpload.getName());
         // Remove blob from cloud storage
         template.deleteObject(fileToUpload.getName());
 
         blobsInStorage = template.listContainerObjectDetails();
-        LOG.info("There is {} blob(s) in cloud storage", blobsInStorage.size());
+        LOG.info("Blob(s) count in cloud storage: {}", blobsInStorage.size());
     }
 
     private static Properties loadAndValidate() throws IOException {
