@@ -32,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * In order to run this sample you have to have account in Azure cloud. Azure
+ * In order to run this sample you have to have account in Windows Azure. Azure
  * account details should be specified in properties file:
  * fileUpload.properties.
  * 
