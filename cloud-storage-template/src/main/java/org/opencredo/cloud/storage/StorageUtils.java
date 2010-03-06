@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.apache.commons.io.FileUtils;
+
 /**
  * Utility class.
  * 
@@ -48,6 +50,19 @@ public class StorageUtils {
             if (os != null) {
                 os.close();
             }
+        }
+    }
+    
+    /**
+     * Create required parent directories.
+     * @param file
+     * @return
+     * @throws IOException
+     */
+    public static void createParentDirs(File file) throws IOException {
+        File parentFile = file.getParentFile();
+        if (parentFile != null) {
+            FileUtils.forceMkdir(parentFile);
         }
     }
 }

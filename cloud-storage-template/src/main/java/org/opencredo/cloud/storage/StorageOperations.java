@@ -26,6 +26,12 @@ import java.util.List;
  */
 public interface StorageOperations {
 
+    /**
+     * 
+     * @return Default container (bucket) name.
+     */
+    public String getDefaultContainerName();
+
     // **********************************
     // CONFIGURATION
     // **********************************
@@ -38,6 +44,15 @@ public interface StorageOperations {
      * @throws StorageCommunicationException
      */
     public List<String> listContainerNames() throws StorageCommunicationException;
+
+    /**
+     * List all objects in the cloud storage in default container. Default
+     * container name should be provided in implementation.
+     * 
+     * @return
+     * @throws StorageCommunicationException
+     */
+    public List<BlobDetails> listContainerObjectDetails() throws StorageCommunicationException;
 
     /**
      * List all objects in the cloud storage container.

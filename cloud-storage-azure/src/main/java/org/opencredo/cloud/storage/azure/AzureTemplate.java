@@ -135,6 +135,16 @@ public class AzureTemplate implements StorageOperations {
                     containerName, objectName);
         }
     }
+    
+
+    /**
+     * @return
+     * @throws StorageCommunicationException
+     * @see org.opencredo.cloud.storage.StorageOperations#listContainerObjectDetails()
+     */
+    public List<BlobDetails> listContainerObjectDetails() throws StorageCommunicationException {
+        return listContainerObjectDetails(defaultContainerName);
+    }
 
     /**
      * @param containerName
@@ -232,8 +242,17 @@ public class AzureTemplate implements StorageOperations {
     public void receiveAndSaveToFile(String containerName, String objectName, File toFile)
             throws StorageCommunicationException, StorageResponseHandlingException {
         Assert.notNull(toFile, "File to save received data must be specified");
-        Assert.isTrue(toFile.isFile(), "File to save received data does not exist");
-        LOG.debug("Receive file from from blob '{}' in container '{}'", objectName, containerName);
+        
+        LOG.debug("Receive file from from blob '{}' in container '{}' and save it to file '{}'", new Object[] {
+                containerName, objectName, toFile.getAbsolutePath() });
+        
+        try {
+            StorageUtils.createParentDirs(toFile);
+        } catch (IOException e) {
+            throw new StorageResponseHandlingException(e, "Failed to create parent directories for file: %s", toFile
+                    .getAbsolutePath());
+        }
+        
         InputStreamBlob streamBlob;
 
         try {

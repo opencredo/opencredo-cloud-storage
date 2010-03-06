@@ -48,7 +48,7 @@ public class S3Template implements StorageOperations, InitializingBean {
     private final static Logger LOG = LoggerFactory.getLogger(S3Template.class);
 
     private final S3Service s3Service;
-    private String defaultBucketName;
+    private String defaultContainerName;
 
     /**
      * Constructor with AWS (Amazon Web Services) credentials.
@@ -67,7 +67,7 @@ public class S3Template implements StorageOperations, InitializingBean {
      * @throws StorageException
      */
     public S3Template(final AwsCredentials awsCredentials, final String defaultBucketName) throws StorageException {
-        this.defaultBucketName = defaultBucketName;
+        this.defaultContainerName = defaultBucketName;
         try {
             s3Service = new RestS3Service(new org.jets3t.service.security.AWSCredentials(awsCredentials.getAccessKey(),
                     awsCredentials.getSecretAccessKey()));
@@ -82,8 +82,8 @@ public class S3Template implements StorageOperations, InitializingBean {
      * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
      */
     public void afterPropertiesSet() {
-        ContainerStatus containerStatus = checkContainerStatus(defaultBucketName);
-        Assert.isTrue(containerStatus != ContainerStatus.ALREADY_CLAIMED, "Default bucket '" + defaultBucketName
+        ContainerStatus containerStatus = checkContainerStatus(defaultContainerName);
+        Assert.isTrue(containerStatus != ContainerStatus.ALREADY_CLAIMED, "Default bucket '" + defaultContainerName
                 + "' already claimed.");
     }
 
@@ -128,7 +128,7 @@ public class S3Template implements StorageOperations, InitializingBean {
      * @see org.opencredo.cloud.storage.StorageOperations#deleteObject(java.lang.String)
      */
     public void deleteObject(String objectName) throws StorageCommunicationException {
-        deleteObject(defaultBucketName, objectName);
+        deleteObject(defaultContainerName, objectName);
     }
 
     /**
@@ -167,6 +167,15 @@ public class S3Template implements StorageOperations, InitializingBean {
         } catch (S3ServiceException e) {
             throw new StorageCommunicationException("Bucket list problem", e);
         }
+    }
+    
+    /**
+     * @return
+     * @throws StorageCommunicationException
+     * @see org.opencredo.cloud.storage.StorageOperations#listContainerObjectDetails()
+     */
+    public List<BlobDetails> listContainerObjectDetails() throws StorageCommunicationException {
+        return listContainerObjectDetails(defaultContainerName);
     }
 
     /**
@@ -233,7 +242,7 @@ public class S3Template implements StorageOperations, InitializingBean {
      *      java.lang.String)
      */
     public void send(String objectName, String stringToSend) throws StorageCommunicationException {
-        send(defaultBucketName, objectName, stringToSend);
+        send(defaultContainerName, objectName, stringToSend);
     }
 
     /**
@@ -269,7 +278,7 @@ public class S3Template implements StorageOperations, InitializingBean {
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.io.File)
      */
     public void send(File fileToSend) throws StorageCommunicationException {
-        send(defaultBucketName, fileToSend);
+        send(defaultContainerName, fileToSend);
     }
 
     /**
@@ -329,7 +338,7 @@ public class S3Template implements StorageOperations, InitializingBean {
      *      java.io.InputStream)
      */
     public void send(String objectName, InputStream is) throws StorageCommunicationException {
-        send(defaultBucketName, objectName, is);
+        send(defaultContainerName, objectName, is);
     }
 
     /**
@@ -369,7 +378,7 @@ public class S3Template implements StorageOperations, InitializingBean {
      */
     public String receiveAsString(String keyName) throws StorageCommunicationException,
             StorageResponseHandlingException {
-        return receiveAsString(defaultBucketName, keyName);
+        return receiveAsString(defaultContainerName, keyName);
     }
 
     /**
@@ -417,7 +426,7 @@ public class S3Template implements StorageOperations, InitializingBean {
      */
     public void receiveAndSaveToFile(String objectName, File toFile) throws StorageCommunicationException,
             StorageResponseHandlingException {
-        receiveAndSaveToFile(defaultBucketName, objectName, toFile);
+        receiveAndSaveToFile(defaultContainerName, objectName, toFile);
     }
 
     /**
@@ -435,10 +444,17 @@ public class S3Template implements StorageOperations, InitializingBean {
         Assert.notNull(containerName, "Bucket name cannot be null");
         Assert.hasText(objectName, "Blob name must be set");
         Assert.notNull(toFile, "File to save received data must be specified");
-        Assert.isTrue(toFile.isFile(), "File to save received data does not exist");
+        
         if (LOG.isDebugEnabled()) {
             LOG.debug("Receive data from bucket '{}' with key '{}' and save it to file '{}'", new Object[] {
                     containerName, objectName, toFile.getAbsolutePath() });
+        }
+        
+        try {
+            StorageUtils.createParentDirs(toFile);
+        } catch (IOException e) {
+            throw new StorageResponseHandlingException(e, "Failed to create parent directories for file: %s", toFile
+                    .getAbsolutePath());
         }
 
         S3Object s3Object = null;
@@ -470,7 +486,7 @@ public class S3Template implements StorageOperations, InitializingBean {
      */
     public InputStream receiveAsInputStream(String objectName) throws StorageCommunicationException,
             StorageResponseHandlingException {
-        return receiveAsInputStream(defaultBucketName, objectName);
+        return receiveAsInputStream(defaultContainerName, objectName);
     }
 
     /**
@@ -499,14 +515,14 @@ public class S3Template implements StorageOperations, InitializingBean {
      * @param defaultBucketName
      *            the defaultBucketName to set
      */
-    public void setDefaultBucketName(String defaultBucketName) {
-        this.defaultBucketName = defaultBucketName;
+    public void setDefaultContainerName(String defaultBucketName) {
+        this.defaultContainerName = defaultBucketName;
     }
 
     /**
      * @return the defaultBucketName
      */
-    public String getDefaultBucketName() {
-        return defaultBucketName;
+    public String getDefaultContainerName() {
+        return defaultContainerName;
     }
 }
