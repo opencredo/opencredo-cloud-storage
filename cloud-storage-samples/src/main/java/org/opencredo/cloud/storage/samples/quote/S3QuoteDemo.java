@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.opencredo.cloud.storage.samples.s3quote;
+package org.opencredo.cloud.storage.samples.quote;
 
 import java.util.Random;
 
@@ -32,10 +32,9 @@ public class S3QuoteDemo {
     private final static Logger LOG = LoggerFactory.getLogger(S3QuoteDemo.class);
 
     public static void main(String[] args) {
-        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("s3quoteDemo.xml",
-                S3QuoteDemo.class);
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("quoteSample/quoteDemo.xml");
 
-        S3TickerUploader tickerUploader = (S3TickerUploader) context.getBean("s3TickerUploader");
+        TickerUploader tickerUploader = (TickerUploader) context.getBean("tickerUploader");
         // sending requests for tickers to be uploaded to S3, so that they can
         // later be read by another application.
         // can be commented out if already uploaded enough information
@@ -49,8 +48,5 @@ public class S3QuoteDemo {
             MessageBuilder<String> builder = MessageBuilder.withPayload(ticker);
             tickerUploader.sendTicker(builder.build());
         }
-        
-        // Exit required to kill Spring-Integration polling threads.
-//        System.exit(0);
     }
 }

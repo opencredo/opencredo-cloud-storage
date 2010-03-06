@@ -13,25 +13,18 @@
  * limitations under the License.
  */
 
-package org.opencredo.cloud.storage.samples.s3quote;
+package org.opencredo.cloud.storage.samples.quote;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.Random;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.integration.core.Message;
 
 /**
+ * Creates 3 letter ticker symbols and builds messages that contain them. Then
+ * sends them to the tickers channel for uploading.
+ * 
  * @author Eren Aykin (eren.aykin@opencredo.com)
  */
-public class S3QuoteService {
-    private final static Logger LOG = LoggerFactory.getLogger(S3QuoteService.class);
+public interface TickerUploader {
 
-    public void lookupQuote(Message<String> s3TickerMessage) {
-        BigDecimal price = new BigDecimal(new Random().nextDouble() * 100);
-        LOG.info("Quote Update... {}: {}", s3TickerMessage.getPayload(), price.setScale(2, RoundingMode.HALF_EVEN));
-    }
+    void sendTicker(Message<String> ticker);
 
 }
