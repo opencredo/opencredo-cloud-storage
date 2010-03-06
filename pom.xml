@@ -7,6 +7,55 @@
 	<packaging>pom</packaging>
 	<version>1.0-SNAPSHOT</version>
 	<name>OpenCredo Cloud Storage</name>
+	<distributionManagement>
+		<repository>
+			<id>oc-nexus</id>
+			<name>OpenCredo Staging Repo</name>
+			<url>http://dev.opencredo.com/nexus/content/repositories/releases</url>
+		</repository>
+	</distributionManagement>
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<scm>
+		<connection>scm:git:git@github.com:opencredo/opencredo-cloud-storage.git</connection>
+		<developerConnection>scm:git:git@github.com:opencredo/opencredo-cloud-storage.git</developerConnection>
+		<url>http://github.com/opencredo/opencredo-cloud-storage</url>
+	</scm>
+	<issueManagement>
+		<system>OpenCredo Cloud Storage</system>
+		<url>http://dev.opencredo.com/jira/browse/OCAWS</url>
+	</issueManagement>
+	<developers>
+		<developer>
+			<id>tomas.lukosius</id>
+			<name>Tomas Lukosius</name>
+			<email>tomas.lukosius@opencredo.com</email>
+			<organization>OpenCredo</organization>
+			<organizationUrl>http://www.opencredo.com</organizationUrl>
+			<roles>
+				<role>Project Admin</role>
+				<role>Developer</role>
+			</roles>
+			<timezone>+0</timezone>
+		</developer>
+		<developer>
+			<id>jonas.partner</id>
+			<name>Jonas Partner</name>
+			<email>jonas.partner@opencredo.com</email>
+			<organization>OpenCredo</organization>
+			<organizationUrl>http://www.opencredo.com</organizationUrl>
+			<roles>
+				<role>Project Admin</role>
+				<role>Developer</role>
+			</roles>
+			<timezone>+0</timezone>
+		</developer>
+	</developers>
 	<reporting>
 		<plugins>
 			<plugin>
