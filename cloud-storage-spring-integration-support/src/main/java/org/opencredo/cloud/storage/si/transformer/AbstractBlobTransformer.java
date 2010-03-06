@@ -42,8 +42,11 @@ public abstract class AbstractBlobTransformer<T> implements BlobTransformer<T> {
         this.template = template;
         this.deleteBlob = deleteBlob;
     }
-    
+
     /**
+     * That is 'template method' pattern implementation. Extensions of this
+     * class should not worry about deleting blob after it was downloaded and
+     * transformed to some other form.
      * 
      * @param message
      * @return
@@ -53,16 +56,17 @@ public abstract class AbstractBlobTransformer<T> implements BlobTransformer<T> {
     public Message<T> transform(Message<BlobDetails> message) throws BlobTransformException {
         Assert.notNull(message.getPayload(), "Transformer expects message payload");
         Message<T> result = doTransform(message);
-        
+
         deleteBlobIfNeeded(message.getPayload().getContainerName(), message.getPayload().getName());
-        
+
         return result;
     }
-    
+
     /**
      * 
      * @param message
-     * @return
+     *            SI message containing {@link BlobDetails} as payload.
+     * @return SI message containing any type as message payload.
      * @throws BlobTransformException
      */
     protected abstract Message<T> doTransform(Message<BlobDetails> message) throws BlobTransformException;
