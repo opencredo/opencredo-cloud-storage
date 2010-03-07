@@ -2,19 +2,21 @@
 	xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
-	<id>jar-with-dependencies</id>
+	<id>with-dependencies</id>
 	<formats>
-		<!--
-		<format>tar.gz</format>
-		-->
-		<format>zip</format>
+		<!--<format>tar.gz</format>
+		--><format>zip</format>
 	</formats>
+
+	<!-- Copy files from 'parent' project. -->
 	<fileSets>
 		<fileSet>
 			<includes>
 				<include>${project.basedir}/LICENSE*</include>
 			</includes>
 		</fileSet>
+
+		<!-- Copy reference documents. -->
 		<fileSet>
 			<directory>docs</directory>
 			<outputDirectory>docs/reference</outputDirectory>
@@ -23,6 +25,8 @@
 			</includes>
 		</fileSet>
 	</fileSets>
+
+	<!-- Add runtime dependencies specified in 'parent' pom. -->
 	<dependencySets>
 		<dependencySet>
 			<outputDirectory>lib</outputDirectory>
@@ -31,22 +35,32 @@
 		</dependencySet>
 	</dependencySets>
 
+	<!-- Copy files from modules. -->
 	<moduleSets>
+		<!--
+			Copy submodules artifacts excluding samples and module used for
+			testing.
+		-->
 		<moduleSet>
 			<includeSubModules>false</includeSubModules>
 			<excludes>
 				<exclude>*:cloud-storage-test-utils</exclude>
+				<exclude>*:cloud-storage-samples</exclude>
 			</excludes>
 			<sources>
 				<includeModuleDirectory>false</includeModuleDirectory>
 				<fileSets>
 					<fileSet>
-						<outputDirectory>src/${module.artifactId}</outputDirectory>
+						<outputDirectory>src/${module.artifactId}-${module.version}-sources</outputDirectory>
 						<directory>src/main/java</directory>
 					</fileSet>
 					<fileSet>
-						<outputDirectory>src/${module.artifactId}</outputDirectory>
+						<outputDirectory>src/${module.artifactId}-${module.version}-sources</outputDirectory>
 						<directory>src/main/resources</directory>
+					</fileSet>
+					<fileSet>
+						<outputDirectory>docs/api/${module.artifactId}-${module.version}</outputDirectory>
+						<directory>target/site/apidocs</directory>
 					</fileSet>
 				</fileSets>
 			</sources>
@@ -62,6 +76,33 @@
 					</dependencySet>
 				</dependencySets>
 			</binaries>
+		</moduleSet>
+		
+		<!-- Copy sample artifacts. -->
+		<moduleSet>
+			<includes>
+				<include>*:file-upload-sample</include>
+				<include>*:quote-sample</include>
+			</includes>
+			<sources>
+				<includeModuleDirectory>false</includeModuleDirectory>
+				<fileSets>
+					<fileSet>
+						<outputDirectory>samples/${module.artifactId}</outputDirectory>
+						<includes>
+							<include>README*</include>
+						</includes>
+					</fileSet>
+					<fileSet>
+						<outputDirectory>samples/${module.artifactId}/src</outputDirectory>
+						<directory>src/main/java</directory>
+					</fileSet>
+					<fileSet>
+						<outputDirectory>samples/${module.artifactId}/src</outputDirectory>
+						<directory>src/main/resources</directory>
+					</fileSet>
+				</fileSets>
+			</sources>
 		</moduleSet>
 	</moduleSets>
 </assembly>
