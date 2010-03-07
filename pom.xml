@@ -101,9 +101,6 @@
 					<descriptors>
 						<descriptor>assembly-with-dependencies.xml</descriptor>
 					</descriptors>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
 				</configuration>
 			</plugin>
 		</plugins>
