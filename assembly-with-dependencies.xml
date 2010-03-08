@@ -4,8 +4,8 @@
 	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
 	<id>with-dependencies</id>
 	<formats>
-		<!--<format>tar.gz</format>
-		--><format>zip</format>
+		<format>tar.gz</format>
+		<format>zip</format>
 	</formats>
 
 	<!-- Copy files from 'parent' project. -->
@@ -21,7 +21,7 @@
 			<directory>docs</directory>
 			<outputDirectory>docs/reference</outputDirectory>
 			<includes>
-				<include>*.odt</include>
+				<include>*.pdf</include>
 			</includes>
 		</fileSet>
 	</fileSets>
