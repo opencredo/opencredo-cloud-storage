@@ -61,7 +61,7 @@ public class S3TemplateIntegrationTest {
 
     @Before
     public void before() {
-        template = new S3Template(credentials, TestPropertiesAccessor.getS3DefaultBucketName());
+        template = new S3Template(credentials, TestPropertiesAccessor.getDefaultContainerName());
         template.createContainer(BUCKET_NAME);
     }
 

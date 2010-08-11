@@ -28,7 +28,7 @@ public class TestPropertiesAccessor {
 
     public static final String AWS_SECRET_KEY_NAME = "awsSecretKey";
 
-    public static final String AWS_S3_DEFAULT_BUCKET_NAME = "awsS3DefaultBucketName";
+    public static final String DEFAULT_CONTAINER_NAME = "defaultContainerName";
 
     public static final String AZURE_ACCOUNT_NAME = "azureAccountName";
 
@@ -54,8 +54,8 @@ public class TestPropertiesAccessor {
         return get(AWS_SECRET_KEY_NAME);
     }
 
-    public static String getS3DefaultBucketName() {
-        return get(AWS_S3_DEFAULT_BUCKET_NAME);
+    public static String getDefaultContainerName() {
+        return get(DEFAULT_CONTAINER_NAME);
     }
 
     /**

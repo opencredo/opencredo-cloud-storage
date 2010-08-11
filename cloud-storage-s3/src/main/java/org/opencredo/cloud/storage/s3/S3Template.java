@@ -65,11 +65,11 @@ public class S3Template implements StorageOperations, InitializingBean {
     /**
      * 
      * @param awsCredentials
-     * @param defaultBucketName
+     * @param defaultContainerName
      * @throws StorageException
      */
-    public S3Template(final AwsCredentials awsCredentials, final String defaultBucketName) throws StorageException {
-        this.defaultContainerName = defaultBucketName;
+    public S3Template(final AwsCredentials awsCredentials, final String defaultContainerName) throws StorageException {
+        this.defaultContainerName = defaultContainerName;
         try {
             s3Service = new RestS3Service(new org.jets3t.service.security.AWSCredentials(awsCredentials.getAccessKey(),
                     awsCredentials.getSecretAccessKey()));
@@ -516,15 +516,15 @@ public class S3Template implements StorageOperations, InitializingBean {
     }
 
     /**
-     * @param defaultBucketName
-     *            the defaultBucketName to set
+     * @param defaultContainerName
+     *            the defaultContainerName to set
      */
-    public void setDefaultContainerName(String defaultBucketName) {
-        this.defaultContainerName = defaultBucketName;
+    public void setDefaultContainerName(String defaultContainerName) {
+        this.defaultContainerName = defaultContainerName;
     }
 
     /**
-     * @return the defaultBucketName
+     * @return the defaultContainerName
      */
     public String getDefaultContainerName() {
         return defaultContainerName;

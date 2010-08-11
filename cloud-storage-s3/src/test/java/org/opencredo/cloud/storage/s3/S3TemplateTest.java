@@ -82,7 +82,7 @@ public class S3TemplateTest {
 
     @Before
     public void before() {
-        template = new S3Template(credentials, TestPropertiesAccessor.getS3DefaultBucketName());
+        template = new S3Template(credentials, TestPropertiesAccessor.getDefaultContainerName());
 
         s3Service = mock(S3Service.class);
 
@@ -93,7 +93,7 @@ public class S3TemplateTest {
     @Test(expected = StorageException.class)
     public void testConstructorWithWrongCredentials() {
         AwsCredentials invalidCredentials = new AwsCredentials("bla", "blaBla");
-        new S3Template(invalidCredentials, TestPropertiesAccessor.getS3DefaultBucketName());
+        new S3Template(invalidCredentials, TestPropertiesAccessor.getDefaultContainerName());
     }
 
     /**

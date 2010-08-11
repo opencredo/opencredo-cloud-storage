@@ -16,7 +16,7 @@
 
 	<!-- Outbound adapter -->
 	<cloud:outbound-channel-adapter id="outbound-adapter"
-		template="mockTemplate" container="${awsS3DefaultBucketName}" channel="outputChannel" />
+		template="mockTemplate" container="${defaultContainerName}" channel="outputChannel" />
 
 </beans:beans>
 

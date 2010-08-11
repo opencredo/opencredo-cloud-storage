@@ -47,7 +47,7 @@ public class ReadingMessageSourceTest {
     private static final String ID_PREFIX = "id-";
     private static final String E_TAG_PREFIX = "eTag-";
 
-    private final String containerName = TestPropertiesAccessor.getS3DefaultBucketName();
+    private final String containerName = TestPropertiesAccessor.getDefaultContainerName();
 
     private BlobDetails[] blobObjs;
     private long currentTime;

@@ -144,7 +144,7 @@
 			<properties>
 				<awsKey>test-awsKey</awsKey>
 				<awsSecretKey>test-awsSecretKey</awsSecretKey>
-				<awsS3DefaultBucketName>test-awsS3DefaultBucketName</awsS3DefaultBucketName>
+				<defaultContainerName>test-defaultContainerName</defaultContainerName>
 				<azureAccountName>test-azureAccountName</azureAccountName>
 				<azureSecretKey>test-azureSecretKey</azureSecretKey>
 			</properties>

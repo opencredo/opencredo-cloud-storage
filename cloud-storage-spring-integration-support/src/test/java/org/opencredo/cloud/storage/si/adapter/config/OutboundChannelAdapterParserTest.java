@@ -53,7 +53,7 @@ public class OutboundChannelAdapterParserTest {
         WritingMessageHandler a = (WritingMessageHandler) value;
         DirectFieldAccessor adapterDirect = new DirectFieldAccessor(a);
         assertNotNull("'template' not found", adapterDirect.getPropertyValue("template"));
-        assertEquals(TestPropertiesAccessor.getS3DefaultBucketName(), adapterDirect.getPropertyValue("containerName"));
+        assertEquals(TestPropertiesAccessor.getDefaultContainerName(), adapterDirect.getPropertyValue("containerName"));
         assertNotNull("'blobNameBuilder' queue not found", adapterDirect.getPropertyValue("blobNameBuilder"));
         assertTrue(adapterDirect.getPropertyValue("blobNameBuilder") instanceof DefaultBlobNameBuilder);
     }
@@ -75,7 +75,7 @@ public class OutboundChannelAdapterParserTest {
         WritingMessageHandler a = (WritingMessageHandler) value;
         DirectFieldAccessor adapterDirect = new DirectFieldAccessor(a);
         assertNotNull("'template' not found", adapterDirect.getPropertyValue("template"));
-        assertEquals(TestPropertiesAccessor.getS3DefaultBucketName(), adapterDirect.getPropertyValue("containerName"));
+        assertEquals(TestPropertiesAccessor.getDefaultContainerName(), adapterDirect.getPropertyValue("containerName"));
         assertNotNull("'blobNameBuilder' queue not found", adapterDirect.getPropertyValue("blobNameBuilder"));
         assertTrue(adapterDirect.getPropertyValue("blobNameBuilder") instanceof MockBlobNameBuilder);
     }

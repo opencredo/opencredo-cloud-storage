@@ -20,7 +20,7 @@
 	</beans:bean>
 
 	<cloud:inbound-channel-adapter id="inbound-adapter"
-		channel="inputChannel" template="mockTemplate" container="${awsS3DefaultBucketName}"
+		channel="inputChannel" template="mockTemplate" container="${defaultContainerName}"
 		filter="testFilter">
 		<poller>
 			<interval-trigger interval="5000" />

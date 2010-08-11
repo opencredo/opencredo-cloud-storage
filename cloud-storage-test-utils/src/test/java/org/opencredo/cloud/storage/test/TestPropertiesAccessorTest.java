@@ -26,7 +26,7 @@ public class TestPropertiesAccessorTest {
     public void test() {
         TestPropertiesAccessor.getDefaultTestAwsKey();
         TestPropertiesAccessor.getDefaultTestAwsSecretKey();
-        TestPropertiesAccessor.getS3DefaultBucketName();
+        TestPropertiesAccessor.getDefaultContainerName();
         
         TestPropertiesAccessor.getAzureDefaultAccountName();
         TestPropertiesAccessor.getAzureDefaultSecretKey();

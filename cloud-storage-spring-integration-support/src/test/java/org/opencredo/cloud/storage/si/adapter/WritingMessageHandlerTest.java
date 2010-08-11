@@ -58,7 +58,7 @@ public class WritingMessageHandlerTest {
         boolean send = outputChannel.send(mb.build(), 3000);
         assertTrue("Message should be sent", send);
 
-        verify(template).send(eq(TestPropertiesAccessor.getS3DefaultBucketName()), anyString(), eq(payload));
+        verify(template).send(eq(TestPropertiesAccessor.getDefaultContainerName()), anyString(), eq(payload));
     }
 
     @Test
@@ -70,7 +70,7 @@ public class WritingMessageHandlerTest {
         boolean send = outputChannel.send(mb.build(), 3000);
         assertTrue("Message should be sent", send);
 
-        verify(template).send(eq(TestPropertiesAccessor.getS3DefaultBucketName()), anyString(), eq(payload));
+        verify(template).send(eq(TestPropertiesAccessor.getDefaultContainerName()), anyString(), eq(payload));
     }
 
     @Test(expected = MessageHandlingException.class)

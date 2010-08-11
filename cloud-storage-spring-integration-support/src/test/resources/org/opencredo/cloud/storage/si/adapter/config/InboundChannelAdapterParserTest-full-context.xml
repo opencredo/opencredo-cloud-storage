@@ -23,7 +23,7 @@
 		class="org.opencredo.cloud.storage.si.adapter.config.InboundChannelAdapterParserTest$MockBlobObjectComparator" />
 
 	<cloud:inbound-channel-adapter id="inbound-adapter"
-		channel="inputChannel" template="mockTemplate" container="${awsS3DefaultBucketName}"
+		channel="inputChannel" template="mockTemplate" container="${defaultContainerName}"
 		filter="testFilter" comparator="testComparator">
 		<poller>
 			<interval-trigger interval="5000" />

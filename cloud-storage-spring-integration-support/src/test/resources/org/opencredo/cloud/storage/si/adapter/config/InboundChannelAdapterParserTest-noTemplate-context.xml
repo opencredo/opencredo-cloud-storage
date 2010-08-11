@@ -14,7 +14,7 @@
 
 	<!-- Inbound adapter -->
 	<cloud:inbound-channel-adapter id="inbound-adapter"
-		channel="inputChannel" container="${awsS3DefaultBucketName}">
+		channel="inputChannel" container="${defaultContainerName}">
 		<poller>
 			<interval-trigger interval="5000" />
 		</poller>

@@ -54,7 +54,7 @@ public class InboundChannelAdapterParserTest {
         assertNotNull("'template' not found", adapterDirect.getPropertyValue("template"));
         assertNotNull("'filter' queue not found", adapterDirect.getPropertyValue("filter"));
         assertTrue(adapterDirect.getPropertyValue("filter") instanceof AcceptOnceBlobNameFilter);
-        assertEquals(TestPropertiesAccessor.getS3DefaultBucketName(), adapterDirect.getPropertyValue("containerName"));
+        assertEquals(TestPropertiesAccessor.getDefaultContainerName(), adapterDirect.getPropertyValue("containerName"));
     }
 
     @Test
@@ -75,7 +75,7 @@ public class InboundChannelAdapterParserTest {
         assertNotNull("'template' not found", adapterDirect.getPropertyValue("template"));
         assertNotNull("'filter' queue not found", adapterDirect.getPropertyValue("filter"));
         assertTrue(adapterDirect.getPropertyValue("filter") instanceof PatternMatchingBlobNameFilter);
-        assertEquals(TestPropertiesAccessor.getS3DefaultBucketName(), adapterDirect.getPropertyValue("containerName"));
+        assertEquals(TestPropertiesAccessor.getDefaultContainerName(), adapterDirect.getPropertyValue("containerName"));
     }
 
     @Test(expected = BeanDefinitionStoreException.class)
@@ -119,7 +119,7 @@ public class InboundChannelAdapterParserTest {
         assertNotNull("'template' not found", adapterDirect.getPropertyValue("template"));
         assertNotNull("'filter' queue not found", adapterDirect.getPropertyValue("filter"));
         assertTrue(adapterDirect.getPropertyValue("filter") instanceof AcceptOnceBlobNameFilter);
-        assertEquals(TestPropertiesAccessor.getS3DefaultBucketName(), adapterDirect.getPropertyValue("containerName"));
+        assertEquals(TestPropertiesAccessor.getDefaultContainerName(), adapterDirect.getPropertyValue("containerName"));
     }
 
     @Test
@@ -140,7 +140,7 @@ public class InboundChannelAdapterParserTest {
         assertNotNull("'template' not found", adapterDirect.getPropertyValue("template"));
         assertNotNull("'filter' queue not found", adapterDirect.getPropertyValue("filter"));
         assertTrue(adapterDirect.getPropertyValue("filter") instanceof PatternMatchingBlobNameFilter);
-        assertEquals(TestPropertiesAccessor.getS3DefaultBucketName(), adapterDirect.getPropertyValue("containerName"));
+        assertEquals(TestPropertiesAccessor.getDefaultContainerName(), adapterDirect.getPropertyValue("containerName"));
     }
 
     /**

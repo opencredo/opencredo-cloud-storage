@@ -19,7 +19,7 @@
 		class="org.opencredo.cloud.storage.si.adapter.config.OutboundChannelAdapterParserTest$MockBlobNameBuilder" />
 
 	<cloud:outbound-channel-adapter id="outbound-adapter"
-		template="mockTemplate" container="${awsS3DefaultBucketName}" channel="outputChannel"
+		template="mockTemplate" container="${defaultContainerName}" channel="outputChannel"
 		name-builder="testBlobNameBuilder" />
 
 </beans:beans>

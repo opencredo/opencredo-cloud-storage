@@ -47,7 +47,7 @@ public class BlobToStringTransformerTest {
 
     @Mock
     private StorageOperations template;
-    private final String containerName = TestPropertiesAccessor.getS3DefaultBucketName();
+    private final String containerName = TestPropertiesAccessor.getDefaultContainerName();
     private final String blobName = "testStringTransformer";
     private final String text = "String Transformer Test";
 
