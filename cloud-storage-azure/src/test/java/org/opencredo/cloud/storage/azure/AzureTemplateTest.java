@@ -16,11 +16,12 @@ package org.opencredo.cloud.storage.azure;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -85,7 +86,7 @@ public class AzureTemplateTest {
     public void testMajor() {
         String containerName = TEST_CONATINER_PREFIX + UUID.randomUUID().toString();
 
-        List<String> containers = template.listContainerNames();
+        List<String> containers = getTestContainers(template.listContainerNames());
         assertTrue("Unexpected amount of containers", containers.isEmpty());
 
         String objectName = "string-1";
@@ -93,8 +94,8 @@ public class AzureTemplateTest {
         // Create container
         template.createContainer(containerName);
         {
-            containers = template.listContainerNames();
-            assertTrue("Unexpected amount of containers", containers.size() == 1);
+            containers = getTestContainers(template.listContainerNames());
+            assertEquals("Unexpected amount of containers", 1, containers.size());
             System.out.println("Existing container in Azure: " + containers.get(0));
             assertEquals("Container name should match", containerName, containers.get(0));
         }
@@ -123,7 +124,7 @@ public class AzureTemplateTest {
 
         // Delete container
         template.deleteContainer(containerName);
-        containers = template.listContainerNames();
+        containers = getTestContainers(template.listContainerNames());
         assertTrue("Unexpected amount of containers", containers.isEmpty());
     }
 
@@ -159,7 +160,7 @@ public class AzureTemplateTest {
         containerStatus = template.checkContainerStatus(containerName);
         assertEquals("Invalid container status", ContainerStatus.MINE, containerStatus);
     }
-    
+
     @Test(expected = StorageCommunicationException.class)
     public void testDeleteNonExistingContainers() {
         template.deleteContainer("abcefg-" + UUID.randomUUID().toString());
@@ -168,5 +169,21 @@ public class AzureTemplateTest {
     @Test(expected = StorageCommunicationException.class)
     public void testDeleteNonExistingBlob() {
         template.deleteObject("abcefg-" + UUID.randomUUID().toString(), "hijklmnop");
+    }
+
+    /**
+     * Get list of containers with prefix used in test.
+     * 
+     * @param containers
+     * @return
+     */
+    private List<String> getTestContainers(List<String> containers) {
+        List<String> c = new ArrayList<String>(containers.size());
+        for (String cn : containers) {
+            if (cn.startsWith(TEST_CONATINER_PREFIX)) {
+                c.add(cn);
+            }
+        }
+        return c;
     }
 }

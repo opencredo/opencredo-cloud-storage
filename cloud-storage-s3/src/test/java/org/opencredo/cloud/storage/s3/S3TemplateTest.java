@@ -90,6 +90,12 @@ public class S3TemplateTest {
         accessor.setPropertyValue("s3Service", s3Service);
     }
 
+    @Test(expected = StorageException.class)
+    public void testConstructorWithWrongCredentials() {
+        AwsCredentials invalidCredentials = new AwsCredentials("bla", "blaBla");
+        new S3Template(invalidCredentials, TestPropertiesAccessor.getS3DefaultBucketName());
+    }
+
     /**
      * Test method for
      * {@link org.opencredo.cloud.storage.s3.S3Template#createContainer(java.lang.String)}
@@ -173,7 +179,8 @@ public class S3TemplateTest {
     }
 
     /**
-     * Test method for {@link org.opencredo.cloud.storage.s3.S3Template#listContainerNames()}.
+     * Test method for
+     * {@link org.opencredo.cloud.storage.s3.S3Template#listContainerNames()}.
      * 
      * @throws S3ServiceException
      */
@@ -184,7 +191,8 @@ public class S3TemplateTest {
     }
 
     /**
-     * Test method for {@link org.opencredo.cloud.storage.s3.S3Template#listContainerNames()}.
+     * Test method for
+     * {@link org.opencredo.cloud.storage.s3.S3Template#listContainerNames()}.
      * 
      * @throws S3ServiceException
      */
