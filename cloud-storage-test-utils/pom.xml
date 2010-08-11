@@ -12,6 +12,56 @@
 	<artifactId>cloud-storage-test-utils</artifactId>
 	<name>OpenCredo Cloud Storage Test Utils</name>
 	<version>${project.parent.version}</version>
+	
+	<description>
+		Classes required by tests in sibling OpenCredo-cloud-storage modules.
+	</description>
+
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<scm>
+		<connection>scm:git:git://github.com/opencredo/opencredo-cloud-storage.git</connection>
+		<url>http://github.com/opencredo/opencredo-cloud-storage</url>
+	</scm>
+
+	<issueManagement>
+		<system>OpenCredo Cloud Storage</system>
+		<url>http://dev.opencredo.com/jira/browse/OCCS</url>
+	</issueManagement>
+
+	<developers>
+		<developer>
+			<id>tomas.lukosius</id>
+			<name>Tomas Lukosius</name>
+			<email>tomas.lukosius@opencredo.com</email>
+			<organization>OpenCredo</organization>
+			<organizationUrl>http://www.opencredo.com</organizationUrl>
+			<roles>
+				<role>Project Admin</role>
+				<role>Developer</role>
+			</roles>
+			<timezone>+0</timezone>
+		</developer>
+		<developer>
+			<id>jonas.partner</id>
+			<name>Jonas Partner</name>
+			<email>jonas.partner@opencredo.com</email>
+			<organization>OpenCredo</organization>
+			<organizationUrl>http://www.opencredo.com</organizationUrl>
+			<roles>
+				<role>Project Admin</role>
+				<role>Developer</role>
+			</roles>
+			<timezone>+0</timezone>
+		</developer>
+	</developers>
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework</groupId>
