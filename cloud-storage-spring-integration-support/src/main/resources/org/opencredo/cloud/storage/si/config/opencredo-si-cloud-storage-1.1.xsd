@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsd:schema xmlns="http://www.opencredo.com/schema/si/cloud/storage"
-	targetNamespace="http://www.opencredo.com/schema/si/cloud/storage"
+<xsd:schema xmlns="http://www.opencredo.com/schema/cloud-storage/integration"
+	targetNamespace="http://www.opencredo.com/schema/cloud-storage/integration"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
 	xmlns:tool="http://www.springframework.org/schema/tool"
 	elementFormDefault="qualified" attributeFormDefault="unqualified"

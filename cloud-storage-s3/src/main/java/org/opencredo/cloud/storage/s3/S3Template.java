@@ -41,6 +41,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 
 /**
+ * Main class encapsulating invocations to jets3t org.jets3t.service.S3Service.
+ * 
  * @author Eren Aykin (eren.aykin@opencredo.com)
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  */
@@ -71,6 +73,8 @@ public class S3Template implements StorageOperations, InitializingBean {
         try {
             s3Service = new RestS3Service(new org.jets3t.service.security.AWSCredentials(awsCredentials.getAccessKey(),
                     awsCredentials.getSecretAccessKey()));
+            // Next statement checks if connection works. This is sugested by jets3t documentation.
+            s3Service.listAllBuckets();
         } catch (S3ServiceException e) {
             throw new StorageException("Failed to prepare S3 service.", e);
         }

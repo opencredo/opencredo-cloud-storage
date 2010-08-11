@@ -1,2 +1,2 @@
-http\://www.opencredo.com/schema/si/cloud/storage=org.opencredo.cloud.storage.si.adapter.config.NamespaceHandler
+http\://www.opencredo.com/schema/cloud-storage/integration=org.opencredo.cloud.storage.si.adapter.config.NamespaceHandler
 

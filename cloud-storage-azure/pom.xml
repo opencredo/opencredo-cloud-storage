@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<parent>
 		<groupId>org.opencredo.cloud.storage</groupId>
 		<artifactId>opencredo-cloud-storage-parent</artifactId>
-		<version>1.0</version>
+		<version>1.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
@@ -18,6 +19,16 @@
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.opencredo.cloud.storage</groupId>
+			<artifactId>cloud-storage-test-utils</artifactId>
+			<version>${project.parent.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 			<version>4.0.1</version>
@@ -25,16 +36,10 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.opencredo.cloud.storage</groupId>
-			<artifactId>cloud-storage-test-utils</artifactId>
-			<version>${project.parent.version}</version>
-			<scope>test</scope>
+			<groupId>org.springframework.ws</groupId>
+			<artifactId>spring-xml</artifactId>
+			<version>1.5.8</version>
 		</dependency>
-		 <dependency>
-            <groupId>org.springframework.ws</groupId>
-            <artifactId>spring-xml</artifactId>
-            <version>${springWsVersion}</version>
-        </dependency>
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
