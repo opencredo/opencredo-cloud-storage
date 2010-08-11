@@ -66,8 +66,10 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
+					<finalName>opencredo-cloud-storage-${project.version}</finalName>
+					<outputDirectory>${project.build.directory}/assembly</outputDirectory>
 					<descriptors>
-						<descriptor>src/main/assembly/assembly-with-dependencies.xml</descriptor>
+						<descriptor>src/main/assembly/assembly.xml</descriptor>
 					</descriptors>
 				</configuration>
 			</plugin>

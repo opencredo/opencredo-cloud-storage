@@ -2,7 +2,7 @@
 	xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
-	<id>with-dependencies</id>
+	<id>release</id>
 	<formats>
 		<format>tar.gz</format>
 		<format>zip</format>
@@ -51,12 +51,11 @@
 				<includeModuleDirectory>false</includeModuleDirectory>
 				<fileSets>
 					<fileSet>
-						<outputDirectory>src/${module.artifactId}-${module.version}-sources</outputDirectory>
-						<directory>src/main/java</directory>
-					</fileSet>
-					<fileSet>
-						<outputDirectory>src/${module.artifactId}-${module.version}-sources</outputDirectory>
-						<directory>src/main/resources</directory>
+						<outputDirectory>src</outputDirectory>
+						<directory>target</directory>
+						<includes>
+							<include>*-sources.jar</include>
+						</includes>
 					</fileSet>
 					<fileSet>
 						<outputDirectory>docs/api/${module.artifactId}-${module.version}</outputDirectory>
@@ -78,28 +77,31 @@
 			</binaries>
 		</moduleSet>
 		
-		<!-- Copy sample artifacts. -->
+		<!-- Copy samples modules excluding others. -->
 		<moduleSet>
 			<includes>
-				<include>*:file-upload-sample</include>
-				<include>*:quote-sample</include>
+				<include>*:cloud-storage-samples</include>
 			</includes>
 			<sources>
 				<includeModuleDirectory>false</includeModuleDirectory>
 				<fileSets>
 					<fileSet>
-						<outputDirectory>samples/${module.artifactId}</outputDirectory>
-						<includes>
-							<include>README*</include>
-						</includes>
+						<outputDirectory>samples</outputDirectory>
+						<directory>.</directory>
 					</fileSet>
 					<fileSet>
-						<outputDirectory>samples/${module.artifactId}/src</outputDirectory>
-						<directory>src/main/java</directory>
+						<outputDirectory>samples/file-upload-sample</outputDirectory>
+						<directory>file-upload-sample</directory>
+						<excludes>
+							<exclude>target/**</exclude>
+						</excludes>
 					</fileSet>
 					<fileSet>
-						<outputDirectory>samples/${module.artifactId}/src</outputDirectory>
-						<directory>src/main/resources</directory>
+						<outputDirectory>samples/quote-sample</outputDirectory>
+						<directory>quote-sample</directory>
+						<excludes>
+							<exclude>target/**</exclude>
+						</excludes>
 					</fileSet>
 				</fileSets>
 			</sources>
