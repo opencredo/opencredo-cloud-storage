@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.opencredo.cloud.storage</groupId>
-		<artifactId>opencredo-cloud-storage-parent</artifactId>
-		<version>1.2-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
-	</parent>
-	<groupId>org.opencredo.cloud.storage</groupId>
-	<artifactId>cloud-storage-s3</artifactId>
-	<version>1.2-SNAPSHOT</version>
-	<name>OpenCredo Cloud Storage S3 Template</name>
+    <parent>
+        <groupId>org.opencredo.cloud.storage</groupId>
+        <artifactId>opencredo-cloud-storage-parent</artifactId>
+        <version>1.2-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <groupId>org.opencredo.cloud.storage</groupId>
+    <artifactId>cloud-storage-s3</artifactId>
+    <version>1.2-SNAPSHOT</version>
+    <name>OpenCredo Cloud Storage S3 Template</name>
 
-	<description>
-		Simple API to access Amazon S3 Service. 
-	</description>
+    <description>
+        Simple API to access Amazon S3 Service.
+    </description>
+    <properties>
+        <jets3t.version>0.8.1</jets3t.version>
+    </properties>
 
 	<licenses>
 		<license>
@@ -70,7 +73,7 @@
 		<dependency>
 			<groupId>net.java.dev.jets3t</groupId>
 			<artifactId>jets3t</artifactId>
-			<version>0.8.1</version>
+			<version>${jets3t.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.opencredo.cloud.storage</groupId>
