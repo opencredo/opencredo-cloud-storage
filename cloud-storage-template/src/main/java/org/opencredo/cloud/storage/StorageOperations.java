@@ -16,6 +16,7 @@ package org.opencredo.cloud.storage;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,7 +31,7 @@ public interface StorageOperations {
      * 
      * @return Default container (bucket) name.
      */
-    public String getDefaultContainerName();
+     String getDefaultContainerName();
 
     // **********************************
     // CONFIGURATION
@@ -43,7 +44,7 @@ public interface StorageOperations {
      *         exist.
      * @throws StorageCommunicationException
      */
-    public List<String> listContainerNames() throws StorageCommunicationException;
+     List<String> listContainerNames() throws StorageCommunicationException;
 
     /**
      * List all objects in the cloud storage in default container. Default
@@ -52,7 +53,7 @@ public interface StorageOperations {
      * @return
      * @throws StorageCommunicationException
      */
-    public List<BlobDetails> listContainerObjectDetails() throws StorageCommunicationException;
+     List<BlobDetails> listContainerObjectDetails() throws StorageCommunicationException;
 
     /**
      * List all objects in the cloud storage container.
@@ -63,7 +64,7 @@ public interface StorageOperations {
      * 
      * @throws StorageCommunicationException
      */
-    public List<BlobDetails> listContainerObjectDetails(String containerName) throws StorageCommunicationException;
+     List<BlobDetails> listContainerObjectDetails(String containerName) throws StorageCommunicationException;
 
     /**
      * Get the status of the bucket.
@@ -71,7 +72,7 @@ public interface StorageOperations {
      * @param containerName
      * @return
      */
-    public ContainerStatus checkContainerStatus(String containerName) throws StorageCommunicationException;
+     ContainerStatus checkContainerStatus(String containerName) throws StorageCommunicationException;
 
     /**
      * Create a new container with the provided container name.
@@ -79,7 +80,7 @@ public interface StorageOperations {
      * @param containerName
      * @throws StorageCommunicationException
      */
-    public void createContainer(String containerName) throws StorageCommunicationException;
+     void createContainer(String containerName) throws StorageCommunicationException;
 
     /**
      * Delete the container with the provided container name.
@@ -87,7 +88,7 @@ public interface StorageOperations {
      * @param containerName
      * @throws StorageCommunicationException
      */
-    public void deleteContainer(String containerName) throws StorageCommunicationException;
+     void deleteContainer(String containerName) throws StorageCommunicationException;
 
     // **********************************
     // SEND/RECEIVE
@@ -100,7 +101,7 @@ public interface StorageOperations {
      * @param objectName
      * @param stringToSend
      */
-    public void send(String objectName, String stringToSend) throws StorageCommunicationException;
+     void send(String objectName, String stringToSend) throws StorageCommunicationException;
 
     /**
      * Send string data to the cloud storage container.
@@ -112,7 +113,7 @@ public interface StorageOperations {
      * @param stringToSend
      * @throws StorageCommunicationException
      */
-    public void send(String containerName, String objectName, String stringToSend) throws StorageCommunicationException;
+     void send(String containerName, String objectName, String stringToSend) throws StorageCommunicationException;
 
     /**
      * Invokes {@link #send(String, File)} with default container name which
@@ -122,7 +123,7 @@ public interface StorageOperations {
      * @throws StorageCommunicationException
      * 
      */
-    public void send(File fileToSend) throws StorageCommunicationException;
+     void send(File fileToSend) throws StorageCommunicationException;
 
     /**
      * Invokes {@link #send(String, String, File)} where object name is File
@@ -132,7 +133,7 @@ public interface StorageOperations {
      * @param fileToSend
      * @throws StorageCommunicationException
      */
-    public void send(String containerName, File fileToSend) throws StorageCommunicationException;
+     void send(String containerName, File fileToSend) throws StorageCommunicationException;
 
     /**
      * Send File to the cloud storage container.
@@ -144,7 +145,7 @@ public interface StorageOperations {
      * @param fileToSend
      * @throws StorageCommunicationException
      */
-    public void send(String containerName, String objectName, File fileToSend) throws StorageCommunicationException;
+     void send(String containerName, String objectName, File fileToSend) throws StorageCommunicationException;
 
     /**
      * Invokes {@link #send(String, String, InputStream)} with default container
@@ -154,7 +155,7 @@ public interface StorageOperations {
      * @param is
      * @throws StorageCommunicationException
      */
-    public void send(String objectName, InputStream is) throws StorageCommunicationException;
+    void send(String objectName, InputStream is) throws StorageCommunicationException;
 
     /**
      * Send InputStream to the cloud storage container.
@@ -168,7 +169,7 @@ public interface StorageOperations {
      * 
      * @throws StorageCommunicationException
      */
-    public void send(String containerName, String objectName, InputStream is) throws StorageCommunicationException;
+    void send(String containerName, String objectName, InputStream is) throws StorageCommunicationException;
 
     /**
      * Invokes {@link #receiveAsString(String, String)} with default container
@@ -179,7 +180,7 @@ public interface StorageOperations {
      * @throws StorageCommunicationException
      * @throws StorageResponseHandlingException
      */
-    public String receiveAsString(String objectName) throws StorageCommunicationException,
+    String receiveAsString(String objectName) throws StorageCommunicationException,
             StorageResponseHandlingException;
 
     /**
@@ -196,7 +197,7 @@ public interface StorageOperations {
      *             Will be thrown if handling of response data fails (e.g.
      *             Failure to convert response byte stream to String).
      */
-    public String receiveAsString(String containerName, String objectName) throws StorageCommunicationException,
+    String receiveAsString(String containerName, String objectName) throws StorageCommunicationException,
             StorageResponseHandlingException;
 
     /**
@@ -208,7 +209,7 @@ public interface StorageOperations {
      * @throws StorageCommunicationException
      * @throws StorageResponseHandlingException
      */
-    public void receiveAndSaveToFile(String objectName, File toFile) throws StorageCommunicationException,
+    void receiveAndSaveToFile(String objectName, File toFile) throws StorageCommunicationException,
             StorageResponseHandlingException;
 
     /**
@@ -227,7 +228,7 @@ public interface StorageOperations {
      *             Will be thrown if handling of response data fails (e.g.
      *             Failure to write response byte stream to File).
      */
-    public void receiveAndSaveToFile(String containerName, String objectName, File toFile)
+    void receiveAndSaveToFile(String containerName, String objectName, File toFile)
             throws StorageCommunicationException, StorageResponseHandlingException;
 
     /**
@@ -239,7 +240,7 @@ public interface StorageOperations {
      * @throws StorageCommunicationException
      * @throws StorageResponseHandlingException
      */
-    public InputStream receiveAsInputStream(String objectName) throws StorageCommunicationException,
+    InputStream receiveAsInputStream(String objectName) throws StorageCommunicationException,
             StorageResponseHandlingException;
 
     /**
@@ -256,7 +257,7 @@ public interface StorageOperations {
      *             Will be thrown if handling of response data fails (e.g.
      *             Failure to close response byte stream).
      */
-    public InputStream receiveAsInputStream(String containerName, String objectName)
+    InputStream receiveAsInputStream(String containerName, String objectName)
             throws StorageCommunicationException, StorageResponseHandlingException;
 
     /**
@@ -266,7 +267,7 @@ public interface StorageOperations {
      * @param objectName
      * @throws StorageCommunicationException
      */
-    public void deleteObject(String objectName) throws StorageCommunicationException;
+    void deleteObject(String objectName) throws StorageCommunicationException;
 
     /**
      * Delete the object from cloud storage container.
@@ -278,5 +279,7 @@ public interface StorageOperations {
      *            received.
      * @throws StorageCommunicationException
      */
-    public void deleteObject(String containerName, String objectName) throws StorageCommunicationException;
+    void deleteObject(String containerName, String objectName) throws StorageCommunicationException;
+
+    String createdSignedUrl(String containerName, String objectName, Date expiryDate) throws StorageCommunicationException;
 }

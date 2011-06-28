@@ -27,7 +27,6 @@ import org.jets3t.service.model.S3Bucket;
 import org.jets3t.service.model.S3Object;
 import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.ContainerStatus;
-import org.opencredo.cloud.storage.PublicStorageOperations;
 import org.opencredo.cloud.storage.StorageCommunicationException;
 import org.opencredo.cloud.storage.StorageException;
 import org.opencredo.cloud.storage.StorageOperations;
@@ -53,7 +52,7 @@ import java.util.List;
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  * @author David Legge (david.legge@opencredo.com)
  */
-public class S3Template implements StorageOperations, PublicStorageOperations, InitializingBean {
+public class S3Template implements StorageOperations, InitializingBean {
     private final static Logger LOG = LoggerFactory.getLogger(S3Template.class);
 
     private final S3Service s3Service;
