@@ -14,14 +14,6 @@
  */
 package org.opencredo.cloud.storage.s3;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.List;
-import java.util.UUID;
-
 import org.apache.commons.io.FileUtils;
 import org.jets3t.service.S3ServiceException;
 import org.junit.After;
@@ -29,11 +21,21 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.opencredo.cloud.storage.BlobDetails;
+import org.opencredo.cloud.storage.PublicStorageOperations;
 import org.opencredo.cloud.storage.StorageCommunicationException;
 import org.opencredo.cloud.storage.StorageOperations;
-import org.opencredo.cloud.storage.s3.AwsCredentials;
-import org.opencredo.cloud.storage.s3.S3Template;
 import org.opencredo.cloud.storage.test.TestPropertiesAccessor;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * 
@@ -92,6 +94,32 @@ public class S3TemplateIntegrationTest {
         System.out.println("Received file content: " + receivedFileContent);
 
         String orgFileContent = FileUtils.readFileToString(TEST_FILE);
-        assertEquals("File conetent does not match", orgFileContent, receivedFileContent);
+        assertEquals("File content does not match", orgFileContent, receivedFileContent);
+    }
+
+    @Test
+    public void testCreateTimeExpiredUrl() throws S3ServiceException, StorageCommunicationException, IOException {
+        template.send(BUCKET_NAME, KEY, TEST_FILE);
+
+        File f = File.createTempFile(getClass().getSimpleName(), ".txt");
+        FileUtils.forceDeleteOnExit(f);
+        template.receiveAndSaveToFile(BUCKET_NAME, KEY, f);
+
+        String receivedFileContent = FileUtils.readFileToString(f);
+        System.out.println("Received file content: " + receivedFileContent);
+
+        String orgFileContent = FileUtils.readFileToString(TEST_FILE);
+        assertEquals("File content does not match", orgFileContent, receivedFileContent);
+
+        // Determine what the time will be in 5 minutes.
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MINUTE, 5);
+        Date expiryDate = cal.getTime();
+
+        String url = ((PublicStorageOperations) template).createdSignedUrl(BUCKET_NAME, KEY, expiryDate);
+
+        assertNotNull(url);
+        System.out.println("Url retrieved " + url);
+
     }
 }
