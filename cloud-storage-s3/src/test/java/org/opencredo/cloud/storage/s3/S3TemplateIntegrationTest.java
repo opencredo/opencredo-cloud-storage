@@ -21,7 +21,6 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.opencredo.cloud.storage.BlobDetails;
-import org.opencredo.cloud.storage.PublicStorageOperations;
 import org.opencredo.cloud.storage.StorageCommunicationException;
 import org.opencredo.cloud.storage.StorageOperations;
 import org.opencredo.cloud.storage.test.TestPropertiesAccessor;
@@ -116,7 +115,7 @@ public class S3TemplateIntegrationTest {
         cal.add(Calendar.MINUTE, 5);
         Date expiryDate = cal.getTime();
 
-        String url = ((PublicStorageOperations) template).createdSignedUrl(BUCKET_NAME, KEY, expiryDate);
+        String url = template.createdSignedUrl(BUCKET_NAME, KEY, expiryDate);
 
         assertNotNull(url);
         System.out.println("Url retrieved " + url);
