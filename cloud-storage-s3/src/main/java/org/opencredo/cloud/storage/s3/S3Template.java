@@ -18,6 +18,7 @@ package org.opencredo.cloud.storage.s3;
 import org.apache.commons.io.IOUtils;
 import org.jets3t.service.S3Service;
 import org.jets3t.service.S3ServiceException;
+import org.jets3t.service.ServiceException;
 import org.jets3t.service.acl.AccessControlList;
 import org.jets3t.service.acl.GroupGrantee;
 import org.jets3t.service.acl.Permission;
@@ -141,6 +142,8 @@ public class S3Template implements StorageOperations, PublicStorageOperations, I
 
         } catch (S3ServiceException e) {
             throw new StorageCommunicationException("Bucket creation problem", e);
+        } catch (ServiceException e) {
+            throw new StorageCommunicationException("Service problem", e);
         }
     }
 
@@ -240,6 +243,8 @@ public class S3Template implements StorageOperations, PublicStorageOperations, I
             }
         } catch (S3ServiceException s3E) {
             throw new StorageCommunicationException("Failed to get status of bucket name " + containerName, s3E);
+        } catch (ServiceException e) {
+            throw new StorageCommunicationException("Service problem", e);
         }
     }
 
@@ -504,6 +509,8 @@ public class S3Template implements StorageOperations, PublicStorageOperations, I
             throw new StorageCommunicationException("Receiving as string problem", e);
         } catch (IOException e) {
             throw new StorageResponseHandlingException("Receiving as string IO problem", e);
+        } catch (ServiceException e) {
+            throw new StorageCommunicationException("Service problem", e);
         } finally {
             if (s3Object != null) {
                 try {
@@ -565,6 +572,8 @@ public class S3Template implements StorageOperations, PublicStorageOperations, I
             throw new StorageCommunicationException("Receiving file problem", e);
         } catch (IOException e) {
             throw new StorageResponseHandlingException("Response data strem to file IO problem", e);
+        } catch (ServiceException e) {
+            throw new StorageResponseHandlingException("Service problem", e);
         } finally {
             if (s3Object != null) {
                 try {
@@ -608,6 +617,8 @@ public class S3Template implements StorageOperations, PublicStorageOperations, I
             return s3Service.getObject(new S3Bucket(containerName), objectName).getDataInputStream();
         } catch (S3ServiceException e) {
             throw new StorageCommunicationException("Receiving input stream problem", e);
+        } catch (ServiceException e) {
+            throw new StorageCommunicationException("Service problem", e);
         }
     }
 

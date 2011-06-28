@@ -14,28 +14,10 @@
  */
 package org.opencredo.cloud.storage.s3;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.argThat;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.security.NoSuchAlgorithmException;
-import java.util.Date;
-import java.util.List;
-
 import org.apache.commons.io.IOUtils;
 import org.jets3t.service.S3Service;
 import org.jets3t.service.S3ServiceException;
+import org.jets3t.service.ServiceException;
 import org.jets3t.service.model.S3Bucket;
 import org.jets3t.service.model.S3Object;
 import org.junit.Before;
@@ -46,10 +28,27 @@ import org.opencredo.cloud.storage.ContainerStatus;
 import org.opencredo.cloud.storage.StorageCommunicationException;
 import org.opencredo.cloud.storage.StorageException;
 import org.opencredo.cloud.storage.StorageOperations;
-import org.opencredo.cloud.storage.s3.AwsCredentials;
-import org.opencredo.cloud.storage.s3.S3Template;
 import org.opencredo.cloud.storage.test.TestPropertiesAccessor;
 import org.springframework.beans.DirectFieldAccessor;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.security.NoSuchAlgorithmException;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.argThat;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * 
@@ -216,8 +215,8 @@ public class S3TemplateTest {
      * @throws S3ServiceException
      */
     @Test(expected = StorageCommunicationException.class)
-    public void testGetBucketStatusCauseS3CommunicationException() throws S3ServiceException {
-        doThrow(new S3ServiceException()).when(s3Service).checkBucketStatus(eq(BUCKET_NAME));
+    public void testGetBucketStatusCauseStorageCommunicationException() throws ServiceException {
+        doThrow(new ServiceException()).when(s3Service).checkBucketStatus(eq(BUCKET_NAME));
         template.checkContainerStatus(BUCKET_NAME);
     }
 
@@ -229,7 +228,7 @@ public class S3TemplateTest {
      * @throws S3ServiceException
      */
     @Test(expected = StorageException.class)
-    public void testGetBucketStatusCauseS3Exception() throws S3ServiceException {
+    public void testGetBucketStatusCauseStorageException() throws ServiceException {
         doReturn(-1).when(s3Service).checkBucketStatus(eq(BUCKET_NAME));
         template.checkContainerStatus(BUCKET_NAME);
     }
@@ -242,7 +241,7 @@ public class S3TemplateTest {
      * @throws S3ServiceException
      */
     @Test
-    public void testGetBucketStatus() throws S3ServiceException {
+    public void testGetBucketStatus() throws ServiceException {
         ContainerStatus bucketStatus;
 
         doReturn(S3Service.BUCKET_STATUS__MY_BUCKET).when(s3Service).checkBucketStatus(eq(BUCKET_NAME));
