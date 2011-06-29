@@ -4,13 +4,13 @@
 	<parent>
 		<groupId>org.opencredo.cloud.storage</groupId>
 		<artifactId>opencredo-cloud-storage-parent</artifactId>
-		<version>1.2-SNAPSHOT</version>
+		<version>1.2.0.INTELLECT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<groupId>org.opencredo.cloud.storage</groupId>
 	<artifactId>cloud-storage-samples</artifactId>
 	<packaging>pom</packaging>
-	<version>1.2-SNAPSHOT</version>
+	<version>1.2.0.INTELLECT</version>
 	<name>OpenCredo Cloud Storage Samples</name>
 
 	<description>
