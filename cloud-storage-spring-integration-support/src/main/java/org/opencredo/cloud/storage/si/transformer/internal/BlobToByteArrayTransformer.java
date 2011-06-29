@@ -15,10 +15,6 @@
 
 package org.opencredo.cloud.storage.si.transformer.internal;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
 import org.apache.commons.io.IOUtils;
 import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.StorageOperations;
@@ -26,8 +22,12 @@ import org.opencredo.cloud.storage.si.transformer.AbstractBlobTransformer;
 import org.opencredo.cloud.storage.si.transformer.BlobTransformException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.integration.core.Message;
-import org.springframework.integration.message.MessageBuilder;
+import org.springframework.integration.Message;
+import org.springframework.integration.support.MessageBuilder;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author Eren Aykin (eren.aykin@opencredo.com)

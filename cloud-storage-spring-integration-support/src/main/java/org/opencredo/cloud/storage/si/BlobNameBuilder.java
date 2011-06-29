@@ -15,7 +15,7 @@
 
 package org.opencredo.cloud.storage.si;
 
-import org.springframework.integration.core.Message;
+import org.springframework.integration.Message;
 
 /**
  * @author Eren Aykin (eren.aykin@opencredo.com)

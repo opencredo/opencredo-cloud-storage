@@ -15,8 +15,6 @@
 
 package org.opencredo.cloud.storage.si.adapter;
 
-import java.io.File;
-
 import org.opencredo.cloud.storage.ContainerStatus;
 import org.opencredo.cloud.storage.StorageOperations;
 import org.opencredo.cloud.storage.si.BlobNameBuilder;
@@ -24,10 +22,12 @@ import org.opencredo.cloud.storage.si.internal.DefaultBlobNameBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.integration.core.Message;
-import org.springframework.integration.message.MessageHandler;
-import org.springframework.integration.message.MessageHandlingException;
+import org.springframework.integration.Message;
+import org.springframework.integration.MessageHandlingException;
+import org.springframework.integration.core.MessageHandler;
 import org.springframework.util.Assert;
+
+import java.io.File;
 
 /**
  * MessageHandler for writing blobs to the cloud storage. Depending on the

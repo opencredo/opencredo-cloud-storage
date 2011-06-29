@@ -16,7 +16,7 @@ package org.opencredo.cloud.storage.si.transformer;
 
 import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.StorageOperations;
-import org.springframework.integration.core.Message;
+import org.springframework.integration.Message;
 import org.springframework.util.Assert;
 
 /**

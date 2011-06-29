@@ -90,11 +90,12 @@
 		<dependency>
 			<groupId>org.springframework.integration</groupId>
 			<artifactId>spring-integration-adapter</artifactId>
-			<version>${springIntegrationVersion}</version>
+			<version>${springIntegrationAdaptorVersion}</version>
 		</dependency>
 	</dependencies>
 
 	<properties>
-		<springIntegrationVersion>1.0.3.RELEASE</springIntegrationVersion>
+		<springIntegrationVersion>2.0.4.RELEASE</springIntegrationVersion>
+		<springIntegrationAdaptorVersion>1.0.4.RELEASE</springIntegrationAdaptorVersion>
 	</properties>
 </project>

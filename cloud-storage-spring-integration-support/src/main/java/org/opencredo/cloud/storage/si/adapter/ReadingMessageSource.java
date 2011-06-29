@@ -15,10 +15,6 @@
 
 package org.opencredo.cloud.storage.si.adapter;
 
-import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.PriorityBlockingQueue;
-
 import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.ContainerStatus;
 import org.opencredo.cloud.storage.StorageCommunicationException;
@@ -30,10 +26,14 @@ import org.opencredo.cloud.storage.si.filter.internal.AcceptOnceBlobNameFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.integration.core.Message;
-import org.springframework.integration.message.MessageBuilder;
-import org.springframework.integration.message.MessageSource;
+import org.springframework.integration.Message;
+import org.springframework.integration.core.MessageSource;
+import org.springframework.integration.support.MessageBuilder;
 import org.springframework.util.Assert;
+
+import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.PriorityBlockingQueue;
 
 /**
  * {@link MessageSource} that creates messages containing meta-data maps of blob
@@ -117,10 +117,6 @@ public class ReadingMessageSource implements MessageSource<BlobDetails>, Initial
         }
     }
 
-    /**
-     * @param containerName
-     * @return
-     */
     public void doReceive() throws StorageCommunicationException {
         LOG.debug("Receive objects from container '{}'", containerName);
 

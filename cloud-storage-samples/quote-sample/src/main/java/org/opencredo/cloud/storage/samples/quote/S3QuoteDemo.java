@@ -15,12 +15,12 @@
 
 package org.opencredo.cloud.storage.samples.quote;
 
-import java.util.Random;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.integration.message.MessageBuilder;
+import org.springframework.integration.support.MessageBuilder;
+
+import java.util.Random;
 
 /**
  * In order to run this sample you have to have account in Amazon AWS.

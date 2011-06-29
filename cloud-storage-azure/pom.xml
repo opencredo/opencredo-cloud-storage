@@ -28,8 +28,13 @@
 		<connection>scm:git:git://github.com/opencredo/opencredo-cloud-storage.git</connection>
 		<url>http://github.com/opencredo/opencredo-cloud-storage</url>
 	</scm>
+    <properties>
+        <httpclient.version>4.0.1</httpclient.version>
+        <spring-xml.version>1.5.8</spring-xml.version>
+        <commons-codec.version>1.4</commons-codec.version>
+    </properties>
 
-	<issueManagement>
+    <issueManagement>
 		<system>OpenCredo Cloud Storage</system>
 		<url>http://dev.opencredo.com/jira/browse/OCCS</url>
 	</issueManagement>
@@ -80,19 +85,19 @@
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
-			<version>4.0.1</version>
+			<version>${httpclient.version}</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.ws</groupId>
 			<artifactId>spring-xml</artifactId>
-			<version>1.5.8</version>
+			<version>${spring-xml.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
-			<version>1.4</version>
+			<version>${commons-codec.version}</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
