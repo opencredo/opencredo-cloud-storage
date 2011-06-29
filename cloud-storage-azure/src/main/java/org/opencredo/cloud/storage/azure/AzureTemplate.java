@@ -14,11 +14,6 @@
  */
 package org.opencredo.cloud.storage.azure;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-
 import org.apache.commons.io.IOUtils;
 import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.ContainerStatus;
@@ -41,6 +36,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 import org.springframework.xml.xpath.Jaxp13XPathTemplate;
 import org.springframework.xml.xpath.XPathOperations;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Date;
+import java.util.List;
 
 /**
  * This is template class for interacting with Azure cloud storage.
@@ -135,7 +136,11 @@ public class AzureTemplate implements StorageOperations {
                     containerName, objectName);
         }
     }
-    
+
+    public String createdSignedUrl(String containerName, String objectName, Date expiryDate) throws StorageCommunicationException {
+        throw new StorageCommunicationException("Method not currently supported for Azure");
+    }
+
 
     /**
      * @return
