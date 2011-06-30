@@ -28,11 +28,6 @@
 		<connection>scm:git:git://github.com/opencredo/opencredo-cloud-storage.git</connection>
 		<url>http://github.com/opencredo/opencredo-cloud-storage</url>
 	</scm>
-    <properties>
-        <httpclient.version>4.0.1</httpclient.version>
-        <spring-xml.version>1.5.8</spring-xml.version>
-        <commons-codec.version>1.4</commons-codec.version>
-    </properties>
 
     <issueManagement>
 		<system>OpenCredo Cloud Storage</system>

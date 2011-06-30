@@ -15,9 +15,6 @@
     <description>
         Simple API to access Amazon S3 Service.
     </description>
-    <properties>
-        <jets3t.version>0.8.1</jets3t.version>
-    </properties>
 
 	<licenses>
 		<license>

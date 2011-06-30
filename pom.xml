@@ -172,10 +172,15 @@
 	</modules>
 
 	<properties>
-		<!--<springVersion>2.5.6.SEC01</springVersion>-->
         <springVersion>3.0.5.RELEASE</springVersion>
+        <springIntegrationVersion>2.0.4.RELEASE</springIntegrationVersion>
+        <springIntegrationAdaptorVersion>1.0.4.RELEASE</springIntegrationAdaptorVersion>
+        <spring-xml.version>1.5.8</spring-xml.version>
         <junit.version>4.6</junit.version>
         <log4j.version>1.2.14</log4j.version>
         <slf4jVersion>1.6.0</slf4jVersion>
-    </properties>
+        <jets3t.version>0.8.1</jets3t.version>
+        <httpclient.version>4.0.1</httpclient.version>
+        <commons-codec.version>1.4</commons-codec.version>
+   </properties>
 </project>

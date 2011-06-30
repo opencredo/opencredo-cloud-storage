@@ -93,9 +93,4 @@
 			<version>${springIntegrationAdaptorVersion}</version>
 		</dependency>
 	</dependencies>
-
-	<properties>
-		<springIntegrationVersion>2.0.4.RELEASE</springIntegrationVersion>
-		<springIntegrationAdaptorVersion>1.0.4.RELEASE</springIntegrationAdaptorVersion>
-	</properties>
 </project>
