@@ -175,7 +175,7 @@
         <springVersion>3.0.5.RELEASE</springVersion>
         <springIntegrationVersion>2.0.4.RELEASE</springIntegrationVersion>
         <springIntegrationAdaptorVersion>1.0.4.RELEASE</springIntegrationAdaptorVersion>
-        <spring-xml.version>1.5.8</spring-xml.version>
+        <spring-xml.version>2.0.2.RELEASE</spring-xml.version>
         <junit.version>4.6</junit.version>
         <log4j.version>1.2.14</log4j.version>
         <slf4jVersion>1.6.0</slf4jVersion>
