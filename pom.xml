@@ -190,7 +190,7 @@
         <slf4jVersion>1.6.0</slf4jVersion>
         <jets3t.version>0.8.1</jets3t.version>
         <httpclient.version>4.0.1</httpclient.version>
-        <commons-codec.version>1.4</commons-codec.version>
+        <commons-codec.version>1.5</commons-codec.version>
         <sonar-maven-plugin.version>2.2</sonar-maven-plugin.version>
    </properties>
 </project>
