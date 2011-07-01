@@ -14,13 +14,13 @@
  */
 package org.opencredo.cloud.storage;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
-import org.apache.commons.io.FileUtils;
 
 /**
  * Utility class.
@@ -44,8 +44,9 @@ public class StorageUtils {
         try {
             os = new FileOutputStream(toFile);
             byte[] buffer = new byte[4096];
-            for (int n; (n = is.read(buffer)) != -1;)
+            for (int n; (n = is.read(buffer)) != -1;) {
                 os.write(buffer, 0, n);
+            }
         } finally {
             if (os != null) {
                 os.close();

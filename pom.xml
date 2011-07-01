@@ -102,7 +102,16 @@
 				<filtering>true</filtering>
 			</testResource>
 		</testResources>
-	</build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.sonar</groupId>
+                    <artifactId>sonar-maven-plugin</artifactId>
+                    <version>${sonar-maven-plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
 	<dependencies>
 		<dependency>
@@ -182,5 +191,6 @@
         <jets3t.version>0.8.1</jets3t.version>
         <httpclient.version>4.0.1</httpclient.version>
         <commons-codec.version>1.4</commons-codec.version>
+        <sonar-maven-plugin.version>2.2</sonar-maven-plugin.version>
    </properties>
 </project>

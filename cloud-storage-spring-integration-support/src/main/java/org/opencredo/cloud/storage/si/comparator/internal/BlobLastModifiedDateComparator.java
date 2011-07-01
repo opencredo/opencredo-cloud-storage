@@ -14,10 +14,10 @@
  */
 package org.opencredo.cloud.storage.si.comparator.internal;
 
-import java.util.Date;
-
 import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.si.comparator.BlobDetailsComparator;
+
+import java.util.Date;
 
 /**
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
@@ -29,11 +29,14 @@ public class BlobLastModifiedDateComparator implements BlobDetailsComparator {
         Date b1LastModifiedDate = b1.getLastModified();
         Date b2LastModifiedDate = b2.getLastModified();
 
-        if (b1LastModifiedDate.after(b2LastModifiedDate))
+        if (b1LastModifiedDate.after(b2LastModifiedDate)) {
             return 1;
-        else if (b1LastModifiedDate.before(b2LastModifiedDate))
+        }
+        else if (b1LastModifiedDate.before(b2LastModifiedDate)) {
             return -1;
-        else
+        }
+        else {
             return 0;
+        }
     }
 }

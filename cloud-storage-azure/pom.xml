@@ -60,7 +60,7 @@
 			<timezone>+0</timezone>
 		</developer>
 	</developers>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>org.opencredo.cloud.storage</groupId>
