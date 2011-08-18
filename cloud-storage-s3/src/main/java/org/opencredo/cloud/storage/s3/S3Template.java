@@ -44,7 +44,7 @@ import java.util.List;
 
 /**
  * Main class encapsulating invocations to jclouds
- * 
+ *
  * @author David Legge (david.legge@opencredo.com)
  */
 public class S3Template implements StorageOperations, InitializingBean {
@@ -60,9 +60,9 @@ public class S3Template implements StorageOperations, InitializingBean {
     private String defaultContainerName;
     private AwsCredentials awsCredentials;
 
-     /**
+    /**
      * Constructor with AWS (Amazon Web Services) credentials.
-     * 
+     *
      * @param awsCredentials
      * @throws StorageException
      */
@@ -71,7 +71,6 @@ public class S3Template implements StorageOperations, InitializingBean {
     }
 
     /**
-     * 
      * @param awsCredentials
      * @param defaultContainerName
      * @throws StorageException
@@ -79,13 +78,11 @@ public class S3Template implements StorageOperations, InitializingBean {
     public S3Template(final AwsCredentials awsCredentials, final String defaultContainerName) throws StorageException {
         this.defaultContainerName = defaultContainerName;
         this.awsCredentials = awsCredentials;
-        context = new BlobStoreContextFactory().createContext(AWS_S3, awsCredentials.getAccessKey() , awsCredentials.getSecretAccessKey());
+        context = new BlobStoreContextFactory().createContext(AWS_S3, awsCredentials.getAccessKey(), awsCredentials.getSecretAccessKey());
 
     }
 
     /**
-     * 
-     * 
      * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
      */
     public void afterPropertiesSet() {
@@ -98,7 +95,6 @@ public class S3Template implements StorageOperations, InitializingBean {
     // **********************************
 
     /**
-     * 
      * @param containerName
      * @throws StorageCommunicationException
      * @see org.opencredo.cloud.storage.StorageOperations#createContainer(java.lang.String)
@@ -113,8 +109,7 @@ public class S3Template implements StorageOperations, InitializingBean {
         return context.getBlobStore();
     }
 
-     /**
-     *
+    /**
      * @param containerName
      * @throws StorageCommunicationException
      * @see org.opencredo.cloud.storage.StorageOperations#createContainer(java.lang.String)
@@ -127,7 +122,6 @@ public class S3Template implements StorageOperations, InitializingBean {
     }
 
     /**
-     * 
      * @param containerName
      * @throws StorageCommunicationException
      * @see org.opencredo.cloud.storage.StorageOperations#deleteContainer(java.lang.String)
@@ -150,7 +144,6 @@ public class S3Template implements StorageOperations, InitializingBean {
     }
 
     /**
-     * 
      * @param containerName
      * @param objectName
      * @throws StorageCommunicationException
@@ -166,7 +159,6 @@ public class S3Template implements StorageOperations, InitializingBean {
     }
 
     /**
-     * 
      * @return
      * @throws StorageCommunicationException
      * @see org.opencredo.cloud.storage.StorageOperations#listContainerNames()
@@ -177,13 +169,13 @@ public class S3Template implements StorageOperations, InitializingBean {
         final PageSet<? extends StorageMetadata> list = blobStore.list();
 
         List<String> returnList = new ArrayList<String>(list.size());
-        for (StorageMetadata entry: list) {
+        for (StorageMetadata entry : list) {
             returnList.add(entry.getName());
         }
 
         return returnList;
     }
-    
+
     /**
      * @return
      * @throws StorageCommunicationException
@@ -194,7 +186,6 @@ public class S3Template implements StorageOperations, InitializingBean {
     }
 
     /**
-     * 
      * @param containerName
      * @return
      * @throws StorageCommunicationException
@@ -209,7 +200,7 @@ public class S3Template implements StorageOperations, InitializingBean {
 //        Object bucketStatus = blobStore.getBlob(containerName);
 //            switch (bucketStatus) {
 //            case S3Service.BUCKET_STATUS__MY_BUCKET:
-                return ContainerStatus.MINE;
+        return ContainerStatus.MINE;
 //            case S3Service.BUCKET_STATUS__DOES_NOT_EXIST:
 //                return ContainerStatus.DOES_NOT_EXIST;
 //            case S3Service.BUCKET_STATUS__ALREADY_CLAIMED:
@@ -220,7 +211,6 @@ public class S3Template implements StorageOperations, InitializingBean {
     }
 
     /**
-     * 
      * @param containerName
      * @return
      * @throws StorageCommunicationException
@@ -233,7 +223,7 @@ public class S3Template implements StorageOperations, InitializingBean {
         final PageSet<? extends StorageMetadata> list = blobStore.list(containerName);
 
         List<BlobDetails> returnList = new ArrayList<BlobDetails>(list.size());
-        for (StorageMetadata entry: list) {
+        for (StorageMetadata entry : list) {
             final BlobDetails blobDetails = new BlobDetails(entry.getName(), entry.getName(), entry.getETag(), entry.getLastModified());
             returnList.add(blobDetails);
         }
@@ -248,7 +238,6 @@ public class S3Template implements StorageOperations, InitializingBean {
     // ********************** String send
 
     /**
-     * 
      * @param objectName
      * @param stringToSend
      * @throws StorageCommunicationException
@@ -260,7 +249,6 @@ public class S3Template implements StorageOperations, InitializingBean {
     }
 
     /**
-     * 
      * @param containerName
      * @param objectName
      * @param stringToSend
@@ -285,7 +273,6 @@ public class S3Template implements StorageOperations, InitializingBean {
     // ********************** File send
 
     /**
-     * 
      * @param fileToSend
      * @throws StorageCommunicationException
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.io.File)
@@ -295,7 +282,6 @@ public class S3Template implements StorageOperations, InitializingBean {
     }
 
     /**
-     * 
      * @param containerName
      * @param fileToSend
      * @throws StorageCommunicationException
@@ -309,7 +295,6 @@ public class S3Template implements StorageOperations, InitializingBean {
     }
 
     /**
-     * 
      * @param containerName
      * @param objectName
      * @param fileToSend
@@ -322,8 +307,8 @@ public class S3Template implements StorageOperations, InitializingBean {
     }
 
     // ********************** Input stream send
+
     /**
-     * 
      * @param objectName
      * @param is
      * @throws StorageCommunicationException
@@ -335,7 +320,6 @@ public class S3Template implements StorageOperations, InitializingBean {
     }
 
     /**
-     * 
      * @param containerName
      * @param objectName
      * @param is
@@ -348,10 +332,10 @@ public class S3Template implements StorageOperations, InitializingBean {
         Assert.hasText(objectName, "Blob name must be set");
         LOG.debug("Send input-stream to bucket '{}' with key '{}'", containerName, objectName);
         final BlobStore blobStore = getStore();
-          final BlobBuilder blobBuilder = blobStore.blobBuilder(objectName);
-          blobBuilder.payload(is);
+        final BlobBuilder blobBuilder = blobStore.blobBuilder(objectName);
+        blobBuilder.payload(is);
 
-          blobStore.putBlob(containerName, blobBuilder.build());
+        blobStore.putBlob(containerName, blobBuilder.build());
 
     }
 
@@ -365,8 +349,8 @@ public class S3Template implements StorageOperations, InitializingBean {
         LOG.debug("Send input-stream to bucket '{}' with key '{}'", containerName, objectName);
 
         final BlobStore blobStore = getStore();
-                      final BlobBuilder blobBuilder = blobStore.blobBuilder(objectName);
-                      blobBuilder.payload(stringToSend);
+        final BlobBuilder blobBuilder = blobStore.blobBuilder(objectName);
+        blobBuilder.payload(stringToSend);
 
         final String remoteName = blobStore.putBlob(containerName, blobBuilder.build());
 
@@ -379,9 +363,9 @@ public class S3Template implements StorageOperations, InitializingBean {
         Assert.notNull(fileToSend, "File to send can not be null");
         LOG.debug("Send input-stream to bucket '{}' with key '{}'", containerName, objectName);
 
-         final BlobStore blobStore = getStore();
-              final BlobBuilder blobBuilder = blobStore.blobBuilder(objectName);
-              blobBuilder.payload(fileToSend);
+        final BlobStore blobStore = getStore();
+        final BlobBuilder blobBuilder = blobStore.blobBuilder(objectName);
+        blobBuilder.payload(fileToSend);
 
         final String remoteName = blobStore.putBlob(containerName, blobBuilder.build());
 
@@ -412,17 +396,17 @@ public class S3Template implements StorageOperations, InitializingBean {
 
         // WIP
 
-         return null;
+        return null;
     }
 
     // ********************** String receive
 
     /**
-     * 
      * @param keyName
      * @return
      * @throws StorageCommunicationException
      * @throws StorageResponseHandlingException
+     *
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAsString(java.lang.String)
      */
     public String receiveAsString(String keyName) throws StorageCommunicationException,
@@ -431,12 +415,12 @@ public class S3Template implements StorageOperations, InitializingBean {
     }
 
     /**
-     * 
      * @param containerName
      * @param objectName
      * @return
      * @throws StorageCommunicationException
      * @throws StorageResponseHandlingException
+     *
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAsString(java.lang.String,
      *      java.lang.String)
      */
@@ -455,11 +439,11 @@ public class S3Template implements StorageOperations, InitializingBean {
     }
 
     /**
-     * 
      * @param objectName
      * @param toFile
      * @throws StorageCommunicationException
      * @throws StorageResponseHandlingException
+     *
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAndSaveToFile(java.lang.String,
      *      java.io.File)
      */
@@ -469,12 +453,12 @@ public class S3Template implements StorageOperations, InitializingBean {
     }
 
     /**
-     * 
      * @param containerName
      * @param objectName
      * @param toFile
      * @throws StorageCommunicationException
      * @throws StorageResponseHandlingException
+     *
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAndSaveToFile(java.lang.String,
      *      java.lang.String, java.io.File)
      */
@@ -483,12 +467,12 @@ public class S3Template implements StorageOperations, InitializingBean {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
         Assert.hasText(objectName, "Blob name must be set");
         Assert.notNull(toFile, "File to save received data must be specified");
-        
+
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Receive data from bucket '{}' with key '{}' and save it to file '{}'", new Object[] {
-                    containerName, objectName, toFile.getAbsolutePath() });
+            LOG.debug("Receive data from bucket '{}' with key '{}' and save it to file '{}'", new Object[]{
+                    containerName, objectName, toFile.getAbsolutePath()});
         }
-        
+
         try {
             StorageUtils.createParentDirs(toFile);
         } catch (IOException e) {
@@ -503,7 +487,7 @@ public class S3Template implements StorageOperations, InitializingBean {
         final Payload payload = blob.getPayload();
         final Object rawContent = payload.getRawContent();
         try {
-             StorageUtils.writeStreamToFile((InputStream) rawContent, toFile);
+            StorageUtils.writeStreamToFile((InputStream) rawContent, toFile);
 
         } catch (IOException e) {
             throw new StorageResponseHandlingException("Response data stream to file IO problem", e);
@@ -511,11 +495,11 @@ public class S3Template implements StorageOperations, InitializingBean {
     }
 
     /**
-     * 
      * @param objectName
      * @return
      * @throws StorageCommunicationException
      * @throws StorageResponseHandlingException
+     *
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAsInputStream(java.lang.String)
      */
     public InputStream receiveAsInputStream(String objectName) throws StorageCommunicationException,
@@ -524,12 +508,12 @@ public class S3Template implements StorageOperations, InitializingBean {
     }
 
     /**
-     *
      * @param containerName
      * @param objectName
      * @return
      * @throws StorageCommunicationException
      * @throws StorageResponseHandlingException
+     *
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAsInputStream(java.lang.String,
      *      java.lang.String)
      */
@@ -554,14 +538,12 @@ public class S3Template implements StorageOperations, InitializingBean {
 //        } catch (S3ServiceException e) {
 //            throw new StorageCommunicationException(RECEIVING_FILE_PROBLEM, e);
 //        }
-    return "";
+        return "";
     }
 
 
-
     /**
-     * @param defaultContainerName
-     *            the defaultContainerName to set
+     * @param defaultContainerName the defaultContainerName to set
      */
     public void setDefaultContainerName(String defaultContainerName) {
         this.defaultContainerName = defaultContainerName;
