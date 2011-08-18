@@ -261,13 +261,16 @@ public class S3Template implements StorageOperations, InitializingBean {
         Assert.hasText(objectName, "Blob name must be set");
         LOG.debug("Send string to bucket '{}' with key '{}'", containerName, objectName);
 
+        buildBlobAndSend(containerName, objectName, stringToSend);
+
+    }
+
+    private String buildBlobAndSend(String containerName, String objectName, String stringToSend) {
         final BlobStore blobStore = getStore();
         final BlobBuilder blobBuilder = blobStore.blobBuilder(objectName);
         blobBuilder.payload(stringToSend);
 
-        blobStore.putBlob(containerName, blobBuilder.build());
-
-
+        return blobStore.putBlob(containerName, blobBuilder.build());
     }
 
     // ********************** File send
@@ -331,12 +334,27 @@ public class S3Template implements StorageOperations, InitializingBean {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
         Assert.hasText(objectName, "Blob name must be set");
         LOG.debug("Send input-stream to bucket '{}' with key '{}'", containerName, objectName);
+
+        buildBlobAndSend(containerName, objectName, is);
+
+    }
+
+    private String buildBlobAndSend(String containerName, String objectName, InputStream is) {
         final BlobStore blobStore = getStore();
         final BlobBuilder blobBuilder = blobStore.blobBuilder(objectName);
+
         blobBuilder.payload(is);
 
-        blobStore.putBlob(containerName, blobBuilder.build());
+        return blobStore.putBlob(containerName, blobBuilder.build());
+    }
 
+    private String buildBlobAndSend(String containerName, String objectName, File fileToSend) {
+        final BlobStore blobStore = getStore();
+        final BlobBuilder blobBuilder = blobStore.blobBuilder(objectName);
+
+        blobBuilder.payload(fileToSend);
+
+        return blobStore.putBlob(containerName, blobBuilder.build());
     }
 
     public String sendAndReceiveUrl(String objectName, String stringToSend) throws StorageCommunicationException {
@@ -348,13 +366,7 @@ public class S3Template implements StorageOperations, InitializingBean {
         Assert.hasText(objectName, "Blob name must be set");
         LOG.debug("Send input-stream to bucket '{}' with key '{}'", containerName, objectName);
 
-        final BlobStore blobStore = getStore();
-        final BlobBuilder blobBuilder = blobStore.blobBuilder(objectName);
-        blobBuilder.payload(stringToSend);
-
-        final String remoteName = blobStore.putBlob(containerName, blobBuilder.build());
-
-        return remoteName;
+        return buildBlobAndSend(containerName, objectName, stringToSend);
     }
 
     public String sendAndReceiveUrl(String containerName, String objectName, File fileToSend) throws StorageCommunicationException {
@@ -363,13 +375,7 @@ public class S3Template implements StorageOperations, InitializingBean {
         Assert.notNull(fileToSend, "File to send can not be null");
         LOG.debug("Send input-stream to bucket '{}' with key '{}'", containerName, objectName);
 
-        final BlobStore blobStore = getStore();
-        final BlobBuilder blobBuilder = blobStore.blobBuilder(objectName);
-        blobBuilder.payload(fileToSend);
-
-        final String remoteName = blobStore.putBlob(containerName, blobBuilder.build());
-
-        return remoteName;
+        return buildBlobAndSend(containerName, objectName, fileToSend);
     }
 
     public String sendAndReceiveUrl(File fileToSend) throws StorageCommunicationException {
@@ -388,13 +394,9 @@ public class S3Template implements StorageOperations, InitializingBean {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
         Assert.hasText(objectName, "Blob name must be set");
         LOG.debug("Send input-stream to bucket '{}' with key '{}'", containerName, objectName);
-        final BlobStore blobStore = getStore();
-        final BlobBuilder blobBuilder = blobStore.blobBuilder(objectName);
-        blobBuilder.payload(is);
-
-        final String remoteName = blobStore.putBlob(containerName, blobBuilder.build());
 
         // WIP
+        buildBlobAndSend(containerName, objectName, is);
 
         return null;
     }
@@ -409,8 +411,7 @@ public class S3Template implements StorageOperations, InitializingBean {
      *
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAsString(java.lang.String)
      */
-    public String receiveAsString(String keyName) throws StorageCommunicationException,
-            StorageResponseHandlingException {
+    public String receiveAsString(String keyName) throws StorageCommunicationException, StorageResponseHandlingException {
         return receiveAsString(defaultContainerName, keyName);
     }
 
@@ -430,12 +431,16 @@ public class S3Template implements StorageOperations, InitializingBean {
         Assert.hasText(objectName, "Blob name must be set");
         LOG.debug("Receive string from bucket '{}' with key '{}'", containerName, objectName);
 
+        return receiveString(containerName, objectName);
+
+    }
+
+    private String receiveString(String containerName, String objectName) {
         final BlobStore blobStore = getStore();
 
         final Blob blob = blobStore.getBlob(containerName, objectName);
         final Payload payload = blob.getPayload();
         return payload.getRawContent().toString();
-
     }
 
     /**
@@ -473,6 +478,10 @@ public class S3Template implements StorageOperations, InitializingBean {
                     containerName, objectName, toFile.getAbsolutePath()});
         }
 
+        receiveFile(containerName, objectName, toFile);
+    }
+
+    private String receiveFile(String containerName, String objectName, File toFile) {
         try {
             StorageUtils.createParentDirs(toFile);
         } catch (IOException e) {
@@ -488,10 +497,12 @@ public class S3Template implements StorageOperations, InitializingBean {
         final Object rawContent = payload.getRawContent();
         try {
             StorageUtils.writeStreamToFile((InputStream) rawContent, toFile);
+            return toFile.getAbsolutePath();
 
         } catch (IOException e) {
             throw new StorageResponseHandlingException("Response data stream to file IO problem", e);
         }
+
     }
 
     /**
@@ -502,8 +513,7 @@ public class S3Template implements StorageOperations, InitializingBean {
      *
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAsInputStream(java.lang.String)
      */
-    public InputStream receiveAsInputStream(String objectName) throws StorageCommunicationException,
-            StorageResponseHandlingException {
+    public InputStream receiveAsInputStream(String objectName) throws StorageCommunicationException, StorageResponseHandlingException {
         return receiveAsInputStream(defaultContainerName, objectName);
     }
 
@@ -522,22 +532,22 @@ public class S3Template implements StorageOperations, InitializingBean {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
         Assert.hasText(objectName, "Blob name must be set");
         LOG.debug("Receive input-stream from bucket '{}' with key '{}'", containerName, objectName);
-//        try {
-//            return s3Service.getObject(new S3Bucket(containerName), objectName).getDataInputStream();
-//        } catch (S3ServiceException e) {
-//            throw new StorageCommunicationException("Receiving input stream problem", e);
-//        } catch (ServiceException e) {
-//            throw new StorageCommunicationException(SERVICE_PROBLEM, e);
-//        }
-        return null;
+
+        return receiveInputStream(objectName, containerName);
+    }
+
+    private InputStream receiveInputStream(String containerName, String objectName) {
+
+        final BlobStore blobStore = getStore();
+        final PageSet<? extends StorageMetadata> list = blobStore.list(containerName);
+
+        final Blob blob = blobStore.getBlob(containerName, objectName);
+        final Payload payload = blob.getPayload();
+        return payload.getInput();
+
     }
 
     public String createdSignedUrl(String containerName, String objectName, Date expiryDate) throws StorageCommunicationException {
-//        try {
-//            return s3Service.createSignedGetUrl(containerName, objectName, expiryDate, false);
-//        } catch (S3ServiceException e) {
-//            throw new StorageCommunicationException(RECEIVING_FILE_PROBLEM, e);
-//        }
         return "";
     }
 
