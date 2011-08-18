@@ -10,7 +10,7 @@
 	<groupId>org.opencredo.cloud.storage</groupId>
 	<artifactId>opencredo-cloud-storage-parent</artifactId>
 	<packaging>pom</packaging>
-	<version>1.2.0.INTELLECT</version>
+	<version>1.2.0.INTELLECT-jcloud</version>
 	<name>OpenCredo Cloud Storage</name>
 
 	<description>
@@ -182,13 +182,13 @@
 
 	<properties>
         <springVersion>3.0.5.RELEASE</springVersion>
-        <springIntegrationVersion>2.0.4.RELEASE</springIntegrationVersion>
+        <springIntegrationVersion>2.0.5.RELEASE</springIntegrationVersion>
         <springIntegrationAdaptorVersion>1.0.4.RELEASE</springIntegrationAdaptorVersion>
         <spring-xml.version>2.0.2.RELEASE</spring-xml.version>
         <junit.version>4.6</junit.version>
         <log4j.version>1.2.14</log4j.version>
         <slf4jVersion>1.6.0</slf4jVersion>
-        <jets3t.version>0.8.1</jets3t.version>
+        <!--<jets3t.version>0.8.1</jets3t.version>-->
         <httpclient.version>4.0.1</httpclient.version>
         <commons-codec.version>1.5</commons-codec.version>
         <sonar-maven-plugin.version>2.2</sonar-maven-plugin.version>

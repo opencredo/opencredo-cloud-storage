@@ -15,10 +15,8 @@
 package org.opencredo.cloud.storage.s3;
 
 import org.apache.commons.io.FileUtils;
-import org.jets3t.service.S3ServiceException;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.StorageCommunicationException;
@@ -41,7 +39,7 @@ import static org.junit.Assert.assertNotNull;
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  * 
  */
-@Ignore
+//@Ignore
 public class S3TemplateIntegrationTest {
 
     private AwsCredentials credentials = new AwsCredentials(TestPropertiesAccessor.getDefaultTestAwsKey(),
@@ -82,7 +80,9 @@ public class S3TemplateIntegrationTest {
     }
 
     @Test
-    public void testRealFileUpload() throws S3ServiceException, StorageCommunicationException, IOException {
+    public void testRealFileUpload() throws
+//            S3ServiceException,
+            StorageCommunicationException, IOException {
         template.send(BUCKET_NAME, KEY, TEST_FILE);
 
         File f = File.createTempFile(getClass().getSimpleName(), ".txt");
@@ -97,7 +97,9 @@ public class S3TemplateIntegrationTest {
     }
 
     @Test
-    public void testCreateTimeExpiredUrl() throws S3ServiceException, StorageCommunicationException, IOException {
+    public void testCreateTimeExpiredUrl() throws
+//            S3ServiceException,
+            StorageCommunicationException, IOException {
         template.send(BUCKET_NAME, KEY, TEST_FILE);
 
         File f = File.createTempFile(getClass().getSimpleName(), ".txt");

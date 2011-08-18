@@ -67,11 +67,21 @@
 			<artifactId>spring-beans</artifactId>
 			<version>${springVersion}</version>
 		</dependency>
-		<dependency>
-			<groupId>net.java.dev.jets3t</groupId>
-			<artifactId>jets3t</artifactId>
-			<version>${jets3t.version}</version>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>net.java.dev.jets3t</groupId>-->
+			<!--<artifactId>jets3t</artifactId>-->
+			<!--<version>${jets3t.version}</version>-->
+		<!--</dependency>-->
+        <dependency>
+            <groupId>org.jclouds</groupId>
+            <artifactId>jclouds-blobstore</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jclouds.provider</groupId>
+            <artifactId>aws-s3</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 		<dependency>
 			<groupId>org.opencredo.cloud.storage</groupId>
 			<artifactId>cloud-storage-template</artifactId>

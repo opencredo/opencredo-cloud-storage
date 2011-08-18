@@ -15,16 +15,14 @@
 
 package org.opencredo.cloud.storage.s3;
 
-import org.apache.commons.io.IOUtils;
-import org.jets3t.service.S3Service;
-import org.jets3t.service.S3ServiceException;
-import org.jets3t.service.ServiceException;
-import org.jets3t.service.acl.AccessControlList;
-import org.jets3t.service.acl.GroupGrantee;
-import org.jets3t.service.acl.Permission;
-import org.jets3t.service.impl.rest.httpclient.RestS3Service;
-import org.jets3t.service.model.S3Bucket;
-import org.jets3t.service.model.S3Object;
+import org.jclouds.blobstore.BlobStore;
+import org.jclouds.blobstore.BlobStoreContext;
+import org.jclouds.blobstore.BlobStoreContextFactory;
+import org.jclouds.blobstore.domain.Blob;
+import org.jclouds.blobstore.domain.BlobBuilder;
+import org.jclouds.blobstore.domain.PageSet;
+import org.jclouds.blobstore.domain.StorageMetadata;
+import org.jclouds.io.Payload;
 import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.ContainerStatus;
 import org.opencredo.cloud.storage.StorageCommunicationException;
@@ -40,16 +38,13 @@ import org.springframework.util.Assert;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 /**
- * Main class encapsulating invocations to jets3t org.jets3t.service.S3Service.
+ * Main class encapsulating invocations to jclouds
  * 
- * @author Eren Aykin (eren.aykin@opencredo.com)
- * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  * @author David Legge (david.legge@opencredo.com)
  */
 public class S3Template implements StorageOperations, InitializingBean {
@@ -59,11 +54,13 @@ public class S3Template implements StorageOperations, InitializingBean {
     private static final String BUCKET_DELETION_PROBLEM = "Bucket deletion problem";
     private static final String SERVICE_PROBLEM = "Service problem";
     private static final String RECEIVING_FILE_PROBLEM = "Receiving file problem";
+    private static final String AWS_S3 = "aws-s3";
 
-    private final S3Service s3Service;
+    private BlobStoreContext context;
     private String defaultContainerName;
+    private AwsCredentials awsCredentials;
 
-    /**
+     /**
      * Constructor with AWS (Amazon Web Services) credentials.
      * 
      * @param awsCredentials
@@ -81,14 +78,9 @@ public class S3Template implements StorageOperations, InitializingBean {
      */
     public S3Template(final AwsCredentials awsCredentials, final String defaultContainerName) throws StorageException {
         this.defaultContainerName = defaultContainerName;
-        try {
-            s3Service = new RestS3Service(new org.jets3t.service.security.AWSCredentials(awsCredentials.getAccessKey(),
-                    awsCredentials.getSecretAccessKey()));
-            // Next statement checks if connection works. This is suggested by jets3t documentation.
-            s3Service.listAllBuckets();
-        } catch (S3ServiceException e) {
-            throw new StorageException("Failed to prepare S3 service.", e);
-        }
+        this.awsCredentials = awsCredentials;
+        context = new BlobStoreContextFactory().createContext(AWS_S3, awsCredentials.getAccessKey() , awsCredentials.getSecretAccessKey());
+
     }
 
     /**
@@ -98,8 +90,7 @@ public class S3Template implements StorageOperations, InitializingBean {
      */
     public void afterPropertiesSet() {
         ContainerStatus containerStatus = checkContainerStatus(defaultContainerName);
-        Assert.isTrue(containerStatus != ContainerStatus.ALREADY_CLAIMED, "Default bucket '" + defaultContainerName
-                + "' already claimed.");
+        Assert.isTrue(containerStatus != ContainerStatus.ALREADY_CLAIMED, "Default bucket '" + defaultContainerName + "' already claimed.");
     }
 
     // **********************************
@@ -114,11 +105,12 @@ public class S3Template implements StorageOperations, InitializingBean {
      */
     public void createContainer(String containerName) throws StorageCommunicationException {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
-        try {
-            s3Service.createBucket(new S3Bucket(containerName));
-        } catch (S3ServiceException e) {
-            throw new StorageCommunicationException("Bucket creation problem", e);
-        }
+        final BlobStore blobStore = getStore();
+        blobStore.createContainerInLocation(null, containerName);
+    }
+
+    private BlobStore getStore() {
+        return context.getBlobStore();
     }
 
      /**
@@ -129,26 +121,9 @@ public class S3Template implements StorageOperations, InitializingBean {
      */
     public void createPublicContainer(String containerName) throws StorageCommunicationException {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
-        try {
-            // Create a bucket in S3.
-            S3Bucket publicBucket = new S3Bucket(containerName);
-            s3Service.createBucket(publicBucket);
+        final BlobStore blobStore = getStore();
+        blobStore.createContainerInLocation(null, containerName);
 
-            // Retrieve the bucket's ACL and modify it to grant public access,
-            // ie READ access to the ALL_USERS group.
-            AccessControlList bucketAcl = s3Service.getBucketAcl(publicBucket);
-            bucketAcl.grantPermission(GroupGrantee.ALL_USERS, Permission.PERMISSION_READ);
-
-            // Update the bucket's ACL. Now anyone can view the list of objects in this bucket.
-            publicBucket.setAcl(bucketAcl);
-            s3Service.putBucketAcl(publicBucket);
-            LOG.info("Public bucket created - url: http://s3.amazonaws.com/" + publicBucket.getName());
-
-        } catch (S3ServiceException e) {
-            throw new StorageCommunicationException(BUCKET_CREATION_PROBLEM, e);
-        } catch (ServiceException e) {
-            throw new StorageCommunicationException(SERVICE_PROBLEM, e);
-        }
     }
 
     /**
@@ -160,11 +135,9 @@ public class S3Template implements StorageOperations, InitializingBean {
     public void deleteContainer(String containerName) throws StorageCommunicationException {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
         LOG.debug("Delete bucket '{}'", containerName);
-        try {
-            s3Service.deleteBucket(new S3Bucket(containerName));
-        } catch (S3ServiceException e) {
-            throw new StorageCommunicationException(BUCKET_DELETION_PROBLEM, e);
-        }
+        final BlobStore blobStore = getStore();
+        blobStore.deleteContainer(containerName);
+
     }
 
     /**
@@ -187,11 +160,9 @@ public class S3Template implements StorageOperations, InitializingBean {
     public void deleteObject(String containerName, String objectName) throws StorageCommunicationException {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
         LOG.debug("Delete object '{}' in bucket '{}'", objectName, containerName);
-        try {
-            s3Service.deleteObject(new S3Bucket(containerName), objectName);
-        } catch (S3ServiceException e) {
-            throw new StorageCommunicationException(BUCKET_DELETION_PROBLEM, e);
-        }
+        final BlobStore blobStore = getStore();
+        blobStore.removeBlob(containerName, objectName);
+
     }
 
     /**
@@ -202,16 +173,15 @@ public class S3Template implements StorageOperations, InitializingBean {
      */
     public List<String> listContainerNames() throws StorageCommunicationException {
         LOG.debug("List buckets");
-        try {
-            S3Bucket[] s3buckets = s3Service.listAllBuckets();
-            List<String> bucketNames = new ArrayList<String>(s3buckets.length);
-            for (int i = 0; i < s3buckets.length; i++) {
-                bucketNames.add(s3buckets[i].getName());
-            }
-            return bucketNames;
-        } catch (S3ServiceException e) {
-            throw new StorageCommunicationException("Bucket list problem", e);
+        final BlobStore blobStore = getStore();
+        final PageSet<? extends StorageMetadata> list = blobStore.list();
+
+        List<String> returnList = new ArrayList<String>(list.size());
+        for (StorageMetadata entry: list) {
+            returnList.add(entry.getName());
         }
+
+        return returnList;
     }
     
     /**
@@ -233,23 +203,20 @@ public class S3Template implements StorageOperations, InitializingBean {
     public ContainerStatus checkContainerStatus(String containerName) throws StorageCommunicationException {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
         LOG.debug("Get bucket '{}' status", containerName);
-        try {
-            int bucketStatus = this.s3Service.checkBucketStatus(containerName);
-            switch (bucketStatus) {
-            case S3Service.BUCKET_STATUS__MY_BUCKET:
+
+        final BlobStore blobStore = getStore();
+//        blobStore.list();
+//        Object bucketStatus = blobStore.getBlob(containerName);
+//            switch (bucketStatus) {
+//            case S3Service.BUCKET_STATUS__MY_BUCKET:
                 return ContainerStatus.MINE;
-            case S3Service.BUCKET_STATUS__DOES_NOT_EXIST:
-                return ContainerStatus.DOES_NOT_EXIST;
-            case S3Service.BUCKET_STATUS__ALREADY_CLAIMED:
-                return ContainerStatus.ALREADY_CLAIMED;
-            default:
-                throw new StorageException("Unrecognised bucket status: " + bucketStatus);
-            }
-        } catch (S3ServiceException s3E) {
-            throw new StorageCommunicationException("Failed to get status of bucket name " + containerName, s3E);
-        } catch (ServiceException e) {
-            throw new StorageCommunicationException(SERVICE_PROBLEM, e);
-        }
+//            case S3Service.BUCKET_STATUS__DOES_NOT_EXIST:
+//                return ContainerStatus.DOES_NOT_EXIST;
+//            case S3Service.BUCKET_STATUS__ALREADY_CLAIMED:
+//                return ContainerStatus.ALREADY_CLAIMED;
+//            default:
+//                throw new StorageException("Unrecognised bucket status: " + bucketStatus);
+//            }
     }
 
     /**
@@ -262,16 +229,16 @@ public class S3Template implements StorageOperations, InitializingBean {
     public List<BlobDetails> listContainerObjectDetails(String containerName) throws StorageCommunicationException {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
         LOG.debug("Get objects list for bucket '{}'", containerName);
-        try {
-            S3Object[] s3Objects = this.s3Service.listObjects(new S3Bucket(containerName));
-            List<BlobDetails> keys = new ArrayList<BlobDetails>(s3Objects.length);
-            for (S3Object s : s3Objects) {
-                keys.add(new BlobDetails(s.getBucketName(), s.getKey(), s.getETag(), s.getLastModifiedDate()));
-            }
-            return keys;
-        } catch (S3ServiceException e) {
-            throw new StorageCommunicationException("Failed to get bucket " + containerName + " object details.", e);
+        final BlobStore blobStore = getStore();
+        final PageSet<? extends StorageMetadata> list = blobStore.list(containerName);
+
+        List<BlobDetails> returnList = new ArrayList<BlobDetails>(list.size());
+        for (StorageMetadata entry: list) {
+            final BlobDetails blobDetails = new BlobDetails(entry.getName(), entry.getName(), entry.getETag(), entry.getLastModified());
+            returnList.add(blobDetails);
         }
+
+        return returnList;
     }
 
     // **********************************
@@ -305,15 +272,14 @@ public class S3Template implements StorageOperations, InitializingBean {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
         Assert.hasText(objectName, "Blob name must be set");
         LOG.debug("Send string to bucket '{}' with key '{}'", containerName, objectName);
-        try {
-            s3Service.putObject(new S3Bucket(containerName), new S3Object(objectName, stringToSend));
-        } catch (S3ServiceException e) {
-            throw new StorageCommunicationException("Sending string problem", e);
-        } catch (NoSuchAlgorithmException e) {
-            throw new StorageCommunicationException("No such algorithm", e);
-        } catch (IOException e) {
-            throw new StorageCommunicationException("Sending string IO problem", e);
-        }
+
+        final BlobStore blobStore = getStore();
+        final BlobBuilder blobBuilder = blobStore.blobBuilder(objectName);
+        blobBuilder.payload(stringToSend);
+
+        blobStore.putBlob(containerName, blobBuilder.build());
+
+
     }
 
     // ********************** File send
@@ -381,16 +347,12 @@ public class S3Template implements StorageOperations, InitializingBean {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
         Assert.hasText(objectName, "Blob name must be set");
         LOG.debug("Send input-stream to bucket '{}' with key '{}'", containerName, objectName);
-        try {
-            S3Object s3ObjectToSend = new S3Object(objectName);
-            s3ObjectToSend.setDataInputStream(is);
-            s3ObjectToSend.setContentLength(is.available());
-            s3Service.putObject(new S3Bucket(containerName), s3ObjectToSend);
-        } catch (IOException e) {
-            throw new StorageCommunicationException("Sending input stream IO problem", e);
-        } catch (S3ServiceException e) {
-            throw new StorageCommunicationException("Sending input stream problem", e);
-        }
+        final BlobStore blobStore = getStore();
+          final BlobBuilder blobBuilder = blobStore.blobBuilder(objectName);
+          blobBuilder.payload(is);
+
+          blobStore.putBlob(containerName, blobBuilder.build());
+
     }
 
     public String sendAndReceiveUrl(String objectName, String stringToSend) throws StorageCommunicationException {
@@ -401,21 +363,14 @@ public class S3Template implements StorageOperations, InitializingBean {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
         Assert.hasText(objectName, "Blob name must be set");
         LOG.debug("Send input-stream to bucket '{}' with key '{}'", containerName, objectName);
-        try {
 
-            S3Object s3Object = new S3Object(objectName, stringToSend);
-            s3Service.putObject(containerName, s3Object);
-            LOG.info("View public object contents here: http://s3.amazonaws.com/" + containerName + "/" + s3Object.getKey());
-            return "http://s3.amazonaws.com/" + containerName + "/" + s3Object.getKey();
+        final BlobStore blobStore = getStore();
+                      final BlobBuilder blobBuilder = blobStore.blobBuilder(objectName);
+                      blobBuilder.payload(stringToSend);
 
-        } catch (IOException e) {
-            throw new StorageCommunicationException("Sending input stream IO problem", e);
-        } catch (S3ServiceException e) {
-            throw new StorageCommunicationException("Sending input stream problem", e);
-        } catch (NoSuchAlgorithmException e) {
-            throw new StorageCommunicationException("Sending input stream problem", e);
-        }
+        final String remoteName = blobStore.putBlob(containerName, blobBuilder.build());
 
+        return remoteName;
     }
 
     public String sendAndReceiveUrl(String containerName, String objectName, File fileToSend) throws StorageCommunicationException {
@@ -424,25 +379,13 @@ public class S3Template implements StorageOperations, InitializingBean {
         Assert.notNull(fileToSend, "File to send can not be null");
         LOG.debug("Send input-stream to bucket '{}' with key '{}'", containerName, objectName);
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Send file '{}' to bucket '{}' with key '{}'", new Object[] { fileToSend.getAbsolutePath(), containerName, objectName });
-        }
+         final BlobStore blobStore = getStore();
+              final BlobBuilder blobBuilder = blobStore.blobBuilder(objectName);
+              blobBuilder.payload(fileToSend);
 
-        try {
-            S3Object s3Object = new S3Object(fileToSend);
-            s3Object.setKey(objectName);
-            s3Service.putObject(new S3Bucket(containerName), s3Object);
-            LOG.info("View public object contents here: http://s3.amazonaws.com/" + containerName + "/" + s3Object.getKey());
-            return "http://s3.amazonaws.com/" + containerName + "/" + s3Object.getKey();
+        final String remoteName = blobStore.putBlob(containerName, blobBuilder.build());
 
-        } catch (IOException e) {
-            throw new StorageCommunicationException("Sending input stream IO problem", e);
-        } catch (S3ServiceException e) {
-            throw new StorageCommunicationException("Sending input stream problem", e);
-        } catch (NoSuchAlgorithmException e) {
-            throw new StorageCommunicationException("Sending input stream problem", e);
-        }
-
+        return remoteName;
     }
 
     public String sendAndReceiveUrl(File fileToSend) throws StorageCommunicationException {
@@ -461,18 +404,15 @@ public class S3Template implements StorageOperations, InitializingBean {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
         Assert.hasText(objectName, "Blob name must be set");
         LOG.debug("Send input-stream to bucket '{}' with key '{}'", containerName, objectName);
-        try {
-            S3Object s3ObjectToSend = new S3Object(objectName);
-            s3ObjectToSend.setDataInputStream(is);
-            s3ObjectToSend.setKey(objectName);
-            s3ObjectToSend.setContentLength(is.available());
-            s3Service.putObject(new S3Bucket(containerName), s3ObjectToSend);
-            return "http://s3.amazonaws.com/" + containerName + "/" + s3ObjectToSend.getKey();
-        } catch (IOException e) {
-            throw new StorageCommunicationException("Sending input stream IO problem", e);
-        } catch (S3ServiceException e) {
-            throw new StorageCommunicationException("Sending input stream problem", e);
-        }
+        final BlobStore blobStore = getStore();
+        final BlobBuilder blobBuilder = blobStore.blobBuilder(objectName);
+        blobBuilder.payload(is);
+
+        final String remoteName = blobStore.putBlob(containerName, blobBuilder.build());
+
+        // WIP
+
+         return null;
     }
 
     // ********************** String receive
@@ -505,25 +445,13 @@ public class S3Template implements StorageOperations, InitializingBean {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
         Assert.hasText(objectName, "Blob name must be set");
         LOG.debug("Receive string from bucket '{}' with key '{}'", containerName, objectName);
-        S3Object s3Object = null;
-        try {
-            s3Object = s3Service.getObject(new S3Bucket(containerName), objectName);
-            return IOUtils.toString(s3Object.getDataInputStream());
-        } catch (S3ServiceException e) {
-            throw new StorageCommunicationException("Receiving as string problem", e);
-        } catch (IOException e) {
-            throw new StorageResponseHandlingException("Receiving as string IO problem", e);
-        } catch (ServiceException e) {
-            throw new StorageCommunicationException(SERVICE_PROBLEM, e);
-        } finally {
-            if (s3Object != null) {
-                try {
-                    s3Object.closeDataInputStream();
-                } catch (IOException e) {
-                    throw new StorageResponseHandlingException("Close response data strem IO problem", e);
-                }
-            }
-        }
+
+        final BlobStore blobStore = getStore();
+
+        final Blob blob = blobStore.getBlob(containerName, objectName);
+        final Payload payload = blob.getPayload();
+        return payload.getRawContent().toString();
+
     }
 
     /**
@@ -568,24 +496,17 @@ public class S3Template implements StorageOperations, InitializingBean {
                     .getAbsolutePath());
         }
 
-        S3Object s3Object = null;
+        final BlobStore blobStore = getStore();
+        final PageSet<? extends StorageMetadata> list = blobStore.list(containerName);
+
+        final Blob blob = blobStore.getBlob(containerName, objectName);
+        final Payload payload = blob.getPayload();
+        final Object rawContent = payload.getRawContent();
         try {
-            s3Object = s3Service.getObject(new S3Bucket(containerName), objectName);
-            StorageUtils.writeStreamToFile(s3Object.getDataInputStream(), toFile);
-        } catch (S3ServiceException e) {
-            throw new StorageCommunicationException(RECEIVING_FILE_PROBLEM, e);
+             StorageUtils.writeStreamToFile((InputStream) rawContent, toFile);
+
         } catch (IOException e) {
-            throw new StorageResponseHandlingException("Response data strem to file IO problem", e);
-        } catch (ServiceException e) {
-            throw new StorageResponseHandlingException(SERVICE_PROBLEM, e);
-        } finally {
-            if (s3Object != null) {
-                try {
-                    s3Object.closeDataInputStream();
-                } catch (IOException e) {
-                    throw new StorageResponseHandlingException("Close response data strem IO problem", e);
-                }
-            }
+            throw new StorageResponseHandlingException("Response data stream to file IO problem", e);
         }
     }
 
@@ -617,21 +538,23 @@ public class S3Template implements StorageOperations, InitializingBean {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
         Assert.hasText(objectName, "Blob name must be set");
         LOG.debug("Receive input-stream from bucket '{}' with key '{}'", containerName, objectName);
-        try {
-            return s3Service.getObject(new S3Bucket(containerName), objectName).getDataInputStream();
-        } catch (S3ServiceException e) {
-            throw new StorageCommunicationException("Receiving input stream problem", e);
-        } catch (ServiceException e) {
-            throw new StorageCommunicationException(SERVICE_PROBLEM, e);
-        }
+//        try {
+//            return s3Service.getObject(new S3Bucket(containerName), objectName).getDataInputStream();
+//        } catch (S3ServiceException e) {
+//            throw new StorageCommunicationException("Receiving input stream problem", e);
+//        } catch (ServiceException e) {
+//            throw new StorageCommunicationException(SERVICE_PROBLEM, e);
+//        }
+        return null;
     }
 
     public String createdSignedUrl(String containerName, String objectName, Date expiryDate) throws StorageCommunicationException {
-        try {
-            return s3Service.createSignedGetUrl(containerName, objectName, expiryDate, false);
-        } catch (S3ServiceException e) {
-            throw new StorageCommunicationException(RECEIVING_FILE_PROBLEM, e);
-        }
+//        try {
+//            return s3Service.createSignedGetUrl(containerName, objectName, expiryDate, false);
+//        } catch (S3ServiceException e) {
+//            throw new StorageCommunicationException(RECEIVING_FILE_PROBLEM, e);
+//        }
+    return "";
     }
 
 
