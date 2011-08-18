@@ -1,96 +1,96 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.opencredo.cloud.storage</groupId>
-		<artifactId>opencredo-cloud-storage-parent</artifactId>
-		<version>1.2.0.INTELLECT</version>
-		<relativePath>../pom.xml</relativePath>
-	</parent>
-	<groupId>org.opencredo.cloud.storage</groupId>
-	<artifactId>cloud-storage-spring-integration-support</artifactId>
-	<version>1.2.0.INTELLECT</version>
-	<name>OpenCredo Cloud Storage Spring Integration Adapter</name>
-	
-	<description>
-		Support for configuring cloud-storage access in Spring Integration (see http://www.springsource.org/spring-integration).
-	</description>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.opencredo.cloud.storage</groupId>
+        <artifactId>opencredo-cloud-storage-parent</artifactId>
+        <version>1.2.0.INTELLECT-jcloud</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <groupId>org.opencredo.cloud.storage</groupId>
+    <artifactId>cloud-storage-spring-integration-support</artifactId>
+    <version>1.2.0.INTELLECT-jcloud</version>
+    <name>OpenCredo Cloud Storage Spring Integration Adapter</name>
 
-	<licenses>
-		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
+    <description>
+        Support for configuring cloud-storage access in Spring Integration (see http://www.springsource.org/spring-integration).
+    </description>
 
-	<scm>
-		<connection>scm:git:git://github.com/opencredo/opencredo-cloud-storage.git</connection>
-		<url>http://github.com/opencredo/opencredo-cloud-storage</url>
-	</scm>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
-	<issueManagement>
-		<system>OpenCredo Cloud Storage</system>
-		<url>http://dev.opencredo.com/jira/browse/OCCS</url>
-	</issueManagement>
+    <scm>
+        <connection>scm:git:git://github.com/opencredo/opencredo-cloud-storage.git</connection>
+        <url>http://github.com/opencredo/opencredo-cloud-storage</url>
+    </scm>
 
-	<developers>
-		<developer>
-			<id>tomas.lukosius</id>
-			<name>Tomas Lukosius</name>
-			<email>tomas.lukosius@opencredo.com</email>
-			<organization>OpenCredo</organization>
-			<organizationUrl>http://www.opencredo.com</organizationUrl>
-			<roles>
-				<role>Project Admin</role>
-				<role>Developer</role>
-			</roles>
-			<timezone>+0</timezone>
-		</developer>
-		<developer>
-			<id>jonas.partner</id>
-			<name>Jonas Partner</name>
-			<email>jonas.partner@opencredo.com</email>
-			<organization>OpenCredo</organization>
-			<organizationUrl>http://www.opencredo.com</organizationUrl>
-			<roles>
-				<role>Project Admin</role>
-				<role>Developer</role>
-			</roles>
-			<timezone>+0</timezone>
-		</developer>
-	</developers>
-	
-	<dependencies>
-		<dependency>
-			<groupId>org.opencredo.cloud.storage</groupId>
-			<artifactId>cloud-storage-test-utils</artifactId>
-			<version>${project.parent.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.opencredo.cloud.storage</groupId>
-			<artifactId>cloud-storage-template</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.integration</groupId>
-			<artifactId>spring-integration-core</artifactId>
-			<version>${springIntegrationVersion}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.integration</groupId>
-			<artifactId>spring-integration-file</artifactId>
-			<version>${springIntegrationVersion}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.integration</groupId>
-			<artifactId>spring-integration-adapter</artifactId>
-			<version>${springIntegrationAdaptorVersion}</version>
-		</dependency>
-	</dependencies>
+    <issueManagement>
+        <system>OpenCredo Cloud Storage</system>
+        <url>http://dev.opencredo.com/jira/browse/OCCS</url>
+    </issueManagement>
+
+    <developers>
+        <developer>
+            <id>tomas.lukosius</id>
+            <name>Tomas Lukosius</name>
+            <email>tomas.lukosius@opencredo.com</email>
+            <organization>OpenCredo</organization>
+            <organizationUrl>http://www.opencredo.com</organizationUrl>
+            <roles>
+                <role>Project Admin</role>
+                <role>Developer</role>
+            </roles>
+            <timezone>+0</timezone>
+        </developer>
+        <developer>
+            <id>jonas.partner</id>
+            <name>Jonas Partner</name>
+            <email>jonas.partner@opencredo.com</email>
+            <organization>OpenCredo</organization>
+            <organizationUrl>http://www.opencredo.com</organizationUrl>
+            <roles>
+                <role>Project Admin</role>
+                <role>Developer</role>
+            </roles>
+            <timezone>+0</timezone>
+        </developer>
+    </developers>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.opencredo.cloud.storage</groupId>
+            <artifactId>cloud-storage-test-utils</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.opencredo.cloud.storage</groupId>
+            <artifactId>cloud-storage-template</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-core</artifactId>
+            <version>${springIntegrationVersion}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-file</artifactId>
+            <version>${springIntegrationVersion}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-adapter</artifactId>
+            <version>${springIntegrationAdaptorVersion}</version>
+        </dependency>
+    </dependencies>
 </project>

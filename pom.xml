@@ -1,107 +1,107 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.opencredo</groupId>
-		<artifactId>opencredo-master-pom</artifactId>
-		<version>1.0</version>
-	</parent>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.opencredo</groupId>
+        <artifactId>opencredo-master-pom</artifactId>
+        <version>1.0</version>
+    </parent>
 
-	<groupId>org.opencredo.cloud.storage</groupId>
-	<artifactId>opencredo-cloud-storage-parent</artifactId>
-	<packaging>pom</packaging>
-	<version>1.2.0.INTELLECT-jcloud</version>
-	<name>OpenCredo Cloud Storage</name>
+    <groupId>org.opencredo.cloud.storage</groupId>
+    <artifactId>opencredo-cloud-storage-parent</artifactId>
+    <packaging>pom</packaging>
+    <version>1.2.0.INTELLECT-jcloud</version>
+    <name>OpenCredo Cloud Storage</name>
 
-	<description>
-		This is a parent pom for cloud-storage access from java projects. Primarily motivated by a desire to make using 
-		different cloud-storage provider services easier within messaging applications built on Spring Integration.
-	</description>
+    <description>
+        This is a parent pom for cloud-storage access from java projects. Primarily motivated by a desire to make using
+        different cloud-storage provider services easier within messaging applications built on Spring Integration.
+    </description>
 
-	<licenses>
-		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
-	<scm>
-		<connection>scm:git:git://github.com/opencredo/opencredo-cloud-storage.git</connection>
-		<developerConnection>scm:git:ssh://git@github.com/opencredo/opencredo-cloud-storage.git</developerConnection>
-		<url>http://github.com/opencredo/opencredo-cloud-storage</url>
-	</scm>
+    <scm>
+        <connection>scm:git:git://github.com/opencredo/opencredo-cloud-storage.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/opencredo/opencredo-cloud-storage.git</developerConnection>
+        <url>http://github.com/opencredo/opencredo-cloud-storage</url>
+    </scm>
 
-	<issueManagement>
-		<system>OpenCredo Cloud Storage</system>
-		<url>http://dev.opencredo.com/jira/browse/OCCS</url>
-	</issueManagement>
+    <issueManagement>
+        <system>OpenCredo Cloud Storage</system>
+        <url>http://dev.opencredo.com/jira/browse/OCCS</url>
+    </issueManagement>
 
-	<developers>
-		<developer>
-			<id>tomas.lukosius</id>
-			<name>Tomas Lukosius</name>
-			<email>tomas.lukosius@opencredo.com</email>
-			<organization>OpenCredo</organization>
-			<organizationUrl>http://www.opencredo.com</organizationUrl>
-			<roles>
-				<role>Project Admin</role>
-				<role>Developer</role>
-			</roles>
-			<timezone>+0</timezone>
-		</developer>
-		<developer>
-			<id>jonas.partner</id>
-			<name>Jonas Partner</name>
-			<email>jonas.partner@opencredo.com</email>
-			<organization>OpenCredo</organization>
-			<organizationUrl>http://www.opencredo.com</organizationUrl>
-			<roles>
-				<role>Project Admin</role>
-				<role>Developer</role>
-			</roles>
-			<timezone>+0</timezone>
-		</developer>
+    <developers>
         <developer>
-			<id>david.legge</id>
-			<name>David Legge</name>
-			<email>david.legge@opencredo.com</email>
-			<organization>OpenCredo</organization>
-			<organizationUrl>http://www.opencredo.com</organizationUrl>
-			<roles>
-				<role>Project Admin</role>
-				<role>Developer</role>
-			</roles>
-			<timezone>+0</timezone>
-		</developer>
-	</developers>
+            <id>tomas.lukosius</id>
+            <name>Tomas Lukosius</name>
+            <email>tomas.lukosius@opencredo.com</email>
+            <organization>OpenCredo</organization>
+            <organizationUrl>http://www.opencredo.com</organizationUrl>
+            <roles>
+                <role>Project Admin</role>
+                <role>Developer</role>
+            </roles>
+            <timezone>+0</timezone>
+        </developer>
+        <developer>
+            <id>jonas.partner</id>
+            <name>Jonas Partner</name>
+            <email>jonas.partner@opencredo.com</email>
+            <organization>OpenCredo</organization>
+            <organizationUrl>http://www.opencredo.com</organizationUrl>
+            <roles>
+                <role>Project Admin</role>
+                <role>Developer</role>
+            </roles>
+            <timezone>+0</timezone>
+        </developer>
+        <developer>
+            <id>david.legge</id>
+            <name>David Legge</name>
+            <email>david.legge@opencredo.com</email>
+            <organization>OpenCredo</organization>
+            <organizationUrl>http://www.opencredo.com</organizationUrl>
+            <roles>
+                <role>Project Admin</role>
+                <role>Developer</role>
+            </roles>
+            <timezone>+0</timezone>
+        </developer>
+    </developers>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<finalName>opencredo-cloud-storage-${project.version}</finalName>
-					<outputDirectory>${project.build.directory}/assembly</outputDirectory>
-					<descriptors>
-						<descriptor>src/main/assembly/assembly.xml</descriptor>
-					</descriptors>
-				</configuration>
-			</plugin>
-		</plugins>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
-		<testResources>
-			<testResource>
-				<directory>src/test/resources</directory>
-				<filtering>true</filtering>
-			</testResource>
-		</testResources>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <finalName>opencredo-cloud-storage-${project.version}</finalName>
+                    <outputDirectory>${project.build.directory}/assembly</outputDirectory>
+                    <descriptors>
+                        <descriptor>src/main/assembly/assembly.xml</descriptor>
+                    </descriptors>
+                </configuration>
+            </plugin>
+        </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -113,74 +113,75 @@
         </pluginManagement>
     </build>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${slf4jVersion}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>${slf4jVersion}</version>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>${log4j.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
-		</dependency>
-	</dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4jVersion}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4jVersion}</version>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${log4j.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-core</artifactId>
-				<version>${springVersion}</version>
-				<scope>compile</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-context</artifactId>
-				<version>${springVersion}</version>
-				<scope>compile</scope>
-			</dependency>
-			<dependency>
-				<groupId>junit</groupId>
-				<artifactId>junit</artifactId>
-				<version>${junit.version}</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-core</artifactId>
+                <version>${springVersion}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <version>${springVersion}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
-	<profiles>
-		<profile>
-			<id>Dev</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<properties>
-				<awsKey>test-awsKey</awsKey>
-				<awsSecretKey>test-awsSecretKey</awsSecretKey>
-				<defaultContainerName>test-defaultContainerName</defaultContainerName>
-				<azureAccountName>test-azureAccountName</azureAccountName>
-				<azureSecretKey>test-azureSecretKey</azureSecretKey>
-			</properties>
-		</profile>
-	</profiles>
+    <profiles>
+        <profile>
+            <id>Dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <awsKey>test-awsKey</awsKey>
+                <awsSecretKey>test-awsSecretKey</awsSecretKey>
+                <defaultContainerName>test-defaultContainerName</defaultContainerName>
+                <azureAccountName>test-azureAccountName</azureAccountName>
+                <azureSecretKey>test-azureSecretKey</azureSecretKey>
+            </properties>
+        </profile>
+    </profiles>
 
-	<modules>
-		<module>cloud-storage-test-utils</module>
-		<module>cloud-storage-template</module>
-		<module>cloud-storage-azure</module>
-		<module>cloud-storage-s3</module>
-		<module>cloud-storage-spring-integration-support</module>
-		<module>cloud-storage-samples</module>
-	</modules>
+    <modules>
+        <module>cloud-storage-test-utils</module>
+        <module>cloud-storage-template</module>
+        <module>cloud-storage-azure</module>
+        <module>cloud-storage-s3</module>
+        <module>cloud-storage-jcloud</module>
+        <module>cloud-storage-spring-integration-support</module>
+        <module>cloud-storage-samples</module>
+    </modules>
 
-	<properties>
+    <properties>
         <springVersion>3.0.5.RELEASE</springVersion>
         <springIntegrationVersion>2.0.5.RELEASE</springIntegrationVersion>
         <springIntegrationAdaptorVersion>1.0.4.RELEASE</springIntegrationAdaptorVersion>
@@ -188,9 +189,9 @@
         <junit.version>4.6</junit.version>
         <log4j.version>1.2.14</log4j.version>
         <slf4jVersion>1.6.0</slf4jVersion>
-        <!--<jets3t.version>0.8.1</jets3t.version>-->
+        <jets3t.version>0.8.1</jets3t.version>
         <httpclient.version>4.0.1</httpclient.version>
         <commons-codec.version>1.5</commons-codec.version>
         <sonar-maven-plugin.version>2.2</sonar-maven-plugin.version>
-   </properties>
+    </properties>
 </project>

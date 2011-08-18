@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.opencredo.cloud.storage.s3;
+package org.opencredo.cloud.storage.jcloud;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
@@ -34,9 +34,9 @@ import java.util.UUID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class JCloudS3TemplateIntegrationTest {
+public class JCloudTemplateIntegrationTest {
 
-    private AwsCredentials credentials = new AwsCredentials(TestPropertiesAccessor.getDefaultTestAwsKey(),
+    private JCloudCredentials credentials = new JCloudCredentials(TestPropertiesAccessor.getDefaultTestAwsKey(),
             TestPropertiesAccessor.getDefaultTestAwsSecretKey());
 
     private static String BUCKET_NAME = "template-test-" + UUID.randomUUID().toString();
@@ -46,7 +46,7 @@ public class JCloudS3TemplateIntegrationTest {
     private static File TEST_FILE;
 
     static {
-        URL url = JCloudS3TemplateIntegrationTest.class.getResource(TEST_FILE_NAME);
+        URL url = JCloudTemplateIntegrationTest.class.getResource(TEST_FILE_NAME);
         TEST_FILE = new File(url.getFile());
     }
 
@@ -54,7 +54,7 @@ public class JCloudS3TemplateIntegrationTest {
 
     @Before
     public void before() {
-        template = new JCloudS3Template(credentials, TestPropertiesAccessor.getDefaultContainerName());
+        template = new JCloudTemplate(credentials, TestPropertiesAccessor.getDefaultContainerName());
         template.createContainer(BUCKET_NAME);
     }
 

@@ -1,76 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<parent>
-		<groupId>org.opencredo.cloud.storage</groupId>
-		<artifactId>opencredo-cloud-storage-parent</artifactId>
-		<version>1.2.0.INTELLECT</version>
-		<relativePath>../pom.xml</relativePath>
-	</parent>
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.opencredo.cloud.storage</groupId>
-	<artifactId>cloud-storage-template</artifactId>
-	<name>OpenCredo Cloud Storage Template</name>
-	<version>1.2.0.INTELLECT</version>
+    <parent>
+        <groupId>org.opencredo.cloud.storage</groupId>
+        <artifactId>opencredo-cloud-storage-parent</artifactId>
+        <version>1.2.0.INTELLECT-jcloud</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.opencredo.cloud.storage</groupId>
+    <artifactId>cloud-storage-template</artifactId>
+    <name>OpenCredo Cloud Storage Template</name>
+    <version>1.2.0.INTELLECT-jcloud</version>
 
-	<description>
-		An abstract API to access different cloud storage provider services.
-	</description>
+    <description>
+        An abstract API to access different cloud storage provider services.
+    </description>
 
-	<licenses>
-		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
-	<scm>
-		<connection>scm:git:git://github.com/opencredo/opencredo-cloud-storage.git</connection>
-		<url>http://github.com/opencredo/opencredo-cloud-storage</url>
-	</scm>
+    <scm>
+        <connection>scm:git:git://github.com/opencredo/opencredo-cloud-storage.git</connection>
+        <url>http://github.com/opencredo/opencredo-cloud-storage</url>
+    </scm>
 
-	<issueManagement>
-		<system>OpenCredo Cloud Storage</system>
-		<url>http://dev.opencredo.com/jira/browse/OCCS</url>
-	</issueManagement>
+    <issueManagement>
+        <system>OpenCredo Cloud Storage</system>
+        <url>http://dev.opencredo.com/jira/browse/OCCS</url>
+    </issueManagement>
 
-	<developers>
-		<developer>
-			<id>tomas.lukosius</id>
-			<name>Tomas Lukosius</name>
-			<email>tomas.lukosius@opencredo.com</email>
-			<organization>OpenCredo</organization>
-			<organizationUrl>http://www.opencredo.com</organizationUrl>
-			<roles>
-				<role>Project Admin</role>
-				<role>Developer</role>
-			</roles>
-			<timezone>+0</timezone>
-		</developer>
-		<developer>
-			<id>jonas.partner</id>
-			<name>Jonas Partner</name>
-			<email>jonas.partner@opencredo.com</email>
-			<organization>OpenCredo</organization>
-			<organizationUrl>http://www.opencredo.com</organizationUrl>
-			<roles>
-				<role>Project Admin</role>
-				<role>Developer</role>
-			</roles>
-			<timezone>+0</timezone>
-		</developer>
-	</developers>
+    <developers>
+        <developer>
+            <id>tomas.lukosius</id>
+            <name>Tomas Lukosius</name>
+            <email>tomas.lukosius@opencredo.com</email>
+            <organization>OpenCredo</organization>
+            <organizationUrl>http://www.opencredo.com</organizationUrl>
+            <roles>
+                <role>Project Admin</role>
+                <role>Developer</role>
+            </roles>
+            <timezone>+0</timezone>
+        </developer>
+        <developer>
+            <id>jonas.partner</id>
+            <name>Jonas Partner</name>
+            <email>jonas.partner@opencredo.com</email>
+            <organization>OpenCredo</organization>
+            <organizationUrl>http://www.opencredo.com</organizationUrl>
+            <roles>
+                <role>Project Admin</role>
+                <role>Developer</role>
+            </roles>
+            <timezone>+0</timezone>
+        </developer>
+    </developers>
 
-	<dependencies>
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>1.4</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>2.4</version>
-		</dependency>
-	</dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.4</version>
+        </dependency>
+    </dependencies>
 </project>
