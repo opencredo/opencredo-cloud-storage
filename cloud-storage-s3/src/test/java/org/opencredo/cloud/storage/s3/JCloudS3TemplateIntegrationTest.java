@@ -35,12 +35,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
- * 
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
- * 
  */
-//@Ignore
-public class S3TemplateIntegrationTest {
+public class JCloudS3TemplateIntegrationTest {
 
     private AwsCredentials credentials = new AwsCredentials(TestPropertiesAccessor.getDefaultTestAwsKey(),
             TestPropertiesAccessor.getDefaultTestAwsSecretKey());
@@ -52,7 +49,7 @@ public class S3TemplateIntegrationTest {
     private static File TEST_FILE;
 
     static {
-        URL url = S3TemplateIntegrationTest.class.getResource(TEST_FILE_NAME);
+        URL url = JCloudS3TemplateIntegrationTest.class.getResource(TEST_FILE_NAME);
         TEST_FILE = new File(url.getFile());
     }
 
@@ -60,7 +57,7 @@ public class S3TemplateIntegrationTest {
 
     @Before
     public void before() {
-        template = new S3Template(credentials, TestPropertiesAccessor.getDefaultContainerName());
+        template = new JCloudS3Template(credentials, TestPropertiesAccessor.getDefaultContainerName());
         template.createContainer(BUCKET_NAME);
     }
 
