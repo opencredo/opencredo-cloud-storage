@@ -212,27 +212,17 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
     public ContainerStatus checkContainerStatus(String containerName) throws StorageCommunicationException {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
         LOG.debug("Get bucket '{}' status", containerName);
-
-        final BlobStore blobStore = getStore();
-//        final PageSet<? extends StorageMetadata> list = blobStore.list(containerName);
-//        final StorageMetadata next = list.iterator().next();
-//        final Map<String,String> userMetadata = next.getUserMetadata();
-//        System.out.println(userMetadata);
-
-//        final BlobMetadata blobMetadata = blobStore.blobMetadata(containerName, asd);
-
-//        blobStore.list();
-//        Object bucketStatus = blobStore.getBlob(containerName);
-//            switch (bucketStatus) {
-//            case S3Service.BUCKET_STATUS__MY_BUCKET:
-        return ContainerStatus.MINE;
-//            case S3Service.BUCKET_STATUS__DOES_NOT_EXIST:
-//                return ContainerStatus.DOES_NOT_EXIST;
-//            case S3Service.BUCKET_STATUS__ALREADY_CLAIMED:
-//                return ContainerStatus.ALREADY_CLAIMED;
-//            default:
-//                throw new StorageException("Unrecognised bucket status: " + bucketStatus);
-//            }
+        try {
+            final String testObject = send(containerName, "test", "test");
+            removeBlob(containerName, "test");
+            return ContainerStatus.MINE;
+        } catch (StorageCommunicationException e) {
+            if (e.getCause() instanceof ContainerNotFoundException) {
+                return ContainerStatus.DOES_NOT_EXIST;
+            }
+            throw new StorageException("Unrecognised bucket status: " + containerName);
+        }
+//      return ContainerStatus.ALREADY_CLAIMED; TODO - not sure how to detect this
     }
 
 
