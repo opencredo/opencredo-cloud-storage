@@ -54,7 +54,7 @@ public class JCloudTemplateIntegrationTest {
 
     @Before
     public void before() {
-        template = new JCloudTemplate(credentials, TestPropertiesAccessor.getDefaultContainerName());
+        template = new JCloudTemplate(CloudProvider.AWS_S3, credentials, TestPropertiesAccessor.getDefaultContainerName());
         template.createContainer(BUCKET_NAME);
     }
 

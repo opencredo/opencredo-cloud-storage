@@ -70,19 +70,20 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
      * @param jcloudCredentials
      * @throws StorageException
      */
-    public JCloudTemplate(final JCloudCredentials jcloudCredentials) throws StorageException {
-        this(jcloudCredentials, null);
+    public JCloudTemplate(final CloudProvider cloudProvider, final JCloudCredentials jcloudCredentials) throws StorageException {
+        this(cloudProvider, jcloudCredentials, null);
     }
 
     /**
+     * @param cloudProvider
      * @param jcloudCredentials
      * @param defaultContainerName
      * @throws StorageException
      */
-    public JCloudTemplate(final JCloudCredentials jcloudCredentials, final String defaultContainerName) throws StorageException {
+    public JCloudTemplate(final CloudProvider cloudProvider, final JCloudCredentials jcloudCredentials, final String defaultContainerName) throws StorageException {
         this.defaultContainerName = defaultContainerName;
         this.jcloudCredentials = jcloudCredentials;
-        context = new BlobStoreContextFactory().createContext(jcloud_S3, jcloudCredentials.getAccessKey(), jcloudCredentials.getSecretAccessKey());
+        context = new BlobStoreContextFactory().createContext(cloudProvider.getString(), jcloudCredentials.getAccessKey(), jcloudCredentials.getSecretAccessKey());
 
     }
 
