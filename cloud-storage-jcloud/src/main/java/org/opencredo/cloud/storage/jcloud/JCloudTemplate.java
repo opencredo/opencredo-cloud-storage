@@ -20,6 +20,7 @@ import org.jclouds.blobstore.BlobStoreContext;
 import org.jclouds.blobstore.BlobStoreContextFactory;
 import org.jclouds.blobstore.domain.Blob;
 import org.jclouds.blobstore.domain.BlobBuilder;
+import org.jclouds.blobstore.domain.BlobMetadata;
 import org.jclouds.blobstore.domain.PageSet;
 import org.jclouds.blobstore.domain.StorageMetadata;
 import org.jclouds.io.Payload;
@@ -38,6 +39,7 @@ import org.springframework.util.Assert;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -54,9 +56,10 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
     private static final String BUCKET_DELETION_PROBLEM = "Bucket deletion problem";
     private static final String SERVICE_PROBLEM = "Service problem";
     private static final String RECEIVING_FILE_PROBLEM = "Receiving file problem";
-    private static final String jcloud_S3 = "jcloud-s3";
+    private static final String jcloud_S3 = "aws-s3";
 
     private BlobStoreContext context;
+    private BlobStore thisBlobStore;
     private String defaultContainerName;
     private JCloudCredentials jcloudCredentials;
 
@@ -99,14 +102,18 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
      * @throws StorageCommunicationException
      * @see org.opencredo.cloud.storage.StorageOperations#createContainer(java.lang.String)
      */
-    public void createContainer(String containerName) throws StorageCommunicationException {
+    public boolean createContainer(String containerName) throws StorageCommunicationException {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
         final BlobStore blobStore = getStore();
-        blobStore.createContainerInLocation(null, containerName);
+        return blobStore.createContainerInLocation(null, containerName);
     }
 
     private BlobStore getStore() {
-        return context.getBlobStore();
+        if (thisBlobStore != null) {
+            return thisBlobStore;
+        }
+        thisBlobStore = context.getBlobStore();
+        return thisBlobStore;
     }
 
     /**
@@ -196,6 +203,13 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
         LOG.debug("Get bucket '{}' status", containerName);
 
         final BlobStore blobStore = getStore();
+//        final PageSet<? extends StorageMetadata> list = blobStore.list(containerName);
+//        final StorageMetadata next = list.iterator().next();
+//        final Map<String,String> userMetadata = next.getUserMetadata();
+//        System.out.println(userMetadata);
+
+//        final BlobMetadata blobMetadata = blobStore.blobMetadata(containerName, asd);
+
 //        blobStore.list();
 //        Object bucketStatus = blobStore.getBlob(containerName);
 //            switch (bucketStatus) {
@@ -209,6 +223,7 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
 //                throw new StorageException("Unrecognised bucket status: " + bucketStatus);
 //            }
     }
+
 
     /**
      * @param containerName
@@ -244,8 +259,8 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.lang.String)
      */
-    public void send(String objectName, String stringToSend) throws StorageCommunicationException {
-        send(defaultContainerName, objectName, stringToSend);
+    public String send(String objectName, String stringToSend) throws StorageCommunicationException {
+        return send(defaultContainerName, objectName, stringToSend);
     }
 
     /**
@@ -256,12 +271,12 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.lang.String, java.lang.String)
      */
-    public void send(String containerName, String objectName, String stringToSend) throws StorageCommunicationException {
+    public String send(String containerName, String objectName, String stringToSend) throws StorageCommunicationException {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
         Assert.hasText(objectName, "Blob name must be set");
         LOG.debug("Send string to bucket '{}' with key '{}'", containerName, objectName);
 
-        buildBlobAndSend(containerName, objectName, stringToSend);
+        return buildBlobAndSend(containerName, objectName, stringToSend);
 
     }
 
@@ -269,6 +284,7 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
         final BlobStore blobStore = getStore();
         final BlobBuilder blobBuilder = blobStore.blobBuilder(objectName);
         blobBuilder.payload(stringToSend);
+//        blobBuilder.forSigning();
 
         return blobStore.putBlob(containerName, blobBuilder.build());
     }
@@ -280,8 +296,8 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
      * @throws StorageCommunicationException
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.io.File)
      */
-    public void send(File fileToSend) throws StorageCommunicationException {
-        send(defaultContainerName, fileToSend);
+    public String send(File fileToSend) throws StorageCommunicationException {
+        return send(defaultContainerName, fileToSend);
     }
 
     /**
@@ -291,10 +307,10 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.io.File)
      */
-    public void send(String containerName, File fileToSend) throws StorageCommunicationException {
+    public String send(String containerName, File fileToSend) throws StorageCommunicationException {
         Assert.notNull(containerName, "Bucket name can not be null");
         Assert.notNull(fileToSend, "File to send can not be null");
-        send(containerName, fileToSend.getName(), fileToSend);
+        return send(containerName, fileToSend.getName(), fileToSend);
     }
 
     /**
@@ -305,8 +321,8 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.lang.String, java.io.File)
      */
-    public void send(String containerName, String objectName, File fileToSend) throws StorageCommunicationException {
-        sendAndReceiveUrl(containerName, objectName, fileToSend);
+    public String send(String containerName, String objectName, File fileToSend) throws StorageCommunicationException {
+        return sendAndReceiveUrl(containerName, objectName, fileToSend);
     }
 
     // ********************** Input stream send
@@ -318,8 +334,8 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.io.InputStream)
      */
-    public void send(String objectName, InputStream is) throws StorageCommunicationException {
-        send(defaultContainerName, objectName, is);
+    public String send(String objectName, InputStream is) throws StorageCommunicationException {
+        return send(defaultContainerName, objectName, is);
     }
 
     /**
@@ -330,12 +346,12 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.lang.String, java.io.InputStream)
      */
-    public void send(String containerName, String objectName, InputStream is) throws StorageCommunicationException {
+    public String send(String containerName, String objectName, InputStream is) throws StorageCommunicationException {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
         Assert.hasText(objectName, "Blob name must be set");
         LOG.debug("Send input-stream to bucket '{}' with key '{}'", containerName, objectName);
 
-        buildBlobAndSend(containerName, objectName, is);
+        return buildBlobAndSend(containerName, objectName, is);
 
     }
 
@@ -366,7 +382,18 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
         Assert.hasText(objectName, "Blob name must be set");
         LOG.debug("Send input-stream to bucket '{}' with key '{}'", containerName, objectName);
 
-        return buildBlobAndSend(containerName, objectName, stringToSend);
+        final String remoteName = buildBlobAndSend(containerName, objectName, stringToSend);
+
+        return getUrl(containerName, objectName);
+
+    }
+
+    private String getUrl(String containerName, String remoteName) {
+        final BlobStore blobStore = getStore();
+        final BlobMetadata blobMetadata = blobStore.blobMetadata(containerName, remoteName);
+        final URI publicUri = blobMetadata.getUri();
+        System.out.println(publicUri);
+        return publicUri.toString();
     }
 
     public String sendAndReceiveUrl(String containerName, String objectName, File fileToSend) throws StorageCommunicationException {
@@ -375,7 +402,10 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
         Assert.notNull(fileToSend, "File to send can not be null");
         LOG.debug("Send input-stream to bucket '{}' with key '{}'", containerName, objectName);
 
-        return buildBlobAndSend(containerName, objectName, fileToSend);
+        final String remoteName = buildBlobAndSend(containerName, objectName, fileToSend);
+
+        return getUrl(containerName, objectName);
+
     }
 
     public String sendAndReceiveUrl(File fileToSend) throws StorageCommunicationException {
@@ -395,10 +425,9 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
         Assert.hasText(objectName, "Blob name must be set");
         LOG.debug("Send input-stream to bucket '{}' with key '{}'", containerName, objectName);
 
-        // WIP
-        buildBlobAndSend(containerName, objectName, is);
+        final String remoteName = buildBlobAndSend(containerName, objectName, is);
 
-        return null;
+        return getUrl(containerName, remoteName);
     }
 
     // ********************** String receive
@@ -452,9 +481,9 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAndSaveToFile(java.lang.String,
      *      java.io.File)
      */
-    public void receiveAndSaveToFile(String objectName, File toFile) throws StorageCommunicationException,
+    public String receiveAndSaveToFile(String objectName, File toFile) throws StorageCommunicationException,
             StorageResponseHandlingException {
-        receiveAndSaveToFile(defaultContainerName, objectName, toFile);
+        return receiveAndSaveToFile(defaultContainerName, objectName, toFile);
     }
 
     /**
@@ -467,7 +496,7 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAndSaveToFile(java.lang.String,
      *      java.lang.String, java.io.File)
      */
-    public void receiveAndSaveToFile(String containerName, String objectName, File toFile)
+    public String receiveAndSaveToFile(String containerName, String objectName, File toFile)
             throws StorageCommunicationException, StorageResponseHandlingException {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
         Assert.hasText(objectName, "Blob name must be set");
@@ -478,7 +507,7 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
                     containerName, objectName, toFile.getAbsolutePath()});
         }
 
-        receiveFile(containerName, objectName, toFile);
+        return receiveFile(containerName, objectName, toFile);
     }
 
     private String receiveFile(String containerName, String objectName, File toFile) {
@@ -550,7 +579,6 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
     public String createdSignedUrl(String containerName, String objectName, Date expiryDate) throws StorageCommunicationException {
         return "";
     }
-
 
     /**
      * @param defaultContainerName the defaultContainerName to set

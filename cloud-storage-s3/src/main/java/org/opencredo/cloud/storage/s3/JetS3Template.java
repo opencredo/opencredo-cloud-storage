@@ -90,13 +90,15 @@ public class JetS3Template extends S3Template {
      * @throws StorageCommunicationException
      * @see org.opencredo.cloud.storage.StorageOperations#createContainer(java.lang.String)
      */
-    public void createContainer(String containerName) throws StorageCommunicationException {
+    public boolean createContainer(String containerName) throws StorageCommunicationException {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
         try {
-            s3Service.createBucket(new S3Bucket(containerName));
+            final S3Bucket bucket = s3Service.createBucket(new S3Bucket(containerName));
+            return bucket != null;
         } catch (S3ServiceException e) {
             throw new StorageCommunicationException("Bucket creation problem", e);
         }
+
     }
 
     /**
@@ -259,8 +261,8 @@ public class JetS3Template extends S3Template {
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.lang.String)
      */
-    public void send(String objectName, String stringToSend) throws StorageCommunicationException {
-        send(defaultContainerName, objectName, stringToSend);
+    public String send(String objectName, String stringToSend) throws StorageCommunicationException {
+        return send(defaultContainerName, objectName, stringToSend);
     }
 
     /**
@@ -271,7 +273,7 @@ public class JetS3Template extends S3Template {
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.lang.String, java.lang.String)
      */
-    public void send(String containerName, String objectName, String stringToSend) throws StorageCommunicationException {
+    public String send(String containerName, String objectName, String stringToSend) throws StorageCommunicationException {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
         Assert.hasText(objectName, "Blob name must be set");
         LOG.debug("Send string to bucket '{}' with key '{}'", containerName, objectName);
@@ -284,6 +286,7 @@ public class JetS3Template extends S3Template {
         } catch (IOException e) {
             throw new StorageCommunicationException("Sending string IO problem", e);
         }
+        return objectName;
     }
 
     // ********************** File send
@@ -293,8 +296,8 @@ public class JetS3Template extends S3Template {
      * @throws StorageCommunicationException
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.io.File)
      */
-    public void send(File fileToSend) throws StorageCommunicationException {
-        send(defaultContainerName, fileToSend);
+    public String send(File fileToSend) throws StorageCommunicationException {
+        return send(defaultContainerName, fileToSend);
     }
 
     /**
@@ -304,10 +307,10 @@ public class JetS3Template extends S3Template {
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.io.File)
      */
-    public void send(String containerName, File fileToSend) throws StorageCommunicationException {
+    public String send(String containerName, File fileToSend) throws StorageCommunicationException {
         Assert.notNull(containerName, "Bucket name can not be null");
         Assert.notNull(fileToSend, "File to send can not be null");
-        send(containerName, fileToSend.getName(), fileToSend);
+        return send(containerName, fileToSend.getName(), fileToSend);
     }
 
     /**
@@ -318,8 +321,8 @@ public class JetS3Template extends S3Template {
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.lang.String, java.io.File)
      */
-    public void send(String containerName, String objectName, File fileToSend) throws StorageCommunicationException {
-        sendAndReceiveUrl(containerName, objectName, fileToSend);
+    public String send(String containerName, String objectName, File fileToSend) throws StorageCommunicationException {
+        return sendAndReceiveUrl(containerName, objectName, fileToSend);
     }
 
     // ********************** Input stream send
@@ -331,8 +334,8 @@ public class JetS3Template extends S3Template {
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.io.InputStream)
      */
-    public void send(String objectName, InputStream is) throws StorageCommunicationException {
-        send(defaultContainerName, objectName, is);
+    public String send(String objectName, InputStream is) throws StorageCommunicationException {
+        return send(defaultContainerName, objectName, is);
     }
 
     /**
@@ -343,7 +346,7 @@ public class JetS3Template extends S3Template {
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.lang.String, java.io.InputStream)
      */
-    public void send(String containerName, String objectName, InputStream is) throws StorageCommunicationException {
+    public String send(String containerName, String objectName, InputStream is) throws StorageCommunicationException {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
         Assert.hasText(objectName, "Blob name must be set");
         LOG.debug("Send input-stream to bucket '{}' with key '{}'", containerName, objectName);
@@ -357,6 +360,7 @@ public class JetS3Template extends S3Template {
         } catch (S3ServiceException e) {
             throw new StorageCommunicationException("Sending input stream problem", e);
         }
+        return objectName;
     }
 
     public String sendAndReceiveUrl(String objectName, String stringToSend) throws StorageCommunicationException {
@@ -501,9 +505,9 @@ public class JetS3Template extends S3Template {
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAndSaveToFile(java.lang.String,
      *      java.io.File)
      */
-    public void receiveAndSaveToFile(String objectName, File toFile) throws StorageCommunicationException,
+    public String receiveAndSaveToFile(String objectName, File toFile) throws StorageCommunicationException,
             StorageResponseHandlingException {
-        receiveAndSaveToFile(defaultContainerName, objectName, toFile);
+        return receiveAndSaveToFile(defaultContainerName, objectName, toFile);
     }
 
     /**
@@ -516,7 +520,7 @@ public class JetS3Template extends S3Template {
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAndSaveToFile(java.lang.String,
      *      java.lang.String, java.io.File)
      */
-    public void receiveAndSaveToFile(String containerName, String objectName, File toFile)
+    public String receiveAndSaveToFile(String containerName, String objectName, File toFile)
             throws StorageCommunicationException, StorageResponseHandlingException {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
         Assert.hasText(objectName, "Blob name must be set");
@@ -553,6 +557,7 @@ public class JetS3Template extends S3Template {
                 }
             }
         }
+        return toFile.getAbsolutePath();
     }
 
     /**
