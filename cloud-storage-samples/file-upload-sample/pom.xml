@@ -2,14 +2,14 @@
     <parent>
         <artifactId>cloud-storage-samples</artifactId>
         <groupId>org.opencredo.cloud.storage</groupId>
-        <version>1.2.0.INTELLECT-jcloud</version>
+        <version>1.2.0.JCLOUD</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.opencredo.cloud.storage</groupId>
     <artifactId>file-upload-sample</artifactId>
     <name>OpenCredo Cloud Storage Samples - File upload</name>
-    <version>1.2.0.INTELLECT-jcloud</version>
+    <version>1.2.0.JCLOUD</version>
 
     <description>
         File upload sample to Microsoft Azure Blob Service.

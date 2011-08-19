@@ -3,14 +3,14 @@
     <parent>
         <artifactId>opencredo-cloud-storage-parent</artifactId>
         <groupId>org.opencredo.cloud.storage</groupId>
-        <version>1.2.0.INTELLECT-jcloud</version>
+        <version>1.2.0.JCLOUD</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.opencredo.cloud.storage</groupId>
     <artifactId>cloud-storage-test-utils</artifactId>
     <name>OpenCredo Cloud Storage Test Utils</name>
-    <version>1.2.0.INTELLECT-jcloud</version>
+    <version>1.2.0.JCLOUD</version>
 
     <description>
         Classes required by tests in sibling OpenCredo-cloud-storage modules.

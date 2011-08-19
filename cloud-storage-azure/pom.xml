@@ -3,14 +3,14 @@
     <parent>
         <groupId>org.opencredo.cloud.storage</groupId>
         <artifactId>opencredo-cloud-storage-parent</artifactId>
-        <version>1.2.0.INTELLECT-jcloud</version>
+        <version>1.2.0.JCLOUD</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.opencredo.cloud.storage</groupId>
     <artifactId>cloud-storage-azure</artifactId>
     <name>OpenCredo Cloud Storage Azure Template</name>
-    <version>1.2.0.INTELLECT-jcloud</version>
+    <version>1.2.0.JCLOUD</version>
 
     <description>
         Simple API to access Microsoft Azure Blob Service.
