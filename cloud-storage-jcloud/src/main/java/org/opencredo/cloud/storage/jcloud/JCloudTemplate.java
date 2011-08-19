@@ -18,6 +18,7 @@ package org.opencredo.cloud.storage.jcloud;
 import org.jclouds.blobstore.BlobStore;
 import org.jclouds.blobstore.BlobStoreContext;
 import org.jclouds.blobstore.BlobStoreContextFactory;
+import org.jclouds.blobstore.ContainerNotFoundException;
 import org.jclouds.blobstore.domain.Blob;
 import org.jclouds.blobstore.domain.BlobBuilder;
 import org.jclouds.blobstore.domain.BlobMetadata;
@@ -160,9 +161,18 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
     public void deleteObject(String containerName, String objectName) throws StorageCommunicationException {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
         LOG.debug("Delete object '{}' in bucket '{}'", objectName, containerName);
-        final BlobStore blobStore = getStore();
-        blobStore.removeBlob(containerName, objectName);
+        removeBlob(containerName, objectName);
 
+    }
+
+    private void removeBlob(String containerName, String objectName) {
+        final BlobStore blobStore = getStore();
+        try {
+            blobStore.removeBlob(containerName, objectName);
+        } catch (ContainerNotFoundException e) {
+            LOG.info("ERROR: Container Not Found");
+            throw new StorageCommunicationException(e);
+        }
     }
 
     /**
@@ -284,9 +294,17 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
         final BlobStore blobStore = getStore();
         final BlobBuilder blobBuilder = blobStore.blobBuilder(objectName);
         blobBuilder.payload(stringToSend);
-//        blobBuilder.forSigning();
 
-        return blobStore.putBlob(containerName, blobBuilder.build());
+        return putBlob(containerName, blobStore, blobBuilder);
+    }
+
+    private String putBlob(String containerName, BlobStore blobStore, BlobBuilder blobBuilder) {
+        try {
+            return blobStore.putBlob(containerName, blobBuilder.build());
+        } catch (ContainerNotFoundException e) {
+            LOG.info("ERROR: Container Not Found");
+            throw new StorageCommunicationException(e);
+        }
     }
 
     // ********************** File send
@@ -361,7 +379,7 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
 
         blobBuilder.payload(is);
 
-        return blobStore.putBlob(containerName, blobBuilder.build());
+        return putBlob(containerName, blobStore, blobBuilder);
     }
 
     private String buildBlobAndSend(String containerName, String objectName, File fileToSend) {
@@ -370,7 +388,7 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
 
         blobBuilder.payload(fileToSend);
 
-        return blobStore.putBlob(containerName, blobBuilder.build());
+        return putBlob(containerName, blobStore, blobBuilder);
     }
 
     public String sendAndReceiveUrl(String objectName, String stringToSend) throws StorageCommunicationException {
