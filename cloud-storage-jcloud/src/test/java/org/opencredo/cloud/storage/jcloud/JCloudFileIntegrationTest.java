@@ -34,7 +34,7 @@ import java.util.UUID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class JCloudTemplateIntegrationTest {
+public class JCloudFileIntegrationTest {
 
     private JCloudCredentials credentials = new JCloudCredentials(TestPropertiesAccessor.getDefaultTestAwsKey(),
             TestPropertiesAccessor.getDefaultTestAwsSecretKey());
@@ -46,7 +46,7 @@ public class JCloudTemplateIntegrationTest {
     private static File TEST_FILE;
 
     static {
-        URL url = JCloudTemplateIntegrationTest.class.getResource(TEST_FILE_NAME);
+        URL url = JCloudFileIntegrationTest.class.getResource(TEST_FILE_NAME);
         TEST_FILE = new File(url.getFile());
     }
 
