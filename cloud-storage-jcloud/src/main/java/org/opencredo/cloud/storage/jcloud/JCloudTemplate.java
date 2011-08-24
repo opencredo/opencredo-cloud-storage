@@ -463,8 +463,7 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAsString(java.lang.String,
      *      java.lang.String)
      */
-    public String receiveAsString(String containerName, String objectName) throws StorageCommunicationException,
-            StorageResponseHandlingException {
+    public String receiveAsString(String containerName, String objectName) throws StorageCommunicationException, StorageResponseHandlingException {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
         Assert.hasText(objectName, "Blob name must be set");
         LOG.debug("Receive string from bucket '{}' with key '{}'", containerName, objectName);

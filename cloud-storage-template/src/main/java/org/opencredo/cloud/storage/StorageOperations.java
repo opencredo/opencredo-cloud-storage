@@ -226,8 +226,7 @@ public interface StorageOperations {
      * @throws StorageResponseHandlingException
      *
      */
-    InputStream receiveAsInputStream(String objectName) throws StorageCommunicationException,
-            StorageResponseHandlingException;
+    InputStream receiveAsInputStream(String objectName) throws StorageCommunicationException, StorageResponseHandlingException;
 
     /**
      * Receive the object as InputStream from cloud storage container.
@@ -241,8 +240,7 @@ public interface StorageOperations {
      *                                       Will be thrown if handling of response data fails (e.g.
      *                                       Failure to close response byte stream).
      */
-    InputStream receiveAsInputStream(String containerName, String objectName)
-            throws StorageCommunicationException, StorageResponseHandlingException;
+    InputStream receiveAsInputStream(String containerName, String objectName) throws StorageCommunicationException, StorageResponseHandlingException;
 
     /**
      * Invokes {@link #deleteObject(String, String)} with default container name
