@@ -36,6 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,6 +45,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Main class encapsulating invocations to jclouds
@@ -61,6 +63,7 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
 
     private BlobStoreContext context;
     private BlobStore thisBlobStore;
+
     private String defaultContainerName;
     private JCloudCredentials jcloudCredentials;
 
@@ -84,6 +87,19 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
         this.defaultContainerName = defaultContainerName;
         this.jcloudCredentials = jcloudCredentials;
         context = new BlobStoreContextFactory().createContext(cloudProvider.getString(), jcloudCredentials.getAccessKey(), jcloudCredentials.getSecretAccessKey());
+
+    }
+
+    /**
+     * @param cloudProvider
+     * @param jcloudProperties
+     * @param defaultContainerName
+     * @throws StorageException
+     */
+    public JCloudTemplate(final CloudProvider cloudProvider, final Properties jcloudProperties, final String defaultContainerName) throws StorageException {
+        this.defaultContainerName = defaultContainerName;
+//           this.jcloudProperties = jcloudProperties;
+        context = new BlobStoreContextFactory().createContext(cloudProvider.getString(), jcloudProperties);
 
     }
 
@@ -401,8 +417,13 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
         final BlobStore blobStore = getStore();
         final BlobMetadata blobMetadata = blobStore.blobMetadata(containerName, remoteName);
         final URI publicUri = blobMetadata.getUri();
-        System.out.println(publicUri);
-        return publicUri.toString();
+
+        if (publicUri != null && StringUtils.hasText(publicUri.toString())) {
+            final String uri = publicUri.toString();
+            LOG.debug(uri);
+            return uri;
+        }
+        return null;
     }
 
     public String sendAndReceiveUrl(String containerName, String objectName, File fileToSend) throws StorageCommunicationException {
@@ -533,13 +554,21 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
         final Payload payload = blob.getPayload();
         final Object rawContent = payload.getRawContent();
         try {
-            StorageUtils.writeStreamToFile((InputStream) rawContent, toFile);
-            return toFile.getAbsolutePath();
+            if (rawContent instanceof InputStream) {
+                StorageUtils.writeStreamToFile((InputStream) rawContent, toFile);
+                return toFile.getAbsolutePath();
+            }
+            else if (rawContent instanceof File) {
+                final String absolutePath = toFile.getAbsolutePath();
+                StorageUtils.writeFileToFile((File) rawContent, toFile);
+
+                return absolutePath;
+            }
 
         } catch (IOException e) {
             throw new StorageResponseHandlingException("Response data stream to file IO problem", e);
         }
-
+        return null;
     }
 
     /**

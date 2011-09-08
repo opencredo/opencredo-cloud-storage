@@ -86,6 +86,16 @@
             <version>${jclouds-version}</version>
         </dependency>
         <dependency>
+            <groupId>org.jclouds</groupId>
+            <artifactId>jclouds-allcompute</artifactId>
+            <version>${jclouds-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jclouds</groupId>
+            <artifactId>jclouds-allblobstore</artifactId>
+            <version>${jclouds-version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.opencredo.cloud.storage</groupId>
             <artifactId>cloud-storage-template</artifactId>
             <version>${project.parent.version}</version>

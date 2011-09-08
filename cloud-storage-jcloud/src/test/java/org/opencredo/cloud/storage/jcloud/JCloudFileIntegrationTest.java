@@ -15,6 +15,7 @@
 package org.opencredo.cloud.storage.jcloud;
 
 import org.apache.commons.io.FileUtils;
+import org.jclouds.filesystem.reference.FilesystemConstants;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,11 +30,17 @@ import java.net.URL;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+/*
+* http://www.jclouds.org/documentation/quickstart/filesystem
+* */
+
+//@Ignore("WIP")
 public class JCloudFileIntegrationTest {
 
     private JCloudCredentials credentials = new JCloudCredentials(TestPropertiesAccessor.getDefaultTestAwsKey(),
@@ -54,7 +61,12 @@ public class JCloudFileIntegrationTest {
 
     @Before
     public void before() {
-        template = new JCloudTemplate(CloudProvider.AWS_S3, credentials, TestPropertiesAccessor.getDefaultContainerName());
+
+        Properties properties = new Properties();
+        properties.setProperty(FilesystemConstants.PROPERTY_BASEDIR, "./local/filesystemstorage");
+        // setup the container name used by the provider (like bucket in S3)
+
+        template = new JCloudTemplate(CloudProvider.FILESYSTEM, properties, TestPropertiesAccessor.getDefaultContainerName());
         template.createContainer(BUCKET_NAME);
     }
 
@@ -74,9 +86,7 @@ public class JCloudFileIntegrationTest {
     }
 
     @Test
-    public void testRealFileUpload() throws
-//            S3ServiceException,
-            StorageCommunicationException, IOException {
+    public void testRealFileUpload() throws StorageCommunicationException, IOException {
         template.send(BUCKET_NAME, KEY, TEST_FILE);
 
         File f = File.createTempFile(getClass().getSimpleName(), ".txt");
@@ -87,7 +97,7 @@ public class JCloudFileIntegrationTest {
         System.out.println("Received file content: " + receivedFileContent);
 
         String orgFileContent = FileUtils.readFileToString(TEST_FILE);
-        assertEquals("File content does not match", orgFileContent, receivedFileContent);
+        assertEquals("File content does not match: " + orgFileContent + " - compared to -" + receivedFileContent, orgFileContent, receivedFileContent);
     }
 
     @Test

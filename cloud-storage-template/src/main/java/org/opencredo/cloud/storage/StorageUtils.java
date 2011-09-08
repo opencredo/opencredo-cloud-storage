@@ -17,6 +17,7 @@ package org.opencredo.cloud.storage;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,19 +25,16 @@ import java.io.OutputStream;
 
 /**
  * Utility class.
- * 
+ *
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
- * 
  */
 public class StorageUtils {
 
     /**
      * Write InputStream to provided class.
-     * 
-     * @param is
-     *            Input stream.
-     * @param toFile
-     *            Class where input stream should be written.
+     *
+     * @param is     Input stream.
+     * @param toFile Class where input stream should be written.
      * @throws IOException
      */
     public static void writeStreamToFile(InputStream is, File toFile) throws IOException {
@@ -44,7 +42,7 @@ public class StorageUtils {
         try {
             os = new FileOutputStream(toFile);
             byte[] buffer = new byte[4096];
-            for (int n; (n = is.read(buffer)) != -1;) {
+            for (int n; (n = is.read(buffer)) != -1; ) {
                 os.write(buffer, 0, n);
             }
         } finally {
@@ -53,9 +51,31 @@ public class StorageUtils {
             }
         }
     }
-    
+
+    public static void writeFileToFile(File inFile, File toFile) throws IOException {
+        OutputStream os = null;
+        InputStream is = null;
+        try {
+
+            is = new FileInputStream(inFile);
+            os = new FileOutputStream(toFile);
+            byte[] buffer = new byte[4096];
+            for (int n; (n = is.read(buffer)) != -1; ) {
+                os.write(buffer, 0, n);
+            }
+        } finally {
+            if (os != null) {
+                os.close();
+            }
+            if (is != null) {
+                is.close();
+            }
+        }
+    }
+
     /**
      * Create required parent directories.
+     *
      * @param file
      * @return
      * @throws IOException
