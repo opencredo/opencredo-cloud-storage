@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <properties>
+        <jclouds-version>1.1.1</jclouds-version>
+    </properties>
     <parent>
         <groupId>org.opencredo.cloud.storage</groupId>
         <artifactId>opencredo-cloud-storage-parent</artifactId>
@@ -75,12 +78,12 @@
         <dependency>
             <groupId>org.jclouds</groupId>
             <artifactId>jclouds-blobstore</artifactId>
-            <version>1.1.0</version>
+            <version>${jclouds-version}</version>
         </dependency>
         <dependency>
             <groupId>org.jclouds.provider</groupId>
             <artifactId>aws-s3</artifactId>
-            <version>1.1.0</version>
+            <version>${jclouds-version}</version>
         </dependency>
         <dependency>
             <groupId>org.opencredo.cloud.storage</groupId>
