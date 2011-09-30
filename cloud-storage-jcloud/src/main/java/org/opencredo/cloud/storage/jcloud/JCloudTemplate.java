@@ -98,7 +98,6 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
      */
     public JCloudTemplate(final CloudProvider cloudProvider, final Properties jcloudProperties, final String defaultContainerName) throws StorageException {
         this.defaultContainerName = defaultContainerName;
-//           this.jcloudProperties = jcloudProperties;
         context = new BlobStoreContextFactory().createContext(cloudProvider.getString(), jcloudProperties);
 
     }

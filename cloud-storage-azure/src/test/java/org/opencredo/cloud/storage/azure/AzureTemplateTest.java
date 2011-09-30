@@ -14,9 +14,15 @@
  */
 package org.opencredo.cloud.storage.azure;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.*;
+import org.apache.commons.io.FileUtils;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.opencredo.cloud.storage.BlobDetails;
+import org.opencredo.cloud.storage.ContainerStatus;
+import org.opencredo.cloud.storage.StorageCommunicationException;
+import org.opencredo.cloud.storage.azure.rest.AzureRestServiceUtil;
+import org.opencredo.cloud.storage.test.TestPropertiesAccessor;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,22 +31,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.commons.io.FileUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.opencredo.cloud.storage.BlobDetails;
-import org.opencredo.cloud.storage.ContainerStatus;
-import org.opencredo.cloud.storage.StorageCommunicationException;
-import org.opencredo.cloud.storage.azure.rest.AzureRestServiceUtil;
-import org.opencredo.cloud.storage.test.TestPropertiesAccessor;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
- * 
  */
-@Ignore
+//@Ignore
 public class AzureTemplateTest {
 
     private static final String TEST_CONATINER_PREFIX = "template-test-";
@@ -173,7 +171,7 @@ public class AzureTemplateTest {
 
     /**
      * Get list of containers with prefix used in test.
-     * 
+     *
      * @param containers
      * @return
      */
