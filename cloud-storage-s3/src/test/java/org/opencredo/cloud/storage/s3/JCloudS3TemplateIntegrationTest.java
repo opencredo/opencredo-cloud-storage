@@ -32,7 +32,8 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class JCloudS3TemplateIntegrationTest {
 
@@ -92,7 +93,6 @@ public class JCloudS3TemplateIntegrationTest {
 
     @Test
     public void testCreateTimeExpiredUrl() throws
-//            S3ServiceException,
             StorageCommunicationException, IOException {
         template.send(BUCKET_NAME, KEY, TEST_FILE);
 
@@ -111,10 +111,12 @@ public class JCloudS3TemplateIntegrationTest {
         cal.add(Calendar.MINUTE, 5);
         Date expiryDate = cal.getTime();
 
-        String url = template.createdSignedUrl(BUCKET_NAME, KEY, expiryDate);
-
-        assertNotNull(url);
-        System.out.println("Url retrieved " + url);
+        try {
+            template.createdSignedUrl(BUCKET_NAME, KEY, expiryDate);
+            assertFalse("Exception should have been thrown", true);
+        } catch (StorageCommunicationException e) {
+            assertTrue("Exception was thrown correctly", true);
+        }
 
     }
 }

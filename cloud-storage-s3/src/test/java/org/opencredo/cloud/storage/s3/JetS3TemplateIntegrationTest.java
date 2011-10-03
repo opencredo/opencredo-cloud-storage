@@ -57,7 +57,7 @@ public class JetS3TemplateIntegrationTest {
 
     @Before
     public void before() {
-        template = new JCloudS3Template(credentials, TestPropertiesAccessor.getDefaultContainerName());
+        template = new JetS3Template(credentials, TestPropertiesAccessor.getDefaultContainerName());
         template.createContainer(BUCKET_NAME);
     }
 
@@ -78,7 +78,6 @@ public class JetS3TemplateIntegrationTest {
 
     @Test
     public void testRealFileUpload() throws
-//            S3ServiceException,
             StorageCommunicationException, IOException {
         template.send(BUCKET_NAME, KEY, TEST_FILE);
 
@@ -95,7 +94,6 @@ public class JetS3TemplateIntegrationTest {
 
     @Test
     public void testCreateTimeExpiredUrl() throws
-//            S3ServiceException,
             StorageCommunicationException, IOException {
         template.send(BUCKET_NAME, KEY, TEST_FILE);
 

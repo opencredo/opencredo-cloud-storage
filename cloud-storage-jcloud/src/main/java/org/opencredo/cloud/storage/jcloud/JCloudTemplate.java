@@ -604,7 +604,6 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
     private InputStream receiveInputStream(String containerName, String objectName) {
 
         final BlobStore blobStore = getStore();
-        final PageSet<? extends StorageMetadata> list = blobStore.list(containerName);
 
         final Blob blob = blobStore.getBlob(containerName, objectName);
         final Payload payload = blob.getPayload();
@@ -613,7 +612,7 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
     }
 
     public String createdSignedUrl(String containerName, String objectName, Date expiryDate) throws StorageCommunicationException {
-        return "";
+        throw new StorageCommunicationException("Method not currently supported through JClouds");
     }
 
     /**

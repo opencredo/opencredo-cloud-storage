@@ -26,13 +26,10 @@ import org.opencredo.cloud.storage.test.TestPropertiesAccessor;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 public class JCloudAWSIntegrationTest {
 
@@ -74,9 +71,7 @@ public class JCloudAWSIntegrationTest {
     }
 
     @Test
-    public void testRealFileUpload() throws
-//            S3ServiceException,
-            StorageCommunicationException, IOException {
+    public void testRealFileUpload() throws StorageCommunicationException, IOException {
         template.send(BUCKET_NAME, KEY, TEST_FILE);
 
         File f = File.createTempFile(getClass().getSimpleName(), ".txt");
@@ -88,33 +83,5 @@ public class JCloudAWSIntegrationTest {
 
         String orgFileContent = FileUtils.readFileToString(TEST_FILE);
         assertEquals("File content does not match", orgFileContent, receivedFileContent);
-    }
-
-    @Test
-    public void testCreateTimeExpiredUrl() throws
-//            S3ServiceException,
-            StorageCommunicationException, IOException {
-        template.send(BUCKET_NAME, KEY, TEST_FILE);
-
-        File f = File.createTempFile(getClass().getSimpleName(), ".txt");
-        FileUtils.forceDeleteOnExit(f);
-        template.receiveAndSaveToFile(BUCKET_NAME, KEY, f);
-
-        String receivedFileContent = FileUtils.readFileToString(f);
-        System.out.println("Received file content: " + receivedFileContent);
-
-        String orgFileContent = FileUtils.readFileToString(TEST_FILE);
-        assertEquals("File content does not match", orgFileContent, receivedFileContent);
-
-        // Determine what the time will be in 5 minutes.
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.MINUTE, 5);
-        Date expiryDate = cal.getTime();
-
-        String url = template.createdSignedUrl(BUCKET_NAME, KEY, expiryDate);
-
-        assertNotNull(url);
-        System.out.println("Url retrieved " + url);
-
     }
 }

@@ -528,21 +528,6 @@ public class JCloudS3Template extends S3Template {
     }
 
     public String createdSignedUrl(String containerName, String objectName, Date expiryDate) throws StorageCommunicationException {
-        return "";
-    }
-
-
-    /**
-     * @param defaultContainerName the defaultContainerName to set
-     */
-    public void setDefaultContainerName(String defaultContainerName) {
-        this.defaultContainerName = defaultContainerName;
-    }
-
-    /**
-     * @return the defaultContainerName
-     */
-    public String getDefaultContainerName() {
-        return defaultContainerName;
+        throw new StorageCommunicationException("Method not currently supported through JClouds");
     }
 }
