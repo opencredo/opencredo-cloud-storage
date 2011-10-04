@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans:beans xmlns="http://www.springframework.org/schema/integration"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
-	xmlns:cloud="http://www.opencredo.com/schema/cloud-storage/integration"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:cloud="http://www.opencredo.com/schema/cloud-storage/integration"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans
 			http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
  	        http://www.springframework.org/schema/integration
-			http://www.springframework.org/schema/integration/spring-integration-1.0.xsd
+			http://www.springframework.org/schema/integration/spring-integration-2.0.xsd
 	        http://www.opencredo.com/schema/cloud-storage/integration
 			http://www.opencredo.com/schema/cloud-storage/integration/opencredo-si-cloud-storage-1.1.xsd">
-	<beans:import resource="../../common-context.xml" />
+    <beans:import resource="../../common-context.xml"/>
 
-	<!--  SI config -->
-	<channel id="inputChannel" />
+    <!--  SI config -->
+    <channel id="inputChannel"/>
 
-	<!-- Inbound adapter -->
-	<cloud:inbound-channel-adapter id="inbound-adapter"
-		channel="inputChannel" template="mockTemplate" container="${defaultContainerName}">
-		<poller>
-			<interval-trigger interval="5000" />
-		</poller>
-	</cloud:inbound-channel-adapter>
+    <!-- Inbound adapter -->
+    <cloud:inbound-channel-adapter id="inbound-adapter"
+                                   channel="inputChannel" template="mockTemplate" container="${defaultContainerName}">
+        <poller>
+            <interval-trigger interval="5000"/>
+        </poller>
+    </cloud:inbound-channel-adapter>
 
 </beans:beans>
