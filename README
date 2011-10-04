@@ -1,0 +1,21 @@
+OpenCredo Cloud Storage Project
+org.opencredo.cloud.storage
+opencredo-cloud-storage-parent
+Version 1.2.0.JCLOUD
+
+To run the tests on this project an AWS account and and Azure account are required.
+The keys for this are configured by adding the following entries to your m2/settings.xml file
+
+eg:
+    <properties>
+        <awsKey>...</awsKey>
+        <awsSecretKey>...</awsSecretKey>
+        <azureAccountName>...</azureAccountName>
+        <azureSecretKey>...</azureSecretKey>
+
+        <defaultContainerName>oc-storage-test</defaultContainerName>
+    </properties>
+
+Project currently uses Spring 3.0.6 and Spring Integration 2.0.5
+
+Have fun
