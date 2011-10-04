@@ -16,6 +16,9 @@ eg:
         <defaultContainerName>oc-storage-test</defaultContainerName>
     </properties>
 
+Can also be set from command line eg:
+clean install -DawsKey=... -DawsSecretKey=... -DdefaultContainerName=oc-storage-test -DazureAccountName=... -DazureSecretKey=...
+
 Project currently uses Spring 3.0.6 and Spring Integration 2.0.5
 
 Have fun
