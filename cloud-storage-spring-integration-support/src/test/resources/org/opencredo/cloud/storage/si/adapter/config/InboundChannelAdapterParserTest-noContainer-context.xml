@@ -7,7 +7,7 @@
  	        http://www.springframework.org/schema/integration
 			http://www.springframework.org/schema/integration/spring-integration-2.0.xsd
 	        http://www.opencredo.com/schema/cloud-storage/integration
-			http://www.opencredo.com/schema/cloud-storage/integration/opencredo-si-cloud-storage-1.1.xsd">
+			http://www.opencredo.com/schema/cloud-storage/integration/opencredo-si-cloud-storage-1.2.xsd">
     <beans:import resource="../../common-context.xml"/>
 
     <!--  SI config -->
