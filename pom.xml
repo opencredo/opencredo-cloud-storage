@@ -182,7 +182,7 @@
     </modules>
 
     <properties>
-        <springVersion>3.0.5.RELEASE</springVersion>
+        <springVersion>3.0.6.RELEASE</springVersion>
         <springIntegrationVersion>2.0.5.RELEASE</springIntegrationVersion>
         <springIntegrationAdaptorVersion>1.0.4.RELEASE</springIntegrationAdaptorVersion>
         <spring-xml.version>2.0.2.RELEASE</spring-xml.version>
