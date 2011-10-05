@@ -49,7 +49,7 @@ import java.util.List;
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  */
 public class AzureTemplate implements StorageOperations {
-    private final static Logger LOG = LoggerFactory.getLogger(AzureTemplate.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AzureTemplate.class);
 
     public static final String DEFAULT_CONTAINER_NAME = "container1";
 
@@ -84,10 +84,10 @@ public class AzureTemplate implements StorageOperations {
     /**
      * @param containerName
      * @return
-     * @throws StorageCommunicationException
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#checkContainerStatus(java.lang.String)
      */
-    public ContainerStatus checkContainerStatus(String containerName) throws StorageCommunicationException {
+    public ContainerStatus checkContainerStatus(String containerName) {
         try {
             return restService.checkContainerStatus(containerName);
         } catch (AzureRestCommunicationException e) {
@@ -103,21 +103,21 @@ public class AzureTemplate implements StorageOperations {
 
     /**
      * @param objectName
-     * @throws StorageCommunicationException
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#deleteObject(java.lang.String)
      */
-    public void deleteObject(String objectName) throws StorageCommunicationException {
+    public void deleteObject(String objectName) {
         deleteObject(defaultContainerName, objectName);
     }
 
     /**
      * @param containerName
      * @param objectName
-     * @throws StorageCommunicationException
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#deleteObject(java.lang.String,
      *      java.lang.String)
      */
-    public void deleteObject(String containerName, String objectName) throws StorageCommunicationException {
+    public void deleteObject(String containerName, String objectName) {
         try {
             restService.deleteObject(containerName, objectName);
         } catch (AzureRestCommunicationException e) {
@@ -132,27 +132,27 @@ public class AzureTemplate implements StorageOperations {
         }
     }
 
-    public String createdSignedUrl(String containerName, String objectName, Date expiryDate) throws StorageCommunicationException {
+    public String createdSignedUrl(String containerName, String objectName, Date expiryDate) {
         throw new StorageCommunicationException("Method not currently supported for Azure");
     }
 
 
     /**
      * @return
-     * @throws StorageCommunicationException
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#listContainerObjectDetails()
      */
-    public List<BlobDetails> listContainerObjectDetails() throws StorageCommunicationException {
+    public List<BlobDetails> listContainerObjectDetails() {
         return listContainerObjectDetails(defaultContainerName);
     }
 
     /**
      * @param containerName
      * @return
-     * @throws StorageCommunicationException
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#listContainerObjectDetails(java.lang.String)
      */
-    public List<BlobDetails> listContainerObjectDetails(String containerName) throws StorageCommunicationException {
+    public List<BlobDetails> listContainerObjectDetails(String containerName) {
         try {
             return restService.listContainerObjectDetails(containerName);
         } catch (AzureRestCommunicationException e) {
@@ -169,10 +169,10 @@ public class AzureTemplate implements StorageOperations {
 
     /**
      * @return
-     * @throws StorageCommunicationException
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#listContainerNames()
      */
-    public List<String> listContainerNames() throws StorageCommunicationException {
+    public List<String> listContainerNames() {
         try {
             return restService.listContainerNames();
         } catch (AzureRestCommunicationException e) {
@@ -185,10 +185,10 @@ public class AzureTemplate implements StorageOperations {
 
     /**
      * @param containerName
-     * @throws StorageCommunicationException
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#createContainer(java.lang.String)
      */
-    public boolean createContainer(String containerName) throws StorageCommunicationException {
+    public boolean createContainer(String containerName) {
         try {
             restService.createContainer(containerName);
         } catch (AzureRestCommunicationException e) {
@@ -205,10 +205,10 @@ public class AzureTemplate implements StorageOperations {
 
     /**
      * @param containerName
-     * @throws StorageCommunicationException
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#deleteContainer(java.lang.String)
      */
-    public void deleteContainer(String containerName) throws StorageCommunicationException {
+    public void deleteContainer(String containerName) {
         try {
             restService.deleteContainer(containerName);
         } catch (AzureRestCommunicationException e) {
@@ -224,11 +224,11 @@ public class AzureTemplate implements StorageOperations {
 
     /**
      * @param objectName
-     * @throws StorageCommunicationException
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAndSaveToFile(java.lang.String,
      *      File)
      */
-    public String receiveAndSaveToFile(String objectName, File toFile) throws StorageCommunicationException,
+    public String receiveAndSaveToFile(String objectName, File toFile) throws
             StorageResponseHandlingException {
         return receiveAndSaveToFile(defaultContainerName, objectName, toFile);
     }
@@ -236,12 +236,12 @@ public class AzureTemplate implements StorageOperations {
     /**
      * @param containerName
      * @param objectName
-     * @throws StorageCommunicationException
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAndSaveToFile(java.lang.String,
      *      java.lang.String, File)
      */
-    public String receiveAndSaveToFile(String containerName, String objectName, File toFile)
-            throws StorageCommunicationException, StorageResponseHandlingException {
+    public String receiveAndSaveToFile(String containerName, String objectName, File toFile) throws
+            StorageResponseHandlingException {
         Assert.notNull(toFile, "File to save received data must be specified");
 
         LOG.debug("Receive file from from blob '{}' in container '{}' and save it to file '{}'", new Object[]{
@@ -290,10 +290,10 @@ public class AzureTemplate implements StorageOperations {
     /**
      * @param objectName
      * @return
-     * @throws StorageCommunicationException
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAsInputStream(java.lang.String)
      */
-    public InputStream receiveAsInputStream(String objectName) throws StorageCommunicationException,
+    public InputStream receiveAsInputStream(String objectName) throws
             StorageResponseHandlingException {
         return receiveAsInputStream(defaultContainerName, objectName);
     }
@@ -302,12 +302,12 @@ public class AzureTemplate implements StorageOperations {
      * @param containerName
      * @param objectName
      * @return
-     * @throws StorageCommunicationException
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAsInputStream(java.lang.String,
      *      java.lang.String)
      */
-    public InputStream receiveAsInputStream(String containerName, String objectName)
-            throws StorageCommunicationException, StorageResponseHandlingException {
+    public InputStream receiveAsInputStream(String containerName, String objectName) throws
+            StorageResponseHandlingException {
         try {
             return restService.getObject(containerName, objectName).getData();
         } catch (AzureRestCommunicationException e) {
@@ -325,10 +325,10 @@ public class AzureTemplate implements StorageOperations {
     /**
      * @param objectName
      * @return
-     * @throws StorageCommunicationException
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAsString(java.lang.String)
      */
-    public String receiveAsString(String objectName) throws StorageCommunicationException,
+    public String receiveAsString(String objectName) throws
             StorageResponseHandlingException {
         return receiveAsString(defaultContainerName, objectName);
     }
@@ -337,11 +337,11 @@ public class AzureTemplate implements StorageOperations {
      * @param containerName
      * @param objectName
      * @return
-     * @throws StorageCommunicationException
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAsString(java.lang.String,
      *      java.lang.String)
      */
-    public String receiveAsString(String containerName, String objectName) throws StorageCommunicationException,
+    public String receiveAsString(String containerName, String objectName) throws
             StorageResponseHandlingException {
         LOG.debug("Receive string from from blob '{}' in container '{}'", objectName, containerName);
         InputStreamBlob streamBlob;
@@ -378,11 +378,11 @@ public class AzureTemplate implements StorageOperations {
     /**
      * @param objectName
      * @param stringToSend
-     * @throws StorageCommunicationException
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.lang.String)
      */
-    public String send(String objectName, String stringToSend) throws StorageCommunicationException {
+    public String send(String objectName, String stringToSend) {
         return send(defaultContainerName, objectName, stringToSend);
     }
 
@@ -390,11 +390,11 @@ public class AzureTemplate implements StorageOperations {
      * @param containerName
      * @param objectName
      * @param stringToSend
-     * @throws StorageCommunicationException
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.lang.String, java.lang.String)
      */
-    public String send(String containerName, String objectName, String stringToSend) throws StorageCommunicationException {
+    public String send(String containerName, String objectName, String stringToSend) {
         try {
             restService.putObject(containerName, new StringBlob(objectName, stringToSend));
         } catch (AzureRestRequestCreationException e) {
@@ -416,21 +416,21 @@ public class AzureTemplate implements StorageOperations {
 
     /**
      * @param fileToSend
-     * @throws StorageCommunicationException
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.io.File)
      */
-    public String send(File fileToSend) throws StorageCommunicationException {
+    public String send(File fileToSend) {
         return send(defaultContainerName, fileToSend);
     }
 
     /**
      * @param containerName
      * @param fileToSend
-     * @throws StorageCommunicationException
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.io.File)
      */
-    public String send(String containerName, File fileToSend) throws StorageCommunicationException {
+    public String send(String containerName, File fileToSend) {
         Assert.notNull(fileToSend, "File to send can not be null");
         return send(defaultContainerName, fileToSend.getName(), fileToSend);
     }
@@ -439,11 +439,11 @@ public class AzureTemplate implements StorageOperations {
      * @param containerName
      * @param objectName
      * @param fileToSend
-     * @throws StorageCommunicationException
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.lang.String, java.io.File)
      */
-    public String send(String containerName, String objectName, File fileToSend) throws StorageCommunicationException {
+    public String send(String containerName, String objectName, File fileToSend) {
         Assert.notNull(fileToSend, "File to send can not be null");
         try {
             restService.putObject(containerName, new FileBlob(objectName, fileToSend));
@@ -467,11 +467,11 @@ public class AzureTemplate implements StorageOperations {
     /**
      * @param objectName
      * @param is
-     * @throws StorageCommunicationException
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.io.InputStream)
      */
-    public String send(String objectName, InputStream is) throws StorageCommunicationException {
+    public String send(String objectName, InputStream is) {
         return send(defaultContainerName, objectName, is);
     }
 
@@ -479,11 +479,11 @@ public class AzureTemplate implements StorageOperations {
      * @param containerName
      * @param objectName
      * @param is
-     * @throws StorageCommunicationException
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.lang.String, java.io.InputStream)
      */
-    public String send(String containerName, String objectName, InputStream is) throws StorageCommunicationException {
+    public String send(String containerName, String objectName, InputStream is) {
         try {
             restService.putObject(containerName, new InputStreamBlob(objectName, is));
         } catch (AzureRestRequestCreationException e) {

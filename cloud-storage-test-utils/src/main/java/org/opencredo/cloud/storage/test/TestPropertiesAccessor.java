@@ -14,14 +14,13 @@
  */
 package org.opencredo.cloud.storage.test;
 
-import java.util.Properties;
-
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.StringUtils;
 
+import java.util.Properties;
+
 /**
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
- * 
  */
 public class TestPropertiesAccessor {
     public static final String AWS_KEY_NAME = "awsKey";
@@ -41,7 +40,7 @@ public class TestPropertiesAccessor {
             TEST_PROPERTIES = new Properties();
             TEST_PROPERTIES.load((new ClassPathResource("test.properties").getInputStream()));
         } catch (Exception e) {
-            throw new RuntimeException("Failed to load test.properties");
+            throw new RuntimeException("Failed to load test.properties", e);
         }
 
     }

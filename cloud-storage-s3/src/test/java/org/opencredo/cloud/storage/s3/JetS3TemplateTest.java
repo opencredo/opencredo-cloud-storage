@@ -421,7 +421,7 @@ public class JetS3TemplateTest {
      *
      * @throws S3ServiceException
      * @throws IOException
-     * @throws StorageCommunicationException
+     * @
      */
     @Test(expected = StorageCommunicationException.class)
     public void testReceiveAsFileCauseS3CommunicationException() throws S3ServiceException,

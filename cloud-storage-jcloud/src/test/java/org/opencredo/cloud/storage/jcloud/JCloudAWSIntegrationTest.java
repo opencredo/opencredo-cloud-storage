@@ -71,7 +71,7 @@ public class JCloudAWSIntegrationTest {
     }
 
     @Test
-    public void testRealFileUpload() throws StorageCommunicationException, IOException {
+    public void testRealFileUpload() throws IOException {
         template.send(BUCKET_NAME, KEY, TEST_FILE);
 
         File f = File.createTempFile(getClass().getSimpleName(), ".txt");

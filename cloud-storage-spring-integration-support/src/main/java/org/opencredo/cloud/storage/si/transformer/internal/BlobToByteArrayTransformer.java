@@ -35,7 +35,7 @@ import java.io.InputStream;
  */
 public class BlobToByteArrayTransformer extends AbstractBlobTransformer<byte[]> {
 
-    private final static Logger LOG = LoggerFactory.getLogger(BlobToByteArrayTransformer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(BlobToByteArrayTransformer.class);
 
     /**
      * @param template
@@ -56,7 +56,7 @@ public class BlobToByteArrayTransformer extends AbstractBlobTransformer<byte[]> 
      * @param message
      * @throws IOException
      */
-    public Message<byte[]> doTransform(Message<BlobDetails> message) throws BlobTransformException {
+    public Message<byte[]> doTransform(Message<BlobDetails> message) {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Transform blob to byte array: '{}'", String.valueOf(message.getPayload()));
         }
@@ -70,7 +70,7 @@ public class BlobToByteArrayTransformer extends AbstractBlobTransformer<byte[]> 
         } catch (IOException e) {
             throw new BlobTransformException("Failed to copy blob [" + payload + "] byte stream to byte array", e);
         }
-       
+
         builder = (MessageBuilder<byte[]>) MessageBuilder.withPayload(output.toByteArray())//
                 .copyHeaders(message.getHeaders());
         Message<byte[]> blobMessage = builder.build();

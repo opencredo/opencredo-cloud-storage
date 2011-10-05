@@ -18,7 +18,6 @@ package org.opencredo.cloud.storage.si.adapter.config;
 import org.opencredo.cloud.storage.si.adapter.ReadingMessageSource;
 import org.springframework.beans.BeanMetadataElement;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
-import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.integration.config.xml.AbstractPollingInboundChannelAdapterParser;
 import org.springframework.util.StringUtils;

@@ -27,7 +27,7 @@ import java.util.Random;
  * @author Eren Aykin (eren.aykin@opencredo.com)
  */
 public class QuoteService {
-    private final static Logger LOG = LoggerFactory.getLogger(QuoteService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(QuoteService.class);
 
     public void lookupQuote(Message<String> tickerMessage) {
         BigDecimal price = new BigDecimal(new Random().nextDouble() * 100);

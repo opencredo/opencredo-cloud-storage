@@ -75,7 +75,7 @@ public class JCloudS3TemplateIntegrationTest {
     }
 
     @Test
-    public void testRealFileUpload() throws StorageCommunicationException, IOException {
+    public void testRealFileUpload() throws IOException {
         template.send(BUCKET_NAME, KEY, TEST_FILE);
 
         File f = File.createTempFile(getClass().getSimpleName(), ".txt");
@@ -90,7 +90,7 @@ public class JCloudS3TemplateIntegrationTest {
     }
 
     @Test
-    public void testCreateTimeExpiredUrl() throws StorageCommunicationException, IOException {
+    public void testCreateTimeExpiredUrl() throws IOException {
         template.send(BUCKET_NAME, KEY, TEST_FILE);
 
         File f = File.createTempFile(getClass().getSimpleName(), ".txt");

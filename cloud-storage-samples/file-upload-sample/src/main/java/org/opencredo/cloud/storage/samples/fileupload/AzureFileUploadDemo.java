@@ -14,6 +14,14 @@
  */
 package org.opencredo.cloud.storage.samples.fileupload;
 
+import org.opencredo.cloud.storage.BlobDetails;
+import org.opencredo.cloud.storage.ContainerStatus;
+import org.opencredo.cloud.storage.StorageOperations;
+import org.opencredo.cloud.storage.azure.AzureCredentials;
+import org.opencredo.cloud.storage.azure.AzureTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -23,26 +31,17 @@ import java.net.URL;
 import java.util.List;
 import java.util.Properties;
 
-import org.opencredo.cloud.storage.BlobDetails;
-import org.opencredo.cloud.storage.ContainerStatus;
-import org.opencredo.cloud.storage.StorageOperations;
-import org.opencredo.cloud.storage.azure.AzureCredentials;
-import org.opencredo.cloud.storage.azure.AzureTemplate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * In order to run this sample you have to have account in Windows Azure. Azure
  * account details should be specified in properties file:
  * fileUpload.properties.
- * 
+ * <p/>
  * This sample shows how to use cloud storage template programmatically.
- * 
+ *
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
- * 
  */
 public class AzureFileUploadDemo {
-    private final static Logger LOG = LoggerFactory.getLogger(AzureFileUploadDemo.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AzureFileUploadDemo.class);
 
     // Properties file. To run this example you have to specify required
     // properties.

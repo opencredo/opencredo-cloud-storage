@@ -26,14 +26,14 @@ import java.util.Random;
  * In order to run this sample you have to have account in Amazon AWS.
  * Amazon AWS account details should be specified in properties file:
  * quote.properties.
- * 
+ * <p/>
  * This sample shows how to integrate cloud storage with Spring-Integration.
- * 
+ *
  * @author Eren Aykin (eren.aykin@opencredo.com)
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  */
 public class S3QuoteDemo {
-    private final static Logger LOG = LoggerFactory.getLogger(S3QuoteDemo.class);
+    private static final Logger LOG = LoggerFactory.getLogger(S3QuoteDemo.class);
 
     public static void main(String[] args) {
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("quoteDemo-context.xml");

@@ -15,7 +15,6 @@
 package org.opencredo.cloud.storage.s3;
 
 import org.opencredo.cloud.storage.ContainerStatus;
-import org.opencredo.cloud.storage.StorageCommunicationException;
 import org.opencredo.cloud.storage.StorageOperations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,8 +28,8 @@ public abstract class S3Template implements StorageOperations, InitializingBean 
     private static final String BUCKET_DELETION_PROBLEM = "Bucket deletion problem";
     private static final String SERVICE_PROBLEM = "Service problem";
     private static final String RECEIVING_FILE_PROBLEM = "Receiving file problem";
-    protected String defaultContainerName;
-    protected AwsCredentials awsCredentials;
+    private String defaultContainerName;
+    private AwsCredentials awsCredentials;
 
     public S3Template(final String defaultContainerName, final AwsCredentials awsCredentials) {
         this.defaultContainerName = defaultContainerName;
@@ -45,7 +44,7 @@ public abstract class S3Template implements StorageOperations, InitializingBean 
         Assert.isTrue(containerStatus != ContainerStatus.ALREADY_CLAIMED, "Default bucket '" + defaultContainerName + "' already claimed.");
     }
 
-    public abstract ContainerStatus checkContainerStatus(String containerName) throws StorageCommunicationException;
+    public abstract ContainerStatus checkContainerStatus(String containerName);
 
     /**
      * @param defaultContainerName the defaultContainerName to set

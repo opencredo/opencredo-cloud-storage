@@ -50,12 +50,17 @@ import java.util.List;
  * @author David Legge (david.legge@opencredo.com)
  */
 public class JetS3Template extends S3Template {
-    private final static Logger LOG = LoggerFactory.getLogger(S3Template.class);
+    private static final Logger LOG = LoggerFactory.getLogger(S3Template.class);
     private static final String BUCKET_NAME_CANNOT_BE_NULL = "Bucket name cannot be null";
     private static final String BUCKET_CREATION_PROBLEM = "Bucket creation problem";
     private static final String BUCKET_DELETION_PROBLEM = "Bucket deletion problem";
     private static final String SERVICE_PROBLEM = "Service problem";
     private static final String RECEIVING_FILE_PROBLEM = "Receiving file problem";
+    private static final String SEND_STRING_TO_BUCKET_WITH_KEY = "Send string to bucket '{}' with key '{}'";
+    private static final String SEND_INPUT_STREAM_TO_BUCKET_WITH_KEY = "Send input-stream to bucket '{}' with key '{}'";
+    private static final String BLOB_NAME_MUST_BE_SET = "Blob name must be set";
+    private static final String SENDING_INPUT_STREAM_PROBLEM = "Sending input stream problem";
+    private static final String SENDING_INPUT_STREAM_IO_PROBLEM = "Sending input stream IO problem";
 
     private final S3Service s3Service;
 
@@ -65,7 +70,7 @@ public class JetS3Template extends S3Template {
      * @param awsCredentials
      * @throws StorageException
      */
-    public JetS3Template(final AwsCredentials awsCredentials) throws StorageException {
+    public JetS3Template(final AwsCredentials awsCredentials) {
         this(awsCredentials, null);
     }
 
@@ -74,7 +79,7 @@ public class JetS3Template extends S3Template {
      * @param defaultContainerName
      * @throws StorageException
      */
-    public JetS3Template(final AwsCredentials awsCredentials, final String defaultContainerName) throws StorageException {
+    public JetS3Template(final AwsCredentials awsCredentials, final String defaultContainerName) {
         super(defaultContainerName, awsCredentials);
         try {
             s3Service = new RestS3Service(new org.jets3t.service.security.AWSCredentials(awsCredentials.getAccessKey(),
@@ -92,10 +97,10 @@ public class JetS3Template extends S3Template {
 
     /**
      * @param containerName
-     * @throws StorageCommunicationException
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#createContainer(java.lang.String)
      */
-    public boolean createContainer(String containerName) throws StorageCommunicationException {
+    public boolean createContainer(String containerName) {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
         try {
             final S3Bucket bucket = s3Service.createBucket(new S3Bucket(containerName));
@@ -108,10 +113,10 @@ public class JetS3Template extends S3Template {
 
     /**
      * @param containerName
-     * @throws StorageCommunicationException
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#createContainer(java.lang.String)
      */
-    public void createPublicContainer(String containerName) throws StorageCommunicationException {
+    public void createPublicContainer(String containerName) {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
         try {
             // Create a bucket in S3.
@@ -137,10 +142,10 @@ public class JetS3Template extends S3Template {
 
     /**
      * @param containerName
-     * @throws StorageCommunicationException
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#deleteContainer(java.lang.String)
      */
-    public void deleteContainer(String containerName) throws StorageCommunicationException {
+    public void deleteContainer(String containerName) {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
         LOG.debug("Delete bucket '{}'", containerName);
         try {
@@ -152,21 +157,21 @@ public class JetS3Template extends S3Template {
 
     /**
      * @param objectName
-     * @throws StorageCommunicationException
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#deleteObject(java.lang.String)
      */
-    public void deleteObject(String objectName) throws StorageCommunicationException {
-        deleteObject(defaultContainerName, objectName);
+    public void deleteObject(String objectName) {
+        deleteObject(getDefaultContainerName(), objectName);
     }
 
     /**
      * @param containerName
      * @param objectName
-     * @throws StorageCommunicationException
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#deleteObject(java.lang.String,
      *      java.lang.String)
      */
-    public void deleteObject(String containerName, String objectName) throws StorageCommunicationException {
+    public void deleteObject(String containerName, String objectName) {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
         LOG.debug("Delete object '{}' in bucket '{}'", objectName, containerName);
         try {
@@ -178,10 +183,10 @@ public class JetS3Template extends S3Template {
 
     /**
      * @return
-     * @throws StorageCommunicationException
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#listContainerNames()
      */
-    public List<String> listContainerNames() throws StorageCommunicationException {
+    public List<String> listContainerNames() {
         LOG.debug("List buckets");
         try {
             S3Bucket[] s3buckets = s3Service.listAllBuckets();
@@ -197,20 +202,20 @@ public class JetS3Template extends S3Template {
 
     /**
      * @return
-     * @throws StorageCommunicationException
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#listContainerObjectDetails()
      */
-    public List<BlobDetails> listContainerObjectDetails() throws StorageCommunicationException {
-        return listContainerObjectDetails(defaultContainerName);
+    public List<BlobDetails> listContainerObjectDetails() {
+        return listContainerObjectDetails(getDefaultContainerName());
     }
 
     /**
      * @param containerName
      * @return
-     * @throws StorageCommunicationException
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#checkContainerStatus(java.lang.String)
      */
-    public ContainerStatus checkContainerStatus(String containerName) throws StorageCommunicationException {
+    public ContainerStatus checkContainerStatus(String containerName) {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
         LOG.debug("Get bucket '{}' status", containerName);
         try {
@@ -235,10 +240,10 @@ public class JetS3Template extends S3Template {
     /**
      * @param containerName
      * @return
-     * @throws StorageCommunicationException
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#listContainerObjectDetails(java.lang.String)
      */
-    public List<BlobDetails> listContainerObjectDetails(String containerName) throws StorageCommunicationException {
+    public List<BlobDetails> listContainerObjectDetails(String containerName) {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
         LOG.debug("Get objects list for bucket '{}'", containerName);
         try {
@@ -262,26 +267,26 @@ public class JetS3Template extends S3Template {
     /**
      * @param objectName
      * @param stringToSend
-     * @throws StorageCommunicationException
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.lang.String)
      */
-    public String send(String objectName, String stringToSend) throws StorageCommunicationException {
-        return send(defaultContainerName, objectName, stringToSend);
+    public String send(String objectName, String stringToSend) {
+        return send(getDefaultContainerName(), objectName, stringToSend);
     }
 
     /**
      * @param containerName
      * @param objectName
      * @param stringToSend
-     * @throws StorageCommunicationException
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.lang.String, java.lang.String)
      */
-    public String send(String containerName, String objectName, String stringToSend) throws StorageCommunicationException {
+    public String send(String containerName, String objectName, String stringToSend) {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
-        Assert.hasText(objectName, "Blob name must be set");
-        LOG.debug("Send string to bucket '{}' with key '{}'", containerName, objectName);
+        Assert.hasText(objectName, BLOB_NAME_MUST_BE_SET);
+        LOG.debug(SEND_STRING_TO_BUCKET_WITH_KEY, containerName, objectName);
         try {
             s3Service.putObject(new S3Bucket(containerName), new S3Object(objectName, stringToSend));
         } catch (S3ServiceException e) {
@@ -298,21 +303,21 @@ public class JetS3Template extends S3Template {
 
     /**
      * @param fileToSend
-     * @throws StorageCommunicationException
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.io.File)
      */
-    public String send(File fileToSend) throws StorageCommunicationException {
-        return send(defaultContainerName, fileToSend);
+    public String send(File fileToSend) {
+        return send(getDefaultContainerName(), fileToSend);
     }
 
     /**
      * @param containerName
      * @param fileToSend
-     * @throws StorageCommunicationException
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.io.File)
      */
-    public String send(String containerName, File fileToSend) throws StorageCommunicationException {
+    public String send(String containerName, File fileToSend) {
         Assert.notNull(containerName, "Bucket name can not be null");
         Assert.notNull(fileToSend, "File to send can not be null");
         return send(containerName, fileToSend.getName(), fileToSend);
@@ -322,11 +327,11 @@ public class JetS3Template extends S3Template {
      * @param containerName
      * @param objectName
      * @param fileToSend
-     * @throws StorageCommunicationException
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.lang.String, java.io.File)
      */
-    public String send(String containerName, String objectName, File fileToSend) throws StorageCommunicationException {
+    public String send(String containerName, String objectName, File fileToSend) {
         return sendAndReceiveUrl(containerName, objectName, fileToSend);
     }
 
@@ -335,47 +340,47 @@ public class JetS3Template extends S3Template {
     /**
      * @param objectName
      * @param is
-     * @throws StorageCommunicationException
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.io.InputStream)
      */
-    public String send(String objectName, InputStream is) throws StorageCommunicationException {
-        return send(defaultContainerName, objectName, is);
+    public String send(String objectName, InputStream is) {
+        return send(getDefaultContainerName(), objectName, is);
     }
 
     /**
      * @param containerName
      * @param objectName
      * @param is
-     * @throws StorageCommunicationException
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.lang.String, java.io.InputStream)
      */
-    public String send(String containerName, String objectName, InputStream is) throws StorageCommunicationException {
+    public String send(String containerName, String objectName, InputStream is) {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
-        Assert.hasText(objectName, "Blob name must be set");
-        LOG.debug("Send input-stream to bucket '{}' with key '{}'", containerName, objectName);
+        Assert.hasText(objectName, BLOB_NAME_MUST_BE_SET);
+        LOG.debug(SEND_INPUT_STREAM_TO_BUCKET_WITH_KEY, containerName, objectName);
         try {
             S3Object s3ObjectToSend = new S3Object(objectName);
             s3ObjectToSend.setDataInputStream(is);
             s3ObjectToSend.setContentLength(is.available());
             s3Service.putObject(new S3Bucket(containerName), s3ObjectToSend);
         } catch (IOException e) {
-            throw new StorageCommunicationException("Sending input stream IO problem", e);
+            throw new StorageCommunicationException(SENDING_INPUT_STREAM_IO_PROBLEM, e);
         } catch (S3ServiceException e) {
-            throw new StorageCommunicationException("Sending input stream problem", e);
+            throw new StorageCommunicationException(SENDING_INPUT_STREAM_PROBLEM, e);
         }
         return objectName;
     }
 
-    public String sendAndReceiveUrl(String objectName, String stringToSend) throws StorageCommunicationException {
-        return sendAndReceiveUrl(defaultContainerName, objectName, stringToSend);
+    public String sendAndReceiveUrl(String objectName, String stringToSend) {
+        return sendAndReceiveUrl(getDefaultContainerName(), objectName, stringToSend);
     }
 
-    public String sendAndReceiveUrl(String containerName, String objectName, String stringToSend) throws StorageCommunicationException {
+    public String sendAndReceiveUrl(String containerName, String objectName, String stringToSend) {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
-        Assert.hasText(objectName, "Blob name must be set");
-        LOG.debug("Send input-stream to bucket '{}' with key '{}'", containerName, objectName);
+        Assert.hasText(objectName, BLOB_NAME_MUST_BE_SET);
+        LOG.debug(SEND_INPUT_STREAM_TO_BUCKET_WITH_KEY, containerName, objectName);
         try {
 
             S3Object s3Object = new S3Object(objectName, stringToSend);
@@ -384,20 +389,20 @@ public class JetS3Template extends S3Template {
             return "http://s3.amazonaws.com/" + containerName + "/" + s3Object.getKey();
 
         } catch (IOException e) {
-            throw new StorageCommunicationException("Sending input stream IO problem", e);
+            throw new StorageCommunicationException(SENDING_INPUT_STREAM_IO_PROBLEM, e);
         } catch (S3ServiceException e) {
-            throw new StorageCommunicationException("Sending input stream problem", e);
+            throw new StorageCommunicationException(SENDING_INPUT_STREAM_PROBLEM, e);
         } catch (NoSuchAlgorithmException e) {
-            throw new StorageCommunicationException("Sending input stream problem", e);
+            throw new StorageCommunicationException(SENDING_INPUT_STREAM_PROBLEM, e);
         }
 
     }
 
-    public String sendAndReceiveUrl(String containerName, String objectName, File fileToSend) throws StorageCommunicationException {
+    public String sendAndReceiveUrl(String containerName, String objectName, File fileToSend) {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
-        Assert.hasText(objectName, "Blob name must be set");
+        Assert.hasText(objectName, BLOB_NAME_MUST_BE_SET);
         Assert.notNull(fileToSend, "File to send can not be null");
-        LOG.debug("Send input-stream to bucket '{}' with key '{}'", containerName, objectName);
+        LOG.debug(SEND_INPUT_STREAM_TO_BUCKET_WITH_KEY, containerName, objectName);
 
         if (LOG.isDebugEnabled()) {
             LOG.debug("Send file '{}' to bucket '{}' with key '{}'", new Object[]{fileToSend.getAbsolutePath(), containerName, objectName});
@@ -411,31 +416,31 @@ public class JetS3Template extends S3Template {
             return "http://s3.amazonaws.com/" + containerName + "/" + s3Object.getKey();
 
         } catch (IOException e) {
-            throw new StorageCommunicationException("Sending input stream IO problem", e);
+            throw new StorageCommunicationException(SENDING_INPUT_STREAM_IO_PROBLEM, e);
         } catch (S3ServiceException e) {
-            throw new StorageCommunicationException("Sending input stream problem", e);
+            throw new StorageCommunicationException(SENDING_INPUT_STREAM_PROBLEM, e);
         } catch (NoSuchAlgorithmException e) {
-            throw new StorageCommunicationException("Sending input stream problem", e);
+            throw new StorageCommunicationException(SENDING_INPUT_STREAM_PROBLEM, e);
         }
 
     }
 
-    public String sendAndReceiveUrl(File fileToSend) throws StorageCommunicationException {
-        return sendAndReceiveUrl(defaultContainerName, fileToSend);
+    public String sendAndReceiveUrl(File fileToSend) {
+        return sendAndReceiveUrl(getDefaultContainerName(), fileToSend);
     }
 
-    public String sendAndReceiveUrl(String objectName, InputStream is) throws StorageCommunicationException {
-        return sendAndReceiveUrl(defaultContainerName, objectName, is);
+    public String sendAndReceiveUrl(String objectName, InputStream is) {
+        return sendAndReceiveUrl(getDefaultContainerName(), objectName, is);
     }
 
-    public String sendAndReceiveUrl(String containerName, File fileToSend) throws StorageCommunicationException {
+    public String sendAndReceiveUrl(String containerName, File fileToSend) {
         return sendAndReceiveUrl(containerName, fileToSend.getName(), fileToSend);
     }
 
-    public String sendAndReceiveUrl(String containerName, String objectName, InputStream is) throws StorageCommunicationException {
+    public String sendAndReceiveUrl(String containerName, String objectName, InputStream is) {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
-        Assert.hasText(objectName, "Blob name must be set");
-        LOG.debug("Send input-stream to bucket '{}' with key '{}'", containerName, objectName);
+        Assert.hasText(objectName, BLOB_NAME_MUST_BE_SET);
+        LOG.debug(SEND_INPUT_STREAM_TO_BUCKET_WITH_KEY, containerName, objectName);
         try {
             S3Object s3ObjectToSend = new S3Object(objectName);
             s3ObjectToSend.setDataInputStream(is);
@@ -444,9 +449,9 @@ public class JetS3Template extends S3Template {
             s3Service.putObject(new S3Bucket(containerName), s3ObjectToSend);
             return "http://s3.amazonaws.com/" + containerName + "/" + s3ObjectToSend.getKey();
         } catch (IOException e) {
-            throw new StorageCommunicationException("Sending input stream IO problem", e);
+            throw new StorageCommunicationException(SENDING_INPUT_STREAM_IO_PROBLEM, e);
         } catch (S3ServiceException e) {
-            throw new StorageCommunicationException("Sending input stream problem", e);
+            throw new StorageCommunicationException(SENDING_INPUT_STREAM_PROBLEM, e);
         }
     }
 
@@ -455,30 +460,28 @@ public class JetS3Template extends S3Template {
     /**
      * @param keyName
      * @return
-     * @throws StorageCommunicationException
      * @throws StorageResponseHandlingException
      *
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAsString(java.lang.String)
      */
-    public String receiveAsString(String keyName) throws StorageCommunicationException,
-            StorageResponseHandlingException {
-        return receiveAsString(defaultContainerName, keyName);
+    public String receiveAsString(String keyName) {
+        return receiveAsString(getDefaultContainerName(), keyName);
     }
 
     /**
      * @param containerName
      * @param objectName
      * @return
-     * @throws StorageCommunicationException
      * @throws StorageResponseHandlingException
      *
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAsString(java.lang.String,
      *      java.lang.String)
      */
-    public String receiveAsString(String containerName, String objectName) throws StorageCommunicationException,
-            StorageResponseHandlingException {
+    public String receiveAsString(String containerName, String objectName) {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
-        Assert.hasText(objectName, "Blob name must be set");
+        Assert.hasText(objectName, BLOB_NAME_MUST_BE_SET);
         LOG.debug("Receive string from bucket '{}' with key '{}'", containerName, objectName);
         S3Object s3Object = null;
         try {
@@ -504,31 +507,29 @@ public class JetS3Template extends S3Template {
     /**
      * @param objectName
      * @param toFile
-     * @throws StorageCommunicationException
      * @throws StorageResponseHandlingException
      *
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAndSaveToFile(java.lang.String,
      *      java.io.File)
      */
-    public String receiveAndSaveToFile(String objectName, File toFile) throws StorageCommunicationException,
-            StorageResponseHandlingException {
-        return receiveAndSaveToFile(defaultContainerName, objectName, toFile);
+    public String receiveAndSaveToFile(String objectName, File toFile) {
+        return receiveAndSaveToFile(getDefaultContainerName(), objectName, toFile);
     }
 
     /**
      * @param containerName
      * @param objectName
      * @param toFile
-     * @throws StorageCommunicationException
      * @throws StorageResponseHandlingException
      *
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAndSaveToFile(java.lang.String,
      *      java.lang.String, java.io.File)
      */
-    public String receiveAndSaveToFile(String containerName, String objectName, File toFile)
-            throws StorageCommunicationException, StorageResponseHandlingException {
+    public String receiveAndSaveToFile(String containerName, String objectName, File toFile) throws StorageResponseHandlingException {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
-        Assert.hasText(objectName, "Blob name must be set");
+        Assert.hasText(objectName, BLOB_NAME_MUST_BE_SET);
         Assert.notNull(toFile, "File to save received data must be specified");
 
         if (LOG.isDebugEnabled()) {
@@ -568,30 +569,29 @@ public class JetS3Template extends S3Template {
     /**
      * @param objectName
      * @return
-     * @throws StorageCommunicationException
      * @throws StorageResponseHandlingException
      *
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAsInputStream(java.lang.String)
      */
-    public InputStream receiveAsInputStream(String objectName) throws StorageCommunicationException,
+    public InputStream receiveAsInputStream(String objectName) throws
             StorageResponseHandlingException {
-        return receiveAsInputStream(defaultContainerName, objectName);
+        return receiveAsInputStream(getDefaultContainerName(), objectName);
     }
 
     /**
      * @param containerName
      * @param objectName
      * @return
-     * @throws StorageCommunicationException
      * @throws StorageResponseHandlingException
      *
+     * @
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAsInputStream(java.lang.String,
      *      java.lang.String)
      */
-    public InputStream receiveAsInputStream(String containerName, String objectName)
-            throws StorageCommunicationException, StorageResponseHandlingException {
+    public InputStream receiveAsInputStream(String containerName, String objectName) throws StorageResponseHandlingException {
         Assert.notNull(containerName, BUCKET_NAME_CANNOT_BE_NULL);
-        Assert.hasText(objectName, "Blob name must be set");
+        Assert.hasText(objectName, BLOB_NAME_MUST_BE_SET);
         LOG.debug("Receive input-stream from bucket '{}' with key '{}'", containerName, objectName);
         try {
             return s3Service.getObject(new S3Bucket(containerName), objectName).getDataInputStream();
@@ -602,7 +602,7 @@ public class JetS3Template extends S3Template {
         }
     }
 
-    public String createdSignedUrl(String containerName, String objectName, Date expiryDate) throws StorageCommunicationException {
+    public String createdSignedUrl(String containerName, String objectName, Date expiryDate) {
         try {
             return s3Service.createSignedGetUrl(containerName, objectName, expiryDate, false);
         } catch (S3ServiceException e) {

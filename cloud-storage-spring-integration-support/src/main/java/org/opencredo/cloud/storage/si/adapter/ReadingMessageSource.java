@@ -17,7 +17,6 @@ package org.opencredo.cloud.storage.si.adapter;
 
 import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.ContainerStatus;
-import org.opencredo.cloud.storage.StorageCommunicationException;
 import org.opencredo.cloud.storage.StorageOperations;
 import org.opencredo.cloud.storage.si.comparator.BlobDetailsComparator;
 import org.opencredo.cloud.storage.si.comparator.internal.BlobLastModifiedDateComparator;
@@ -42,12 +41,12 @@ import java.util.concurrent.PriorityBlockingQueue;
  * {@link AcceptOnceBlobNameFilter} is used. It ensures blob objects are picked
  * up only once from the container. A {@link BlobDetailsComparator} can be used
  * to ensure internal ordering of the blob objects in a queue.
- * 
+ *
  * @author Eren Aykin (eren.aykin@opencredo.com)
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  */
 public class ReadingMessageSource implements MessageSource<BlobDetails>, InitializingBean {
-    private final static Logger LOG = LoggerFactory.getLogger(ReadingMessageSource.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ReadingMessageSource.class);
 
     private static final int INTERNAL_QUEUE_CAPACITY = 5;
 
@@ -58,7 +57,6 @@ public class ReadingMessageSource implements MessageSource<BlobDetails>, Initial
     private final Queue<BlobDetails> toBeReceived;
 
     /**
-     * 
      * @param template
      * @param containerName
      */
@@ -76,7 +74,6 @@ public class ReadingMessageSource implements MessageSource<BlobDetails>, Initial
     }
 
     /**
-     * 
      * @param template
      * @param containerName
      * @param filter
@@ -100,9 +97,9 @@ public class ReadingMessageSource implements MessageSource<BlobDetails>, Initial
     }
 
     /**
-	 * 
-	 */
-    public Message<BlobDetails> receive() throws StorageCommunicationException {
+     *
+     */
+    public Message<BlobDetails> receive() {
 
         if (toBeReceived.isEmpty()) {
             doReceive();
@@ -112,12 +109,13 @@ public class ReadingMessageSource implements MessageSource<BlobDetails>, Initial
             BlobDetails obj = toBeReceived.poll();
             MessageBuilder<BlobDetails> builder = MessageBuilder.withPayload(obj);
             return builder.build();
-        } else {
+        }
+        else {
             return null;
         }
     }
 
-    public void doReceive() throws StorageCommunicationException {
+    public void doReceive() {
         LOG.debug("Receive objects from container '{}'", containerName);
 
         List<BlobDetails> cod = template.listContainerObjectDetails(containerName);

@@ -32,12 +32,12 @@ import java.io.File;
 /**
  * MessageHandler for writing blobs to the cloud storage. Depending on the
  * Message's payload, the relevant handler turns the payload into an Blob.
- * 
+ *
  * @author Eren Aykin (eren.aykin@opencredo.com)
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  */
 public class WritingMessageHandler implements MessageHandler, InitializingBean {
-    private final static Logger LOG = LoggerFactory.getLogger(WritingMessageHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(WritingMessageHandler.class);
 
     private final StorageOperations template;
     private final String containerName;
@@ -68,7 +68,7 @@ public class WritingMessageHandler implements MessageHandler, InitializingBean {
     /**
      * write the content of Message to the cloud storage with handlers that
      * convert the message payload to Blob.
-     * 
+     *
      * @param message
      */
     public void handleMessage(Message<?> message) {
@@ -81,9 +81,11 @@ public class WritingMessageHandler implements MessageHandler, InitializingBean {
 
         if ((payload instanceof File)) {
             template.send(containerName, blobName, (File) payload);
-        } else if (payload instanceof String) {
+        }
+        else if (payload instanceof String) {
             template.send(containerName, blobName, (String) payload);
-        } else {
+        }
+        else {
             throw new MessageHandlingException(message, "unsupported Message payload type ["
                     + payload.getClass().getName() + "]");
         }
