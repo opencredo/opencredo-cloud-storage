@@ -32,8 +32,11 @@ import java.util.Random;
  * @author Eren Aykin (eren.aykin@opencredo.com)
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  */
-public class S3QuoteDemo {
+public final class S3QuoteDemo {
     private static final Logger LOG = LoggerFactory.getLogger(S3QuoteDemo.class);
+
+    private S3QuoteDemo() {
+    }
 
     public static void main(String[] args) {
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("quoteDemo-context.xml");

@@ -49,7 +49,6 @@ public abstract class AbstractBlobTransformer<T> implements BlobTransformer<T> {
      *
      * @param message
      * @return
-     * @
      * @see org.opencredo.cloud.storage.si.transformer.BlobTransformer#transform(org.springframework.integration.core.Message)
      */
     public Message<T> transform(Message<BlobDetails> message) {
@@ -64,7 +63,6 @@ public abstract class AbstractBlobTransformer<T> implements BlobTransformer<T> {
     /**
      * @param message SI message containing {@link BlobDetails} as payload.
      * @return SI message containing any type as message payload.
-     * @
      */
     protected abstract Message<T> doTransform(Message<BlobDetails> message);
 

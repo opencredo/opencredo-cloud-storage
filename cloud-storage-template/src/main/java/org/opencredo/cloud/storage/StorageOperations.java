@@ -40,7 +40,6 @@ public interface StorageOperations {
      *
      * @return Return list of container names or empty list if no containers
      *         exist.
-     * @
      */
     List<String> listContainerNames();
 
@@ -49,7 +48,6 @@ public interface StorageOperations {
      * container name should be provided in implementation.
      *
      * @return
-     * @
      */
     List<BlobDetails> listContainerObjectDetails();
 
@@ -59,7 +57,6 @@ public interface StorageOperations {
      * @param containerName
      * @return Return list of container object (blob) details or empty list if
      *         container does not have any objects (blobs).
-     * @
      */
     List<BlobDetails> listContainerObjectDetails(String containerName);
 
@@ -75,7 +72,6 @@ public interface StorageOperations {
      * Create a new container with the provided container name.
      *
      * @param containerName
-     * @
      */
     boolean createContainer(String containerName);
 
@@ -83,7 +79,6 @@ public interface StorageOperations {
      * Delete the container with the provided container name.
      *
      * @param containerName
-     * @
      */
     void deleteContainer(String containerName);
 
@@ -106,7 +101,6 @@ public interface StorageOperations {
      * @param containerName The name of the cloud storage container.
      * @param objectName    The name of object in the cloud storage container.
      * @param stringToSend
-     * @
      */
     String send(String containerName, String objectName, String stringToSend);
 
@@ -115,7 +109,6 @@ public interface StorageOperations {
      * must be provided in template (implementation class).
      *
      * @param fileToSend
-     * @
      */
     String send(File fileToSend);
 
@@ -125,7 +118,6 @@ public interface StorageOperations {
      *
      * @param containerName
      * @param fileToSend
-     * @
      */
     String send(String containerName, File fileToSend);
 
@@ -135,7 +127,6 @@ public interface StorageOperations {
      * @param containerName The name of the cloud storage container.
      * @param objectName    The name of object in the cloud storage container.
      * @param fileToSend
-     * @
      */
     String send(String containerName, String objectName, File fileToSend);
 
@@ -145,7 +136,6 @@ public interface StorageOperations {
      *
      * @param objectName
      * @param is
-     * @
      */
     String send(String objectName, InputStream is);
 
@@ -155,7 +145,6 @@ public interface StorageOperations {
      * @param containerName The name of the cloud storage container.
      * @param objectName    The name of object in the cloud storage container.
      * @param is            Input stream as container object content.
-     * @
      */
     String send(String containerName, String objectName, InputStream is);
 
@@ -167,7 +156,6 @@ public interface StorageOperations {
      * @return
      * @throws StorageResponseHandlingException
      *
-     * @
      */
     String receiveAsString(String objectName);
 
@@ -181,7 +169,6 @@ public interface StorageOperations {
      * @throws StorageResponseHandlingException
      *          Will be thrown if handling of response data fails (e.g.
      *          Failure to convert response byte stream to String).
-     * @
      */
     String receiveAsString(String containerName, String objectName) throws StorageResponseHandlingException;
 
@@ -193,7 +180,6 @@ public interface StorageOperations {
      * @param toFile
      * @throws StorageResponseHandlingException
      *
-     * @
      */
     String receiveAndSaveToFile(String objectName, File toFile);
 
@@ -208,7 +194,6 @@ public interface StorageOperations {
      * @throws StorageResponseHandlingException
      *          Will be thrown if handling of response data fails (e.g.
      *          Failure to write response byte stream to File).
-     * @
      */
     String receiveAndSaveToFile(String containerName, String objectName, File toFile);
 
@@ -220,7 +205,6 @@ public interface StorageOperations {
      * @return
      * @throws StorageResponseHandlingException
      *
-     * @
      */
     InputStream receiveAsInputStream(String objectName);
 
@@ -234,7 +218,6 @@ public interface StorageOperations {
      * @throws StorageResponseHandlingException
      *          Will be thrown if handling of response data fails (e.g.
      *          Failure to close response byte stream).
-     * @
      */
     InputStream receiveAsInputStream(String containerName, String objectName);
 
@@ -243,7 +226,6 @@ public interface StorageOperations {
      * which must be provided in template (implementation class).
      *
      * @param objectName
-     * @
      */
     void deleteObject(String objectName);
 
@@ -253,7 +235,6 @@ public interface StorageOperations {
      * @param containerName The name of the cloud storage container.
      * @param objectName    The name of object in the cloud storage container to be
      *                      received.
-     * @
      */
     void deleteObject(String containerName, String objectName);
 

@@ -14,26 +14,27 @@
  */
 package org.opencredo.cloud.storage.azure.rest;
 
+import org.apache.commons.lang.time.DateFormatUtils;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.apache.commons.lang.time.DateFormatUtils;
-
 /**
  * Utils for Azure REST API.
- * 
+ *
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
- * 
  */
-public class AzureRestServiceUtil {
+public final class AzureRestServiceUtil {
 
     public static final String RFC1123_DATE_PATTERN = "EEE, dd MMM yyyy HH:mm:ss z";
     private static final DateFormat rfc1123_dateFormatter = new SimpleDateFormat(RFC1123_DATE_PATTERN);
 
+    private AzureRestServiceUtil() {
+    }
+
     /**
-     * 
      * @return Returns current time string in RFC1123 pattern.
      */
     public static String currentTimeStringInRFC1123() {
@@ -42,7 +43,7 @@ public class AzureRestServiceUtil {
 
     /**
      * Parses date in RFC1123 string.
-     * 
+     *
      * @param dateStr
      * @return
      * @throws ParseException

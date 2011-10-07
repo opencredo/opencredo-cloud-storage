@@ -67,7 +67,7 @@ public class JCloudS3Template extends S3Template {
      * @throws StorageException
      */
     public JCloudS3Template(final AwsCredentials awsCredentials, final String defaultContainerName) {
-        super(defaultContainerName, awsCredentials);
+        super(defaultContainerName);
         context = new BlobStoreContextFactory().createContext(AWS_S3, awsCredentials.getAccessKey(), awsCredentials.getSecretAccessKey());
 
     }
@@ -78,7 +78,6 @@ public class JCloudS3Template extends S3Template {
 
     /**
      * @param containerName
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#createContainer(java.lang.String)
      */
     public boolean createContainer(String containerName) {
@@ -93,7 +92,6 @@ public class JCloudS3Template extends S3Template {
 
     /**
      * @param containerName
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#createContainer(java.lang.String)
      */
     public void createPublicContainer(String containerName) {
@@ -105,7 +103,6 @@ public class JCloudS3Template extends S3Template {
 
     /**
      * @param containerName
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#deleteContainer(java.lang.String)
      */
     public void deleteContainer(String containerName) {
@@ -118,7 +115,6 @@ public class JCloudS3Template extends S3Template {
 
     /**
      * @param objectName
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#deleteObject(java.lang.String)
      */
     public void deleteObject(String objectName) {
@@ -128,7 +124,6 @@ public class JCloudS3Template extends S3Template {
     /**
      * @param containerName
      * @param objectName
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#deleteObject(java.lang.String,
      *      java.lang.String)
      */
@@ -142,7 +137,6 @@ public class JCloudS3Template extends S3Template {
 
     /**
      * @return
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#listContainerNames()
      */
     public List<String> listContainerNames() {
@@ -160,7 +154,6 @@ public class JCloudS3Template extends S3Template {
 
     /**
      * @return
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#listContainerObjectDetails()
      */
     public List<BlobDetails> listContainerObjectDetails() {
@@ -170,7 +163,6 @@ public class JCloudS3Template extends S3Template {
     /**
      * @param containerName
      * @return
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#checkContainerStatus(java.lang.String)
      */
     @Override
@@ -186,7 +178,6 @@ public class JCloudS3Template extends S3Template {
     /**
      * @param containerName
      * @return
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#listContainerObjectDetails(java.lang.String)
      */
     public List<BlobDetails> listContainerObjectDetails(String containerName) {
@@ -213,7 +204,6 @@ public class JCloudS3Template extends S3Template {
     /**
      * @param objectName
      * @param stringToSend
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.lang.String)
      */
@@ -225,7 +215,6 @@ public class JCloudS3Template extends S3Template {
      * @param containerName
      * @param objectName
      * @param stringToSend
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.lang.String, java.lang.String)
      */
@@ -250,7 +239,6 @@ public class JCloudS3Template extends S3Template {
 
     /**
      * @param fileToSend
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.io.File)
      */
     public String send(File fileToSend) {
@@ -260,7 +248,6 @@ public class JCloudS3Template extends S3Template {
     /**
      * @param containerName
      * @param fileToSend
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.io.File)
      */
@@ -274,7 +261,6 @@ public class JCloudS3Template extends S3Template {
      * @param containerName
      * @param objectName
      * @param fileToSend
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.lang.String, java.io.File)
      */
@@ -287,7 +273,6 @@ public class JCloudS3Template extends S3Template {
     /**
      * @param objectName
      * @param is
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.io.InputStream)
      */
@@ -299,7 +284,6 @@ public class JCloudS3Template extends S3Template {
      * @param containerName
      * @param objectName
      * @param is
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.lang.String, java.io.InputStream)
      */
@@ -379,12 +363,9 @@ public class JCloudS3Template extends S3Template {
     /**
      * @param keyName
      * @return
-     * @throws StorageResponseHandlingException
-     *
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAsString(java.lang.String)
      */
-    public String receiveAsString(String keyName) throws StorageResponseHandlingException {
+    public String receiveAsString(String keyName) {
         return receiveAsString(getDefaultContainerName(), keyName);
     }
 
@@ -392,9 +373,6 @@ public class JCloudS3Template extends S3Template {
      * @param containerName
      * @param objectName
      * @return
-     * @throws StorageResponseHandlingException
-     *
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAsString(java.lang.String,
      *      java.lang.String)
      */
@@ -418,9 +396,6 @@ public class JCloudS3Template extends S3Template {
     /**
      * @param objectName
      * @param toFile
-     * @throws StorageResponseHandlingException
-     *
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAndSaveToFile(java.lang.String,
      *      java.io.File)
      */
@@ -432,9 +407,6 @@ public class JCloudS3Template extends S3Template {
      * @param containerName
      * @param objectName
      * @param toFile
-     * @throws StorageResponseHandlingException
-     *
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAndSaveToFile(java.lang.String,
      *      java.lang.String, java.io.File)
      */
@@ -487,9 +459,6 @@ public class JCloudS3Template extends S3Template {
      * @param containerName
      * @param objectName
      * @return
-     * @throws StorageResponseHandlingException
-     *
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAsInputStream(java.lang.String,
      *      java.lang.String)
      */

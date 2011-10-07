@@ -40,7 +40,7 @@ import java.util.Properties;
  *
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  */
-public class AzureFileUploadDemo {
+public final class AzureFileUploadDemo {
     private static final Logger LOG = LoggerFactory.getLogger(AzureFileUploadDemo.class);
 
     // Properties file. To run this example you have to specify required
@@ -57,6 +57,9 @@ public class AzureFileUploadDemo {
 
     // File to save received blob.
     private static final String BLOB_JPG = "blob.jpg";
+
+    private AzureFileUploadDemo() {
+    }
 
     public static void main(String[] args) throws IOException, URISyntaxException {
         // Properties containing credentials to connect to cloud storage.

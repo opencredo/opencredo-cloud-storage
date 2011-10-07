@@ -84,7 +84,6 @@ public class AzureTemplate implements StorageOperations {
     /**
      * @param containerName
      * @return
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#checkContainerStatus(java.lang.String)
      */
     public ContainerStatus checkContainerStatus(String containerName) {
@@ -103,7 +102,6 @@ public class AzureTemplate implements StorageOperations {
 
     /**
      * @param objectName
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#deleteObject(java.lang.String)
      */
     public void deleteObject(String objectName) {
@@ -113,7 +111,6 @@ public class AzureTemplate implements StorageOperations {
     /**
      * @param containerName
      * @param objectName
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#deleteObject(java.lang.String,
      *      java.lang.String)
      */
@@ -139,7 +136,6 @@ public class AzureTemplate implements StorageOperations {
 
     /**
      * @return
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#listContainerObjectDetails()
      */
     public List<BlobDetails> listContainerObjectDetails() {
@@ -149,7 +145,6 @@ public class AzureTemplate implements StorageOperations {
     /**
      * @param containerName
      * @return
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#listContainerObjectDetails(java.lang.String)
      */
     public List<BlobDetails> listContainerObjectDetails(String containerName) {
@@ -169,7 +164,6 @@ public class AzureTemplate implements StorageOperations {
 
     /**
      * @return
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#listContainerNames()
      */
     public List<String> listContainerNames() {
@@ -185,7 +179,6 @@ public class AzureTemplate implements StorageOperations {
 
     /**
      * @param containerName
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#createContainer(java.lang.String)
      */
     public boolean createContainer(String containerName) {
@@ -205,7 +198,6 @@ public class AzureTemplate implements StorageOperations {
 
     /**
      * @param containerName
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#deleteContainer(java.lang.String)
      */
     public void deleteContainer(String containerName) {
@@ -224,24 +216,20 @@ public class AzureTemplate implements StorageOperations {
 
     /**
      * @param objectName
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAndSaveToFile(java.lang.String,
      *      File)
      */
-    public String receiveAndSaveToFile(String objectName, File toFile) throws
-            StorageResponseHandlingException {
+    public String receiveAndSaveToFile(String objectName, File toFile) {
         return receiveAndSaveToFile(defaultContainerName, objectName, toFile);
     }
 
     /**
      * @param containerName
      * @param objectName
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAndSaveToFile(java.lang.String,
      *      java.lang.String, File)
      */
-    public String receiveAndSaveToFile(String containerName, String objectName, File toFile) throws
-            StorageResponseHandlingException {
+    public String receiveAndSaveToFile(String containerName, String objectName, File toFile) {
         Assert.notNull(toFile, "File to save received data must be specified");
 
         LOG.debug("Receive file from from blob '{}' in container '{}' and save it to file '{}'", new Object[]{
@@ -290,11 +278,9 @@ public class AzureTemplate implements StorageOperations {
     /**
      * @param objectName
      * @return
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAsInputStream(java.lang.String)
      */
-    public InputStream receiveAsInputStream(String objectName) throws
-            StorageResponseHandlingException {
+    public InputStream receiveAsInputStream(String objectName) {
         return receiveAsInputStream(defaultContainerName, objectName);
     }
 
@@ -302,12 +288,10 @@ public class AzureTemplate implements StorageOperations {
      * @param containerName
      * @param objectName
      * @return
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAsInputStream(java.lang.String,
      *      java.lang.String)
      */
-    public InputStream receiveAsInputStream(String containerName, String objectName) throws
-            StorageResponseHandlingException {
+    public InputStream receiveAsInputStream(String containerName, String objectName) {
         try {
             return restService.getObject(containerName, objectName).getData();
         } catch (AzureRestCommunicationException e) {
@@ -325,11 +309,9 @@ public class AzureTemplate implements StorageOperations {
     /**
      * @param objectName
      * @return
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAsString(java.lang.String)
      */
-    public String receiveAsString(String objectName) throws
-            StorageResponseHandlingException {
+    public String receiveAsString(String objectName) {
         return receiveAsString(defaultContainerName, objectName);
     }
 
@@ -337,12 +319,10 @@ public class AzureTemplate implements StorageOperations {
      * @param containerName
      * @param objectName
      * @return
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAsString(java.lang.String,
      *      java.lang.String)
      */
-    public String receiveAsString(String containerName, String objectName) throws
-            StorageResponseHandlingException {
+    public String receiveAsString(String containerName, String objectName) {
         LOG.debug("Receive string from from blob '{}' in container '{}'", objectName, containerName);
         InputStreamBlob streamBlob;
         try {
@@ -378,7 +358,6 @@ public class AzureTemplate implements StorageOperations {
     /**
      * @param objectName
      * @param stringToSend
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.lang.String)
      */
@@ -390,7 +369,6 @@ public class AzureTemplate implements StorageOperations {
      * @param containerName
      * @param objectName
      * @param stringToSend
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.lang.String, java.lang.String)
      */
@@ -416,7 +394,6 @@ public class AzureTemplate implements StorageOperations {
 
     /**
      * @param fileToSend
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.io.File)
      */
     public String send(File fileToSend) {
@@ -426,7 +403,6 @@ public class AzureTemplate implements StorageOperations {
     /**
      * @param containerName
      * @param fileToSend
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.io.File)
      */
@@ -439,7 +415,6 @@ public class AzureTemplate implements StorageOperations {
      * @param containerName
      * @param objectName
      * @param fileToSend
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.lang.String, java.io.File)
      */
@@ -467,7 +442,6 @@ public class AzureTemplate implements StorageOperations {
     /**
      * @param objectName
      * @param is
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.io.InputStream)
      */
@@ -479,7 +453,6 @@ public class AzureTemplate implements StorageOperations {
      * @param containerName
      * @param objectName
      * @param is
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.lang.String, java.io.InputStream)
      */

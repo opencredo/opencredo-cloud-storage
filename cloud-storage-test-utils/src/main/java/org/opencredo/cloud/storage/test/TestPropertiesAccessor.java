@@ -22,7 +22,7 @@ import java.util.Properties;
 /**
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  */
-public class TestPropertiesAccessor {
+public final class TestPropertiesAccessor {
     public static final String AWS_KEY_NAME = "awsKey";
 
     public static final String AWS_SECRET_KEY_NAME = "awsSecretKey";
@@ -43,6 +43,9 @@ public class TestPropertiesAccessor {
             throw new RuntimeException("Failed to load test.properties", e);
         }
 
+    }
+
+    private TestPropertiesAccessor() {
     }
 
     public static String getDefaultTestAwsKey() {

@@ -28,7 +28,10 @@ import java.io.OutputStream;
  *
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  */
-public class StorageUtils {
+public final class StorageUtils {
+
+    private StorageUtils() {
+    }
 
     /**
      * Write InputStream to provided class.

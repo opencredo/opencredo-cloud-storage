@@ -24,16 +24,10 @@ import org.springframework.util.Assert;
 public abstract class S3Template implements StorageOperations, InitializingBean {
     protected static final Logger LOG = LoggerFactory.getLogger(S3Template.class);
     protected static final String BUCKET_NAME_CANNOT_BE_NULL = "Bucket name cannot be null";
-    private static final String BUCKET_CREATION_PROBLEM = "Bucket creation problem";
-    private static final String BUCKET_DELETION_PROBLEM = "Bucket deletion problem";
-    private static final String SERVICE_PROBLEM = "Service problem";
-    private static final String RECEIVING_FILE_PROBLEM = "Receiving file problem";
     private String defaultContainerName;
-    private AwsCredentials awsCredentials;
 
-    public S3Template(final String defaultContainerName, final AwsCredentials awsCredentials) {
+    public S3Template(final String defaultContainerName) {
         this.defaultContainerName = defaultContainerName;
-        this.awsCredentials = awsCredentials;
     }
 
     /**
@@ -45,13 +39,6 @@ public abstract class S3Template implements StorageOperations, InitializingBean 
     }
 
     public abstract ContainerStatus checkContainerStatus(String containerName);
-
-    /**
-     * @param defaultContainerName the defaultContainerName to set
-     */
-    public void setDefaultContainerName(String defaultContainerName) {
-        this.defaultContainerName = defaultContainerName;
-    }
 
     /**
      * @return the defaultContainerName

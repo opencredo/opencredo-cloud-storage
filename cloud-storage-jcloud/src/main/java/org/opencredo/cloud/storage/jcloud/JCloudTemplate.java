@@ -110,7 +110,6 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
 
     /**
      * @param containerName
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#createContainer(java.lang.String)
      */
     public boolean createContainer(String containerName) {
@@ -129,7 +128,6 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
 
     /**
      * @param containerName
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#createContainer(java.lang.String)
      */
     public void createPublicContainer(String containerName) {
@@ -141,7 +139,6 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
 
     /**
      * @param containerName
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#deleteContainer(java.lang.String)
      */
     public void deleteContainer(String containerName) {
@@ -154,7 +151,6 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
 
     /**
      * @param objectName
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#deleteObject(java.lang.String)
      */
     public void deleteObject(String objectName) {
@@ -164,7 +160,6 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
     /**
      * @param containerName
      * @param objectName
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#deleteObject(java.lang.String,
      *      java.lang.String)
      */
@@ -187,7 +182,6 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
 
     /**
      * @return
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#listContainerNames()
      */
     public List<String> listContainerNames() {
@@ -205,7 +199,6 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
 
     /**
      * @return
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#listContainerObjectDetails()
      */
     public List<BlobDetails> listContainerObjectDetails() {
@@ -215,7 +208,6 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
     /**
      * @param containerName
      * @return
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#checkContainerStatus(java.lang.String)
      */
     public ContainerStatus checkContainerStatus(String containerName) {
@@ -238,7 +230,6 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
     /**
      * @param containerName
      * @return
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#listContainerObjectDetails(java.lang.String)
      */
     public List<BlobDetails> listContainerObjectDetails(String containerName) {
@@ -265,7 +256,6 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
     /**
      * @param objectName
      * @param stringToSend
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.lang.String)
      */
@@ -277,7 +267,6 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
      * @param containerName
      * @param objectName
      * @param stringToSend
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.lang.String, java.lang.String)
      */
@@ -311,7 +300,6 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
 
     /**
      * @param fileToSend
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.io.File)
      */
     public String send(File fileToSend) {
@@ -321,7 +309,6 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
     /**
      * @param containerName
      * @param fileToSend
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.io.File)
      */
@@ -335,7 +322,6 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
      * @param containerName
      * @param objectName
      * @param fileToSend
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.lang.String, java.io.File)
      */
@@ -348,7 +334,6 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
     /**
      * @param objectName
      * @param is
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.io.InputStream)
      */
@@ -360,7 +345,6 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
      * @param containerName
      * @param objectName
      * @param is
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#send(java.lang.String,
      *      java.lang.String, java.io.InputStream)
      */
@@ -458,9 +442,6 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
     /**
      * @param keyName
      * @return
-     * @throws StorageResponseHandlingException
-     *
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAsString(java.lang.String)
      */
     public String receiveAsString(String keyName) {
@@ -471,8 +452,6 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
      * @param containerName
      * @param objectName
      * @return
-     * @throws StorageResponseHandlingException
-     *
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAsString(java.lang.String,
      *      java.lang.String)
      */
@@ -496,14 +475,10 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
     /**
      * @param objectName
      * @param toFile
-     * @throws StorageResponseHandlingException
-     *
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAndSaveToFile(java.lang.String,
      *      java.io.File)
      */
-    public String receiveAndSaveToFile(String objectName, File toFile) throws
-            StorageResponseHandlingException {
+    public String receiveAndSaveToFile(String objectName, File toFile) {
         return receiveAndSaveToFile(defaultContainerName, objectName, toFile);
     }
 
@@ -511,9 +486,6 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
      * @param containerName
      * @param objectName
      * @param toFile
-     * @throws StorageResponseHandlingException
-     *
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAndSaveToFile(java.lang.String,
      *      java.lang.String, java.io.File)
      */
@@ -564,9 +536,6 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
     /**
      * @param objectName
      * @return
-     * @throws StorageResponseHandlingException
-     *
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAsInputStream(java.lang.String)
      */
     public InputStream receiveAsInputStream(String objectName) {
@@ -577,9 +546,6 @@ public class JCloudTemplate implements StorageOperations, InitializingBean {
      * @param containerName
      * @param objectName
      * @return
-     * @throws StorageResponseHandlingException
-     *
-     * @
      * @see org.opencredo.cloud.storage.StorageOperations#receiveAsInputStream(java.lang.String,
      *      java.lang.String)
      */

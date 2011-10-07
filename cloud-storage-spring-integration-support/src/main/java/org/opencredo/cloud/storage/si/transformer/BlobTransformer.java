@@ -25,7 +25,6 @@ public interface BlobTransformer<T> {
     /**
      * @param message SI message containing {@link BlobDetails} as payload.
      * @return SI message containing any type as message payload.
-     * @
      */
     Message<T> transform(Message<BlobDetails> message);
 }
