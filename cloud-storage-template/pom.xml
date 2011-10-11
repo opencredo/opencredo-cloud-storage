@@ -3,14 +3,14 @@
     <parent>
         <groupId>org.opencredo.cloud.storage</groupId>
         <artifactId>opencredo-cloud-storage-parent</artifactId>
-        <version>1.2.0</version>
+        <version>1.2.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.opencredo.cloud.storage</groupId>
     <artifactId>cloud-storage-template</artifactId>
     <name>OpenCredo Cloud Storage Template</name>
-    <version>1.2.0</version>
+    <version>1.2.0-SNAPSHOT</version>
 
     <description>
         An abstract API to access different cloud storage provider services.
