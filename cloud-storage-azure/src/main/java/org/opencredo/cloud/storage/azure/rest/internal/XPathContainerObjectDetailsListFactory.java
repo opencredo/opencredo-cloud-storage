@@ -14,17 +14,6 @@
  */
 package org.opencredo.cloud.storage.azure.rest.internal;
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.dom.DOMSource;
-
 import org.apache.http.HttpEntity;
 import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.azure.rest.AzureRestResponseHandlingException;
@@ -38,14 +27,23 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.dom.DOMSource;
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 /**
  * Container object details factory using XPath to get data.
- * 
+ *
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
- * 
  */
 public class XPathContainerObjectDetailsListFactory implements ContainerObjectDetailsListFactory {
-    private final static Logger LOG = LoggerFactory.getLogger(XPathContainerObjectDetailsListFactory.class);
+    private static final Logger LOG = LoggerFactory.getLogger(XPathContainerObjectDetailsListFactory.class);
 
     private final XPathOperations xpathOperations;
 
@@ -61,6 +59,7 @@ public class XPathContainerObjectDetailsListFactory implements ContainerObjectDe
      * @param entity
      * @return
      * @throws AzureRestResponseHandlingException
+     *
      * @see org.opencredo.cloud.storage.azure.rest.ContainerObjectDetailsListFactory#createContainerObjectsList(org.apache.http.HttpEntity)
      */
     @SuppressWarnings("unchecked")
@@ -93,7 +92,7 @@ public class XPathContainerObjectDetailsListFactory implements ContainerObjectDe
 
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("Create blob with - conatiner-name: '{}', name: '{}', eTag: '{}', last-modified: '{}'",
-                            new Object[] { containerName, name, eTag, dateStr });
+                            new Object[]{containerName, name, eTag, dateStr});
                 }
 
                 date = AzureRestServiceUtil.parseRFC1123TimeString(dateStr);

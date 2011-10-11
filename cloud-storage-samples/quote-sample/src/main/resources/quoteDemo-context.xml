@@ -1,96 +1,96 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans:beans xmlns="http://www.springframework.org/schema/integration"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
-	xmlns:file="http://www.springframework.org/schema/integration/file"
-	xmlns:cloud="http://www.opencredo.com/schema/cloud-storage/integration"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans
-			http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:file="http://www.springframework.org/schema/integration/file"
+             xmlns:cloud="http://www.opencredo.com/schema/cloud-storage/integration"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 			http://www.springframework.org/schema/integration
-			http://www.springframework.org/schema/integration/spring-integration-1.0.xsd
+			http://www.springframework.org/schema/integration/spring-integration-2.0.xsd
 			http://www.opencredo.com/schema/cloud-storage/integration
-			http://www.opencredo.com/schema/cloud-storage/integration/opencredo-si-cloud-storage-1.1.xsd">
+			http://www.opencredo.com/schema/cloud-storage/integration/opencredo-si-cloud-storage-1.2.xsd">
 
-	<!--
-		Properties with S3 credentials and default container (bucket) where
-		blobs will be saved.
-	-->
-	<beans:bean
-		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<beans:property name="locations">
-			<beans:value>classpath:quote.properties</beans:value>
-		</beans:property>
-	</beans:bean>
+    <!--
+         Properties with S3 credentials and default container (bucket) where
+         blobs will be saved.
+     -->
+    <beans:bean
+            class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <beans:property name="locations">
+            <beans:value>classpath:quote.properties</beans:value>
+        </beans:property>
+    </beans:bean>
 
-	<!-- Credentials used to connect to S3 -->
-	<beans:bean id="awsCredentials"
-		class="org.opencredo.cloud.storage.s3.AwsCredentials">
-		<beans:constructor-arg value="${awsKey}" />
-		<beans:constructor-arg value="${awsSecretKey}" />
-	</beans:bean>
+    <!-- Credentials used to connect to S3 -->
+    <beans:bean id="awsCredentials"
+                class="org.opencredo.cloud.storage.s3.AwsCredentials">
+        <beans:constructor-arg value="${awsKey}"/>
+        <beans:constructor-arg value="${awsSecretKey}"/>
+    </beans:bean>
 
-	<!-- Template to access S3 cloud storage -->
-	<beans:bean id="template" class="org.opencredo.cloud.storage.s3.S3Template">
-		<beans:constructor-arg ref="awsCredentials" />
-		<beans:constructor-arg value="${defaultContainerName}" />
-	</beans:bean>
+    <!-- Template to access S3 cloud storage -->
+    <beans:bean id="template" class="org.opencredo.cloud.storage.s3.JCloudS3Template">
+        <beans:constructor-arg ref="awsCredentials"/>
+        <beans:constructor-arg value="${defaultContainerName}"/>
+    </beans:bean>
 
-	<!-- ++++++++++++++++++++++++++++ -->
-	<!--             SEND             -->
-	<!-- ++++++++++++++++++++++++++++ -->
+    <!-- ++++++++++++++++++++++++++++ -->
+    <!--             SEND             -->
+    <!-- ++++++++++++++++++++++++++++ -->
 
-	<!-- Gateway to send ticker to the channel -->
-	<gateway id="tickerUploader"
-		service-interface="org.opencredo.cloud.storage.samples.quote.TickerUploader"
-		default-request-channel="tickersChannel" />
+    <!-- Gateway to send ticker to the channel -->
+    <gateway id="tickerUploader"
+             service-interface="org.opencredo.cloud.storage.samples.quote.TickerUploader"
+             default-request-channel="tickersChannel"/>
 
-	<!-- Ticker channel -->
-	<channel id="tickersChannel" />
+    <!-- Ticker channel -->
+    <channel id="tickersChannel"/>
 
-	<!-- Adapter which saves ticker to the cloud storage -->
-	<cloud:outbound-channel-adapter
-		container="${defaultContainerName}" template="template" channel="tickersChannel" />
+    <!-- Adapter which saves ticker to the cloud storage -->
+    <cloud:outbound-channel-adapter
+            container="${defaultContainerName}" template="template" channel="tickersChannel"/>
 
-	<!-- ++++++++++++++++++++++++++++ -->
-	<!--     RECEIVE BLOB DETAILS     -->
-	<!-- ++++++++++++++++++++++++++++ -->
+    <!-- ++++++++++++++++++++++++++++ -->
+    <!--     RECEIVE BLOB DETAILS     -->
+    <!-- ++++++++++++++++++++++++++++ -->
 
-	<!-- Filter to accept blob once -->
-	<beans:bean id="acceptOnceBlobNameFilter"
-		class="org.opencredo.cloud.storage.si.filter.internal.AcceptOnceBlobNameFilter" />
+    <!-- Filter to accept blob once -->
+    <beans:bean id="acceptOnceBlobNameFilter"
+                class="org.opencredo.cloud.storage.si.filter.internal.AcceptOnceBlobNameFilter"/>
 
-	<!-- Adapter which looks for blobs in cloud storage -->
-	<cloud:inbound-channel-adapter container="${defaultContainerName}"
-		template="template" channel="blobDetailsChannel" filter="acceptOnceBlobNameFilter">
-		<poller>
-			<interval-trigger interval="5000" />
-		</poller>
-	</cloud:inbound-channel-adapter>
+    <!-- Adapter which looks for blobs in cloud storage -->
+    <cloud:inbound-channel-adapter container="${defaultContainerName}"
+                                   template="template" channel="blobDetailsChannel" filter="acceptOnceBlobNameFilter">
+        <poller>
+            <interval-trigger interval="5000"/>
+        </poller>
+    </cloud:inbound-channel-adapter>
 
-	<!-- BlobDetails channel -->
-	<channel id="blobDetailsChannel" />
+    <!-- BlobDetails channel -->
+    <channel id="blobDetailsChannel"/>
 
-	<!-- ++++++++++++++++++++++++++++ -->
-	<!--         RECEIVE BLOB         -->
-	<!-- ++++++++++++++++++++++++++++ -->
+    <!-- ++++++++++++++++++++++++++++ -->
+    <!--         RECEIVE BLOB         -->
+    <!-- ++++++++++++++++++++++++++++ -->
 
-	<!-- Download blob specified in BlobDetails -->
-	<service-activator input-channel="blobDetailsChannel"
-		ref="blobDetailsTransformer" method="transform" output-channel="blobChannel" />
+    <!-- Download blob specified in BlobDetails -->
+    <service-activator input-channel="blobDetailsChannel"
+                       ref="blobDetailsTransformer" method="transform" output-channel="blobChannel"/>
 
-	<!-- BlobDetails Transformer bean -->
-	<beans:bean id="blobDetailsTransformer"
-		class="org.opencredo.cloud.storage.si.transformer.internal.BlobToStringTransformer">
-		<beans:constructor-arg ref="template" />
-	</beans:bean>
+    <!-- BlobDetails Transformer bean -->
+    <beans:bean id="blobDetailsTransformer"
+                class="org.opencredo.cloud.storage.si.transformer.internal.BlobToStringTransformer">
+        <beans:constructor-arg ref="template"/>
+    </beans:bean>
 
-	<!-- Received blobs (tickers) channel -->
-	<channel id="blobChannel" />
+    <!-- Received blobs (tickers) channel -->
+    <channel id="blobChannel"/>
 
-	<!-- Calculates quote for ticker -->
-	<service-activator input-channel="blobChannel" ref="quoteService"
-		method="lookupQuote" />
-	<beans:bean id="quoteService"
-		class="org.opencredo.cloud.storage.samples.quote.QuoteService" />
+    <!-- Calculates quote for ticker -->
+    <service-activator input-channel="blobChannel" ref="quoteService"
+                       method="lookupQuote"/>
+    <beans:bean id="quoteService"
+                class="org.opencredo.cloud.storage.samples.quote.QuoteService"/>
 
 
 </beans:beans>

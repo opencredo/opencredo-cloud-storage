@@ -18,9 +18,8 @@ import org.springframework.util.Assert;
 
 /**
  * Credentials used to interact with Azure cloud storage.
- * 
+ *
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
- * 
  */
 public class AzureCredentials {
 
@@ -29,7 +28,7 @@ public class AzureCredentials {
 
     /**
      * @param accountName
-     * @param sharedKey
+     * @param secretKey
      */
     public AzureCredentials(String accountName, String secretKey) {
         super();
@@ -47,7 +46,7 @@ public class AzureCredentials {
     }
 
     /**
-     * @return the sharedKey
+     * @return the secretKey
      */
     public String getSecretKey() {
         return secretKey;

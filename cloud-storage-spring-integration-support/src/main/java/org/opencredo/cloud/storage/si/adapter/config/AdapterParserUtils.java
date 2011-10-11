@@ -17,10 +17,10 @@ package org.opencredo.cloud.storage.si.adapter.config;
 
 /**
  * Utility methods and constants for adapter parsers.
- * 
+ *
  * @author Eren Aykin (eren.aykin@opencredo.com)
  */
-public class AdapterParserUtils {
+public final class AdapterParserUtils {
 
     static final String TEMPLATE_REF_ATTRIBUTE = "template";
 
@@ -32,5 +32,8 @@ public class AdapterParserUtils {
 
     // Outbound Properties
     static final String NAME_BUILDER_ATTRIBUTE = "name-builder";
+
+    private AdapterParserUtils() {
+    }
 
 }

@@ -15,10 +15,6 @@
 
 package org.opencredo.cloud.storage.si.transformer.internal;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
 import org.apache.commons.io.IOUtils;
 import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.StorageOperations;
@@ -26,8 +22,12 @@ import org.opencredo.cloud.storage.si.transformer.AbstractBlobTransformer;
 import org.opencredo.cloud.storage.si.transformer.BlobTransformException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.integration.core.Message;
-import org.springframework.integration.message.MessageBuilder;
+import org.springframework.integration.Message;
+import org.springframework.integration.support.MessageBuilder;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author Eren Aykin (eren.aykin@opencredo.com)
@@ -35,7 +35,7 @@ import org.springframework.integration.message.MessageBuilder;
  */
 public class BlobToByteArrayTransformer extends AbstractBlobTransformer<byte[]> {
 
-    private final static Logger LOG = LoggerFactory.getLogger(BlobToByteArrayTransformer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(BlobToByteArrayTransformer.class);
 
     /**
      * @param template
@@ -56,7 +56,7 @@ public class BlobToByteArrayTransformer extends AbstractBlobTransformer<byte[]> 
      * @param message
      * @throws IOException
      */
-    public Message<byte[]> doTransform(Message<BlobDetails> message) throws BlobTransformException {
+    public Message<byte[]> doTransform(Message<BlobDetails> message) {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Transform blob to byte array: '{}'", String.valueOf(message.getPayload()));
         }
@@ -70,7 +70,7 @@ public class BlobToByteArrayTransformer extends AbstractBlobTransformer<byte[]> 
         } catch (IOException e) {
             throw new BlobTransformException("Failed to copy blob [" + payload + "] byte stream to byte array", e);
         }
-       
+
         builder = (MessageBuilder<byte[]>) MessageBuilder.withPayload(output.toByteArray())//
                 .copyHeaders(message.getHeaders());
         Message<byte[]> blobMessage = builder.build();

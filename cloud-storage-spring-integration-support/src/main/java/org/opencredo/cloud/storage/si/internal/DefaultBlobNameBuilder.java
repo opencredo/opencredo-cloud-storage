@@ -16,7 +16,7 @@
 package org.opencredo.cloud.storage.si.internal;
 
 import org.opencredo.cloud.storage.si.BlobNameBuilder;
-import org.springframework.integration.core.Message;
+import org.springframework.integration.Message;
 
 /**
  * @author Eren Aykin (eren.aykin@opencredo.com)

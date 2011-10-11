@@ -1,93 +1,93 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<parent>
-		<artifactId>opencredo-cloud-storage-parent</artifactId>
-		<groupId>org.opencredo.cloud.storage</groupId>
-		<version>1.2-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
-	</parent>
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.opencredo.cloud.storage</groupId>
-	<artifactId>cloud-storage-test-utils</artifactId>
-	<name>OpenCredo Cloud Storage Test Utils</name>
-	<version>1.2-SNAPSHOT</version>
-	
-	<description>
-		Classes required by tests in sibling OpenCredo-cloud-storage modules.
-	</description>
+    <parent>
+        <artifactId>opencredo-cloud-storage-parent</artifactId>
+        <groupId>org.opencredo.cloud.storage</groupId>
+        <version>1.2.0</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.opencredo.cloud.storage</groupId>
+    <artifactId>cloud-storage-test-utils</artifactId>
+    <name>OpenCredo Cloud Storage Test Utils</name>
+    <version>1.2.0</version>
 
-	<licenses>
-		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
+    <description>
+        Classes required by tests in sibling OpenCredo-cloud-storage modules.
+    </description>
 
-	<scm>
-		<connection>scm:git:git://github.com/opencredo/opencredo-cloud-storage.git</connection>
-		<url>http://github.com/opencredo/opencredo-cloud-storage</url>
-	</scm>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
-	<issueManagement>
-		<system>OpenCredo Cloud Storage</system>
-		<url>http://dev.opencredo.com/jira/browse/OCCS</url>
-	</issueManagement>
+    <scm>
+        <connection>scm:git:git://github.com/dnlegge/opencredo-cloud-storage.git</connection>
+        <url>http://github.com/opencredo/opencredo-cloud-storage</url>
+    </scm>
 
-	<developers>
-		<developer>
-			<id>tomas.lukosius</id>
-			<name>Tomas Lukosius</name>
-			<email>tomas.lukosius@opencredo.com</email>
-			<organization>OpenCredo</organization>
-			<organizationUrl>http://www.opencredo.com</organizationUrl>
-			<roles>
-				<role>Project Admin</role>
-				<role>Developer</role>
-			</roles>
-			<timezone>+0</timezone>
-		</developer>
-		<developer>
-			<id>jonas.partner</id>
-			<name>Jonas Partner</name>
-			<email>jonas.partner@opencredo.com</email>
-			<organization>OpenCredo</organization>
-			<organizationUrl>http://www.opencredo.com</organizationUrl>
-			<roles>
-				<role>Project Admin</role>
-				<role>Developer</role>
-			</roles>
-			<timezone>+0</timezone>
-		</developer>
-	</developers>
-	
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<version>${springVersion}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.objenesis</groupId>
-			<artifactId>objenesis</artifactId>
-			<version>1.2</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>
-			<version>1.8.0</version>
-			<scope>compile</scope>
-		</dependency>
-	</dependencies>
+    <issueManagement>
+        <system>OpenCredo Cloud Storage</system>
+        <url>http://dev.opencredo.com/jira/browse/OCCS</url>
+    </issueManagement>
+
+    <developers>
+        <developer>
+            <id>tomas.lukosius</id>
+            <name>Tomas Lukosius</name>
+            <email>tomas.lukosius@opencredo.com</email>
+            <organization>OpenCredo</organization>
+            <organizationUrl>http://www.opencredo.com</organizationUrl>
+            <roles>
+                <role>Project Admin</role>
+                <role>Developer</role>
+            </roles>
+            <timezone>+0</timezone>
+        </developer>
+        <developer>
+            <id>jonas.partner</id>
+            <name>Jonas Partner</name>
+            <email>jonas.partner@opencredo.com</email>
+            <organization>OpenCredo</organization>
+            <organizationUrl>http://www.opencredo.com</organizationUrl>
+            <roles>
+                <role>Project Admin</role>
+                <role>Developer</role>
+            </roles>
+            <timezone>+0</timezone>
+        </developer>
+    </developers>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${springVersion}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.objenesis</groupId>
+            <artifactId>objenesis</artifactId>
+            <version>1.2</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>1.8.0</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 </project>
