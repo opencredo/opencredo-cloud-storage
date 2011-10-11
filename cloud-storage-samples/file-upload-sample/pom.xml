@@ -24,7 +24,7 @@
     </licenses>
 
     <scm>
-        <connection>scm:git:git://github.com/dnlegge/opencredo-cloud-storage.git</connection>
+        <connection>scm:git:git://github.com/opencredo/opencredo-cloud-storage.git</connection>
         <url>http://github.com/opencredo/opencredo-cloud-storage</url>
     </scm>
 
