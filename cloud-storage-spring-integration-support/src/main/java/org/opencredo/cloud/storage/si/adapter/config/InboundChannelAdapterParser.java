@@ -16,8 +16,8 @@
 package org.opencredo.cloud.storage.si.adapter.config;
 
 import org.opencredo.cloud.storage.si.adapter.ReadingMessageSource;
+import org.springframework.beans.BeanMetadataElement;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
-import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.integration.config.xml.AbstractPollingInboundChannelAdapterParser;
 import org.springframework.util.StringUtils;
@@ -34,7 +34,7 @@ public class InboundChannelAdapterParser extends AbstractPollingInboundChannelAd
      * @param parserContext
      */
     @Override
-    protected String parseSource(Element element, ParserContext parserContext) {
+    protected BeanMetadataElement parseSource(Element element, ParserContext parserContext) {
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(ReadingMessageSource.class
                 .getName());
 
@@ -54,7 +54,6 @@ public class InboundChannelAdapterParser extends AbstractPollingInboundChannelAd
             builder.addConstructorArgReference(comparatorRef);
         }
 
-        return BeanDefinitionReaderUtils.registerWithGeneratedName(builder.getBeanDefinition(), parserContext
-                .getRegistry());
+        return builder.getBeanDefinition();
     }
 }

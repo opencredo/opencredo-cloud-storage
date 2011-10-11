@@ -14,9 +14,6 @@
  */
 package org.opencredo.cloud.storage.azure.rest.internal;
 
-import java.io.IOException;
-import java.util.List;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -40,14 +37,16 @@ import org.opencredo.cloud.storage.azure.rest.RestResponseHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.util.List;
+
 /**
  * Default implementation of basic interactions with Azure Blob REST API.
- * 
+ *
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
- * 
  */
 public class DefaultAzureRestService implements AzureRestService {
-    private final static Logger LOG = LoggerFactory.getLogger(DefaultAzureRestService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultAzureRestService.class);
 
     private String blobUrlFormat = "http://%s.blob.core.windows.net/%s";
     private final RestResponseHandler responseHandler;
@@ -56,11 +55,10 @@ public class DefaultAzureRestService implements AzureRestService {
     private final RequestAuthorizationInterceptor authorizationInterceptor;
 
     /**
-     * 
-     * @param credentials
-     *            Azure cloud storage credentials required to sign request.
+     * @param credentials               Azure cloud storage credentials required to sign request.
      * @param containerNamesListFactory
      * @param containerObjectDetailsListFactory
+     *
      */
     public DefaultAzureRestService(final AzureCredentials credentials,
                                    final ContainerNamesListFactory containerNamesListFactory,
@@ -74,7 +72,9 @@ public class DefaultAzureRestService implements AzureRestService {
     /**
      * @param containerName
      * @throws AzureRestCommunicationException
+     *
      * @throws AzureRestResponseHandlingException
+     *
      * @see org.opencredo.cloud.storage.azure.rest.AzureRestService#createContainer(java.lang.String)
      */
     public void createContainer(String containerName) throws AzureRestCommunicationException,
@@ -103,7 +103,9 @@ public class DefaultAzureRestService implements AzureRestService {
     /**
      * @param containerName
      * @throws AzureRestCommunicationException
+     *
      * @throws AzureRestResponseHandlingException
+     *
      * @see org.opencredo.cloud.storage.azure.rest.AzureRestService#deleteContainer(java.lang.String)
      */
     public void deleteContainer(String containerName) throws AzureRestCommunicationException,
@@ -133,7 +135,9 @@ public class DefaultAzureRestService implements AzureRestService {
      * @param containerName
      * @param blobName
      * @throws AzureRestCommunicationException
+     *
      * @throws AzureRestResponseHandlingException
+     *
      * @see org.opencredo.cloud.storage.azure.rest.AzureRestService#deleteObject(java.lang.String,
      *      java.lang.String)
      */
@@ -148,8 +152,8 @@ public class DefaultAzureRestService implements AzureRestService {
         try {
             HttpResponse response = client.execute(req);
             if (LOG.isDebugEnabled()) {
-                LOG.debug("Delete Azure blob '{}' from container '{}' response status line: '{}'", new Object[] {
-                        blobName, containerName, response.getStatusLine() });
+                LOG.debug("Delete Azure blob '{}' from container '{}' response status line: '{}'", new Object[]{
+                        blobName, containerName, response.getStatusLine()});
             }
 
             responseHandler.handleDeleteObjectResponse(response, containerName, blobName);
@@ -167,7 +171,9 @@ public class DefaultAzureRestService implements AzureRestService {
      * @param blobName
      * @return
      * @throws AzureRestCommunicationException
+     *
      * @throws AzureRestResponseHandlingException
+     *
      * @see org.opencredo.cloud.storage.azure.rest.AzureRestService#getObject(java.lang.String,
      *      java.lang.String)
      */
@@ -186,7 +192,7 @@ public class DefaultAzureRestService implements AzureRestService {
             HttpResponse response = client.execute(req);
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Receive blob '{}' from Azure container '{}' as string response status line: '{}'",
-                        new Object[] { blobName, containerName, response.getStatusLine() });
+                        new Object[]{blobName, containerName, response.getStatusLine()});
             }
 
             return responseHandler.handleGetObjectResponse(response, containerName, blobName);
@@ -202,7 +208,9 @@ public class DefaultAzureRestService implements AzureRestService {
     /**
      * @return
      * @throws AzureRestCommunicationException
+     *
      * @throws AzureRestResponseHandlingException
+     *
      * @see org.opencredo.cloud.storage.azure.rest.AzureRestService#listContainerNames()
      */
     public List<String> listContainerNames() throws AzureRestCommunicationException, AzureRestResponseHandlingException {
@@ -228,8 +236,11 @@ public class DefaultAzureRestService implements AzureRestService {
      * @param containerName
      * @param blob
      * @throws AzureRestRequestCreationException
+     *
      * @throws AzureRestCommunicationException
+     *
      * @throws AzureRestResponseHandlingException
+     *
      * @see org.opencredo.cloud.storage.azure.rest.AzureRestService#putObject(java.lang.String,
      *      org.opencredo.cloud.storage.azure.model.Blob)
      */
@@ -257,8 +268,8 @@ public class DefaultAzureRestService implements AzureRestService {
             HttpResponse response = client.execute(req);
             LOG.debug("Response status: '{}'", response.getStatusLine());
             if (LOG.isDebugEnabled()) {
-                LOG.debug("Send blob '{}' to Azure container '{}' response status line: '{}'", new Object[] {
-                        blob.getName(), containerName, response.getStatusLine() });
+                LOG.debug("Send blob '{}' to Azure container '{}' response status line: '{}'", new Object[]{
+                        blob.getName(), containerName, response.getStatusLine()});
             }
 
             responseHandler.handlePutObjectResponse(response, containerName, blob);
@@ -277,7 +288,9 @@ public class DefaultAzureRestService implements AzureRestService {
      * @param containerName
      * @return
      * @throws AzureRestCommunicationException
+     *
      * @throws AzureRestResponseHandlingException
+     *
      * @see org.opencredo.cloud.storage.azure.rest.AzureRestService#listContainerObjectDetails(java.lang.String)
      */
     public List<BlobDetails> listContainerObjectDetails(String containerName) throws AzureRestCommunicationException,
@@ -304,7 +317,6 @@ public class DefaultAzureRestService implements AzureRestService {
     }
 
     /**
-     * 
      * @return
      */
     private HttpClient createClient() {
@@ -317,7 +329,9 @@ public class DefaultAzureRestService implements AzureRestService {
      * @param containerName
      * @return
      * @throws AzureRestCommunicationException
+     *
      * @throws AzureRestResponseHandlingException
+     *
      * @see org.opencredo.cloud.storage.azure.rest.AzureRestService#checkContainerStatus(java.lang.String)
      */
     public ContainerStatus checkContainerStatus(String containerName) throws AzureRestCommunicationException,

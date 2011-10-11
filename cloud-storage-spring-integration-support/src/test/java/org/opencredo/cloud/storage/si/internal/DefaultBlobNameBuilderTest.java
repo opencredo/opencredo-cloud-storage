@@ -15,12 +15,11 @@
 
 package org.opencredo.cloud.storage.si.internal;
 
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
-import org.opencredo.cloud.storage.si.internal.DefaultBlobNameBuilder;
-import org.springframework.integration.core.Message;
-import org.springframework.integration.message.MessageBuilder;
+import org.springframework.integration.Message;
+import org.springframework.integration.support.MessageBuilder;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Eren Aykin (eren.aykin@opencredo.com)

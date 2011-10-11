@@ -16,12 +16,11 @@ package org.opencredo.cloud.storage.si.transformer;
 
 import org.opencredo.cloud.storage.BlobDetails;
 import org.opencredo.cloud.storage.StorageOperations;
-import org.springframework.integration.core.Message;
+import org.springframework.integration.Message;
 import org.springframework.util.Assert;
 
 /**
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
- * 
  */
 public abstract class AbstractBlobTransformer<T> implements BlobTransformer<T> {
 
@@ -47,13 +46,12 @@ public abstract class AbstractBlobTransformer<T> implements BlobTransformer<T> {
      * That is 'template method' pattern implementation. Extensions of this
      * class should not worry about deleting blob after it was downloaded and
      * transformed to some other form.
-     * 
+     *
      * @param message
      * @return
-     * @throws BlobTransformException
      * @see org.opencredo.cloud.storage.si.transformer.BlobTransformer#transform(org.springframework.integration.core.Message)
      */
-    public Message<T> transform(Message<BlobDetails> message) throws BlobTransformException {
+    public Message<T> transform(Message<BlobDetails> message) {
         Assert.notNull(message.getPayload(), "Transformer expects message payload");
         Message<T> result = doTransform(message);
 
@@ -63,13 +61,10 @@ public abstract class AbstractBlobTransformer<T> implements BlobTransformer<T> {
     }
 
     /**
-     * 
-     * @param message
-     *            SI message containing {@link BlobDetails} as payload.
+     * @param message SI message containing {@link BlobDetails} as payload.
      * @return SI message containing any type as message payload.
-     * @throws BlobTransformException
      */
-    protected abstract Message<T> doTransform(Message<BlobDetails> message) throws BlobTransformException;
+    protected abstract Message<T> doTransform(Message<BlobDetails> message);
 
     /**
      * @param containerName

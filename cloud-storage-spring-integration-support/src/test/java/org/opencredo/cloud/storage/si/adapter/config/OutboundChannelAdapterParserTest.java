@@ -15,11 +15,6 @@
 
 package org.opencredo.cloud.storage.si.adapter.config;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import org.junit.Test;
 import org.opencredo.cloud.storage.si.BlobNameBuilder;
 import org.opencredo.cloud.storage.si.adapter.WritingMessageHandler;
@@ -28,7 +23,12 @@ import org.opencredo.cloud.storage.test.TestPropertiesAccessor;
 import org.springframework.beans.DirectFieldAccessor;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.integration.core.Message;
+import org.springframework.integration.Message;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * @author Eren Aykin (eren.aykin@opencredo.com)

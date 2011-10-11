@@ -1,71 +1,71 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<parent>
-		<artifactId>cloud-storage-samples</artifactId>
-		<groupId>org.opencredo.cloud.storage</groupId>
-		<version>1.2-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
-	</parent>
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.opencredo.cloud.storage</groupId>
-	<artifactId>file-upload-sample</artifactId>
-	<name>OpenCredo Cloud Storage Samples - File upload</name>
-	<version>1.2-SNAPSHOT</version>
+    <parent>
+        <artifactId>cloud-storage-samples</artifactId>
+        <groupId>org.opencredo.cloud.storage</groupId>
+        <version>1.2.0</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.opencredo.cloud.storage</groupId>
+    <artifactId>file-upload-sample</artifactId>
+    <name>OpenCredo Cloud Storage Samples - File upload</name>
+    <version>1.2.0</version>
 
-	<description>
-		File upload sample to Microsoft Azure Blob Service. 
-	</description>
+    <description>
+        File upload sample to Microsoft Azure Blob Service.
+    </description>
 
-	<licenses>
-		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
-	<scm>
-		<connection>scm:git:git://github.com/opencredo/opencredo-cloud-storage.git</connection>
-		<url>http://github.com/opencredo/opencredo-cloud-storage</url>
-	</scm>
+    <scm>
+        <connection>scm:git:git://github.com/dnlegge/opencredo-cloud-storage.git</connection>
+        <url>http://github.com/opencredo/opencredo-cloud-storage</url>
+    </scm>
 
-	<issueManagement>
-		<system>OpenCredo Cloud Storage</system>
-		<url>http://dev.opencredo.com/jira/browse/OCCS</url>
-	</issueManagement>
+    <issueManagement>
+        <system>OpenCredo Cloud Storage</system>
+        <url>http://dev.opencredo.com/jira/browse/OCCS</url>
+    </issueManagement>
 
-	<developers>
-		<developer>
-			<id>tomas.lukosius</id>
-			<name>Tomas Lukosius</name>
-			<email>tomas.lukosius@opencredo.com</email>
-			<organization>OpenCredo</organization>
-			<organizationUrl>http://www.opencredo.com</organizationUrl>
-			<roles>
-				<role>Project Admin</role>
-				<role>Developer</role>
-			</roles>
-			<timezone>+0</timezone>
-		</developer>
-		<developer>
-			<id>jonas.partner</id>
-			<name>Jonas Partner</name>
-			<email>jonas.partner@opencredo.com</email>
-			<organization>OpenCredo</organization>
-			<organizationUrl>http://www.opencredo.com</organizationUrl>
-			<roles>
-				<role>Project Admin</role>
-				<role>Developer</role>
-			</roles>
-			<timezone>+0</timezone>
-		</developer>
-	</developers>
+    <developers>
+        <developer>
+            <id>tomas.lukosius</id>
+            <name>Tomas Lukosius</name>
+            <email>tomas.lukosius@opencredo.com</email>
+            <organization>OpenCredo</organization>
+            <organizationUrl>http://www.opencredo.com</organizationUrl>
+            <roles>
+                <role>Project Admin</role>
+                <role>Developer</role>
+            </roles>
+            <timezone>+0</timezone>
+        </developer>
+        <developer>
+            <id>jonas.partner</id>
+            <name>Jonas Partner</name>
+            <email>jonas.partner@opencredo.com</email>
+            <organization>OpenCredo</organization>
+            <organizationUrl>http://www.opencredo.com</organizationUrl>
+            <roles>
+                <role>Project Admin</role>
+                <role>Developer</role>
+            </roles>
+            <timezone>+0</timezone>
+        </developer>
+    </developers>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.opencredo.cloud.storage</groupId>
-			<artifactId>cloud-storage-azure</artifactId>
-			<version>${project.parent.version}</version>
-			<scope>compile</scope>
-		</dependency>
-	</dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>org.opencredo.cloud.storage</groupId>
+            <artifactId>cloud-storage-azure</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 </project>

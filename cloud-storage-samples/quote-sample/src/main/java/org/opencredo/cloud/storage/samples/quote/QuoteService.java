@@ -15,19 +15,19 @@
 
 package org.opencredo.cloud.storage.samples.quote;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.integration.Message;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Random;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.integration.core.Message;
 
 /**
  * @author Eren Aykin (eren.aykin@opencredo.com)
  */
 public class QuoteService {
-    private final static Logger LOG = LoggerFactory.getLogger(QuoteService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(QuoteService.class);
 
     public void lookupQuote(Message<String> tickerMessage) {
         BigDecimal price = new BigDecimal(new Random().nextDouble() * 100);

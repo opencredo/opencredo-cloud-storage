@@ -15,25 +15,28 @@
 
 package org.opencredo.cloud.storage.samples.quote;
 
-import java.util.Random;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.integration.message.MessageBuilder;
+import org.springframework.integration.support.MessageBuilder;
+
+import java.util.Random;
 
 /**
  * In order to run this sample you have to have account in Amazon AWS.
  * Amazon AWS account details should be specified in properties file:
  * quote.properties.
- * 
+ * <p/>
  * This sample shows how to integrate cloud storage with Spring-Integration.
- * 
+ *
  * @author Eren Aykin (eren.aykin@opencredo.com)
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
  */
-public class S3QuoteDemo {
-    private final static Logger LOG = LoggerFactory.getLogger(S3QuoteDemo.class);
+public final class S3QuoteDemo {
+    private static final Logger LOG = LoggerFactory.getLogger(S3QuoteDemo.class);
+
+    private S3QuoteDemo() {
+    }
 
     public static void main(String[] args) {
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("quoteDemo-context.xml");

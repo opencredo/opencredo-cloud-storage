@@ -14,6 +14,21 @@
  */
 package org.opencredo.cloud.storage.azure.rest.internal;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.http.Header;
+import org.apache.http.HttpException;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpRequestInterceptor;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.protocol.HttpContext;
+import org.opencredo.cloud.storage.azure.AzureCredentials;
+import org.opencredo.cloud.storage.azure.rest.AzureRestServiceUtil;
+import org.opencredo.cloud.storage.azure.rest.RequestAuthorizationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -25,44 +40,27 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.http.Header;
-import org.apache.http.HttpException;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpRequestInterceptor;
-import org.apache.http.protocol.HTTP;
-import org.apache.http.protocol.HttpContext;
-import org.opencredo.cloud.storage.azure.AzureCredentials;
-import org.opencredo.cloud.storage.azure.rest.RequestAuthorizationException;
-import org.opencredo.cloud.storage.azure.rest.AzureRestServiceUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * TODO Add comments.
- * 
+ *
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
- * 
  */
 public class RequestAuthorizationInterceptor implements HttpRequestInterceptor {
-    private final static Logger LOG = LoggerFactory.getLogger(RequestAuthorizationInterceptor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RequestAuthorizationInterceptor.class);
 
     private static final String DEFAULT_STORAGE_VERSION = "2009-09-19";
 
     private enum MandatoryHeader {
         X_MS_DATE("x-ms-date"), X_MS_VERSION("x-ms-version");
 
-        String headerName;
+        private String headerName;
 
         private MandatoryHeader(String headerName) {
             this.headerName = headerName;
         }
     }
 
-    private final String[] standardHeaders = { HTTP.CONTENT_ENCODING,// 
+    private final String[] standardHeaders = {HTTP.CONTENT_ENCODING,//
             "Content-Language", //
             HTTP.CONTENT_LEN,//
             "Content-MD5",//
@@ -72,13 +70,13 @@ public class RequestAuthorizationInterceptor implements HttpRequestInterceptor {
             "If-Match",//
             "If-None-Match",//
             "If-Unmodified-Since",//
-            "Range" };
+            "Range"};
 
     private final AzureCredentials credentials;
     private final HeadersComparator headersComparator;
 
     /**
-     * 
+     *
      */
     public RequestAuthorizationInterceptor(AzureCredentials credentials) {
         super();
@@ -113,8 +111,6 @@ public class RequestAuthorizationInterceptor implements HttpRequestInterceptor {
     }
 
     /**
-     * 
-     * 
      * @param signatureString
      * @return
      */
@@ -143,8 +139,6 @@ public class RequestAuthorizationInterceptor implements HttpRequestInterceptor {
     }
 
     /**
-     * 
-     * 
      * @param req
      * @return
      * @throws RequestAuthorizationException
@@ -167,10 +161,8 @@ public class RequestAuthorizationInterceptor implements HttpRequestInterceptor {
     }
 
     /**
-     * 
      * @param req
-     * @param sb
-     *            Signature string.
+     * @param sb  Signature string.
      * @throws RequestAuthorizationException
      */
     private void constructStandartHeaderString(HttpRequest req, StringBuilder sb)
@@ -193,10 +185,8 @@ public class RequestAuthorizationInterceptor implements HttpRequestInterceptor {
     }
 
     /**
-     * 
      * @param req
-     * @param sb
-     *            Signature string.
+     * @param sb  Signature string.
      */
     private void constructCanonicalizedHeadersString(HttpRequest req, StringBuilder sb) {
 
@@ -224,10 +214,8 @@ public class RequestAuthorizationInterceptor implements HttpRequestInterceptor {
     }
 
     /**
-     * 
      * @param req
-     * @param sb
-     *            Signature string.
+     * @param sb  Signature string.
      * @throws RequestAuthorizationException
      */
     private void constructCanonicalizedResourceString(HttpRequest req, StringBuilder sb)
@@ -261,7 +249,6 @@ public class RequestAuthorizationInterceptor implements HttpRequestInterceptor {
     }
 
     /**
-     * 
      * @param req
      * @return
      */
@@ -277,7 +264,6 @@ public class RequestAuthorizationInterceptor implements HttpRequestInterceptor {
     }
 
     /**
-     * 
      * @param req
      */
     private void addMandatoryHeaders(HttpRequest req) {

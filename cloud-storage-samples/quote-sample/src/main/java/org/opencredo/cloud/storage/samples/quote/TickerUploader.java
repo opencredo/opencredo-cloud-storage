@@ -15,7 +15,7 @@
 
 package org.opencredo.cloud.storage.samples.quote;
 
-import org.springframework.integration.core.Message;
+import org.springframework.integration.Message;
 
 /**
  * Creates 3 letter ticker symbols and builds messages that contain them. Then

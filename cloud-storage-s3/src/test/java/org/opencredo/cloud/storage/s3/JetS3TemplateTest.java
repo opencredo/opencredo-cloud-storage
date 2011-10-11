@@ -1,18 +1,43 @@
 /* Copyright 2009-2010 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 package org.opencredo.cloud.storage.s3;
+
+import org.apache.commons.io.IOUtils;
+import org.jets3t.service.S3Service;
+import org.jets3t.service.S3ServiceException;
+import org.jets3t.service.ServiceException;
+import org.jets3t.service.model.S3Bucket;
+import org.jets3t.service.model.S3Object;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.ArgumentMatcher;
+import org.opencredo.cloud.storage.BlobDetails;
+import org.opencredo.cloud.storage.ContainerStatus;
+import org.opencredo.cloud.storage.StorageCommunicationException;
+import org.opencredo.cloud.storage.StorageException;
+import org.opencredo.cloud.storage.StorageOperations;
+import org.opencredo.cloud.storage.test.TestPropertiesAccessor;
+import org.springframework.beans.DirectFieldAccessor;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.security.NoSuchAlgorithmException;
+import java.util.Date;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.argThat;
@@ -25,38 +50,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.security.NoSuchAlgorithmException;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.io.IOUtils;
-import org.jets3t.service.S3Service;
-import org.jets3t.service.S3ServiceException;
-import org.jets3t.service.model.S3Bucket;
-import org.jets3t.service.model.S3Object;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.ArgumentMatcher;
-import org.opencredo.cloud.storage.BlobDetails;
-import org.opencredo.cloud.storage.ContainerStatus;
-import org.opencredo.cloud.storage.StorageCommunicationException;
-import org.opencredo.cloud.storage.StorageException;
-import org.opencredo.cloud.storage.StorageOperations;
-import org.opencredo.cloud.storage.s3.AwsCredentials;
-import org.opencredo.cloud.storage.s3.S3Template;
-import org.opencredo.cloud.storage.test.TestPropertiesAccessor;
-import org.springframework.beans.DirectFieldAccessor;
-
 /**
- * 
  * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
- * 
  */
-public class S3TemplateTest {
+public class JetS3TemplateTest {
 
     private AwsCredentials credentials = new AwsCredentials(TestPropertiesAccessor.getDefaultTestAwsKey(),
             TestPropertiesAccessor.getDefaultTestAwsSecretKey());
@@ -71,10 +68,10 @@ public class S3TemplateTest {
     private static InputStream TEST_INPUT_STREAM;
 
     static {
-        URL url = S3TemplateTest.class.getResource(TEST_FILE_NAME);
+        URL url = JetS3TemplateTest.class.getResource(TEST_FILE_NAME);
         TEST_FILE = new File(url.getFile());
 
-        TEST_INPUT_STREAM = S3TemplateTest.class.getResourceAsStream(TEST_FILE_NAME);
+        TEST_INPUT_STREAM = JetS3TemplateTest.class.getResourceAsStream(TEST_FILE_NAME);
     }
 
     private S3Service s3Service;
@@ -82,7 +79,7 @@ public class S3TemplateTest {
 
     @Before
     public void before() {
-        template = new S3Template(credentials, TestPropertiesAccessor.getDefaultContainerName());
+        template = new JetS3Template(credentials, TestPropertiesAccessor.getDefaultContainerName());
 
         s3Service = mock(S3Service.class);
 
@@ -93,14 +90,14 @@ public class S3TemplateTest {
     @Test(expected = StorageException.class)
     public void testConstructorWithWrongCredentials() {
         AwsCredentials invalidCredentials = new AwsCredentials("bla", "blaBla");
-        new S3Template(invalidCredentials, TestPropertiesAccessor.getDefaultContainerName());
+        new JetS3Template(invalidCredentials, TestPropertiesAccessor.getDefaultContainerName());
     }
 
     /**
      * Test method for
      * {@link org.opencredo.cloud.storage.s3.S3Template#createContainer(java.lang.String)}
      * .
-     * 
+     *
      * @throws S3ServiceException
      */
     @Test(expected = StorageCommunicationException.class)
@@ -114,7 +111,7 @@ public class S3TemplateTest {
      * Test method for
      * {@link org.opencredo.cloud.storage.s3.S3Template#createContainer(java.lang.String)}
      * .
-     * 
+     *
      * @throws S3ServiceException
      */
     @Test
@@ -128,7 +125,7 @@ public class S3TemplateTest {
      * Test method for
      * {@link org.opencredo.cloud.storage.s3.S3Template#deleteContainer(java.lang.String)}
      * .
-     * 
+     *
      * @throws S3ServiceException
      */
     @Test(expected = StorageCommunicationException.class)
@@ -141,7 +138,7 @@ public class S3TemplateTest {
      * Test method for
      * {@link org.opencredo.cloud.storage.s3.S3Template#deleteContainer(java.lang.String)}
      * .
-     * 
+     *
      * @throws S3ServiceException
      */
     @Test
@@ -155,7 +152,7 @@ public class S3TemplateTest {
      * Test method for
      * {@link org.opencredo.cloud.storage.s3.S3Template#deleteObject(java.lang.String, java.lang.String)}
      * .
-     * 
+     *
      * @throws S3ServiceException
      */
     @Test(expected = StorageCommunicationException.class)
@@ -168,7 +165,7 @@ public class S3TemplateTest {
      * Test method for
      * {@link org.opencredo.cloud.storage.s3.S3Template#deleteObject(java.lang.String, java.lang.String)}
      * .
-     * 
+     *
      * @throws S3ServiceException
      */
     @Test
@@ -181,7 +178,7 @@ public class S3TemplateTest {
     /**
      * Test method for
      * {@link org.opencredo.cloud.storage.s3.S3Template#listContainerNames()}.
-     * 
+     *
      * @throws S3ServiceException
      */
     @Test(expected = StorageCommunicationException.class)
@@ -193,12 +190,12 @@ public class S3TemplateTest {
     /**
      * Test method for
      * {@link org.opencredo.cloud.storage.s3.S3Template#listContainerNames()}.
-     * 
+     *
      * @throws S3ServiceException
      */
     @Test
     public void testListBuckets() throws S3ServiceException {
-        S3Bucket[] objs = new S3Bucket[] { new S3Bucket("name1"), new S3Bucket("name2") };
+        S3Bucket[] objs = new S3Bucket[]{new S3Bucket("name1"), new S3Bucket("name2")};
         doReturn(objs).when(s3Service).listAllBuckets();
         List<String> listBuckets = template.listContainerNames();
         verify(s3Service).listAllBuckets();
@@ -212,12 +209,12 @@ public class S3TemplateTest {
      * Test method for
      * {@link org.opencredo.cloud.storage.s3.S3Template#checkContainerStatus(java.lang.String)}
      * .
-     * 
+     *
      * @throws S3ServiceException
      */
     @Test(expected = StorageCommunicationException.class)
-    public void testGetBucketStatusCauseS3CommunicationException() throws S3ServiceException {
-        doThrow(new S3ServiceException()).when(s3Service).checkBucketStatus(eq(BUCKET_NAME));
+    public void testGetBucketStatusCauseStorageCommunicationException() throws ServiceException {
+        doThrow(new ServiceException()).when(s3Service).checkBucketStatus(eq(BUCKET_NAME));
         template.checkContainerStatus(BUCKET_NAME);
     }
 
@@ -225,11 +222,11 @@ public class S3TemplateTest {
      * Test method for
      * {@link org.opencredo.cloud.storage.s3.S3Template#checkContainerStatus(java.lang.String)}
      * .
-     * 
+     *
      * @throws S3ServiceException
      */
     @Test(expected = StorageException.class)
-    public void testGetBucketStatusCauseS3Exception() throws S3ServiceException {
+    public void testGetBucketStatusCauseStorageException() throws ServiceException {
         doReturn(-1).when(s3Service).checkBucketStatus(eq(BUCKET_NAME));
         template.checkContainerStatus(BUCKET_NAME);
     }
@@ -238,11 +235,11 @@ public class S3TemplateTest {
      * Test method for
      * {@link org.opencredo.cloud.storage.s3.S3Template#checkContainerStatus(java.lang.String)}
      * .
-     * 
+     *
      * @throws S3ServiceException
      */
     @Test
-    public void testGetBucketStatus() throws S3ServiceException {
+    public void testGetBucketStatus() throws ServiceException {
         ContainerStatus bucketStatus;
 
         doReturn(S3Service.BUCKET_STATUS__MY_BUCKET).when(s3Service).checkBucketStatus(eq(BUCKET_NAME));
@@ -264,7 +261,7 @@ public class S3TemplateTest {
      * Test method for
      * {@link org.opencredo.cloud.storage.s3.S3Template#listContainerObjectDetails(java.lang.String)}
      * .
-     * 
+     *
      * @throws S3ServiceException
      */
     @Test(expected = StorageCommunicationException.class)
@@ -277,13 +274,13 @@ public class S3TemplateTest {
      * Test method for
      * {@link org.opencredo.cloud.storage.s3.S3Template#listContainerObjectDetails(java.lang.String)}
      * .
-     * 
+     *
      * @throws S3ServiceException
      */
     @Test
     public void testListBucketObjects() throws S3ServiceException {
         long currentMills = System.currentTimeMillis();
-        S3Object[] objs = new S3Object[] { new S3Object(), new S3Object(), new S3Object() };
+        S3Object[] objs = new S3Object[]{new S3Object(), new S3Object(), new S3Object()};
         for (int i = 0; i < objs.length; i++) {
             objs[i].setKey("key" + i);
             objs[i].setETag("eTag" + i);
@@ -305,9 +302,8 @@ public class S3TemplateTest {
     /**
      * Test method for
      * {@link org.opencredo.cloud.storage.s3.S3Template#send(java.lang.String, java.lang.String)}
-     * 
+     *
      * @throws S3ServiceException
-     * 
      */
     @Test(expected = StorageCommunicationException.class)
     public void testSendStringCauseS3CommunicationException() throws S3ServiceException {
@@ -320,7 +316,7 @@ public class S3TemplateTest {
      * Test method for
      * {@link org.opencredo.cloud.storage.s3.S3Template#send(java.lang.String, java.lang.String)}
      * .
-     * 
+     *
      * @throws S3ServiceException
      */
     @Test
@@ -334,7 +330,7 @@ public class S3TemplateTest {
      * Test method for
      * {@link org.opencredo.cloud.storage.s3.S3Template#send(java.lang.String, java.lang.String, java.io.File)}
      * .
-     * 
+     *
      * @throws S3ServiceException
      */
     @Test(expected = StorageCommunicationException.class)
@@ -348,7 +344,7 @@ public class S3TemplateTest {
      * Test method for
      * {@link org.opencredo.cloud.storage.s3.S3Template#send(java.lang.String, java.lang.String, java.io.File)}
      * .
-     * 
+     *
      * @throws S3ServiceException
      */
     @Test
@@ -362,7 +358,7 @@ public class S3TemplateTest {
      * Test method for
      * {@link org.opencredo.cloud.storage.s3.S3Template#send(java.lang.String, java.lang.String, java.io.InputStream)}
      * .
-     * 
+     *
      * @throws S3ServiceException
      */
     @Test(expected = StorageCommunicationException.class)
@@ -376,7 +372,7 @@ public class S3TemplateTest {
      * Test method for
      * {@link org.opencredo.cloud.storage.s3.S3Template#send(java.lang.String, java.lang.String, java.io.InputStream)}
      * .
-     * 
+     *
      * @throws S3ServiceException
      */
     @Test
@@ -390,7 +386,7 @@ public class S3TemplateTest {
      * Test method for
      * {@link org.opencredo.cloud.storage.s3.S3Template#receiveAsString(java.lang.String)}
      * .
-     * 
+     *
      * @throws S3ServiceException
      */
     @Test(expected = StorageCommunicationException.class)
@@ -403,7 +399,7 @@ public class S3TemplateTest {
      * Test method for
      * {@link org.opencredo.cloud.storage.s3.S3Template#receiveAsString(java.lang.String)}
      * .
-     * 
+     *
      * @throws S3ServiceException
      * @throws IOException
      * @throws NoSuchAlgorithmException
@@ -422,10 +418,9 @@ public class S3TemplateTest {
      * Test method for
      * {@link org.opencredo.cloud.storage.s3.S3Template#receiveAndSaveToFile(java.lang.String, File)}
      * .
-     * 
+     *
      * @throws S3ServiceException
      * @throws IOException
-     * @throws StorageCommunicationException
      */
     @Test(expected = StorageCommunicationException.class)
     public void testReceiveAsFileCauseS3CommunicationException() throws S3ServiceException,
@@ -438,7 +433,7 @@ public class S3TemplateTest {
      * Test method for
      * {@link org.opencredo.cloud.storage.s3.S3Template#receiveAndSaveToFile(java.lang.String, File)}
      * .
-     * 
+     *
      * @throws S3ServiceException
      * @throws IOException
      * @throws NoSuchAlgorithmException
@@ -456,7 +451,7 @@ public class S3TemplateTest {
      * Test method for
      * {@link org.opencredo.cloud.storage.s3.S3Template#receiveAsInputStream(java.lang.String)}
      * .
-     * 
+     *
      * @throws S3ServiceException
      */
     @Test(expected = StorageCommunicationException.class)
@@ -469,7 +464,7 @@ public class S3TemplateTest {
      * Test method for
      * {@link org.opencredo.cloud.storage.s3.S3Template#receiveAsInputStream(java.lang.String)}
      * .
-     * 
+     *
      * @throws S3ServiceException
      * @throws IOException
      * @throws NoSuchAlgorithmException
@@ -487,9 +482,7 @@ public class S3TemplateTest {
     }
 
     /**
-     * 
      * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
-     * 
      */
     static class S3BucketNameMatcher extends ArgumentMatcher<S3Bucket> {
         public boolean matches(Object obj) {
@@ -498,9 +491,7 @@ public class S3TemplateTest {
     }
 
     /**
-     * 
      * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
-     * 
      */
     static class S3ObjectMatcher extends ArgumentMatcher<S3Object> {
         private String key;

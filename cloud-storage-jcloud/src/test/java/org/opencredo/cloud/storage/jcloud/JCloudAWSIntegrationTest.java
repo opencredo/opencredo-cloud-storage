@@ -12,9 +12,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.opencredo.cloud.storage.s3;
+package org.opencredo.cloud.storage.jcloud;
 
-import static org.junit.Assert.assertEquals;
+import org.apache.commons.io.FileUtils;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.opencredo.cloud.storage.BlobDetails;
+import org.opencredo.cloud.storage.StorageCommunicationException;
+import org.opencredo.cloud.storage.StorageOperations;
+import org.opencredo.cloud.storage.test.TestPropertiesAccessor;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,28 +29,11 @@ import java.net.URL;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.commons.io.FileUtils;
-import org.jets3t.service.S3ServiceException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.opencredo.cloud.storage.BlobDetails;
-import org.opencredo.cloud.storage.StorageCommunicationException;
-import org.opencredo.cloud.storage.StorageOperations;
-import org.opencredo.cloud.storage.s3.AwsCredentials;
-import org.opencredo.cloud.storage.s3.S3Template;
-import org.opencredo.cloud.storage.test.TestPropertiesAccessor;
+import static org.junit.Assert.assertEquals;
 
-/**
- * 
- * @author Tomas Lukosius (tomas.lukosius@opencredo.com)
- * 
- */
-@Ignore
-public class S3TemplateIntegrationTest {
+public class JCloudAWSIntegrationTest {
 
-    private AwsCredentials credentials = new AwsCredentials(TestPropertiesAccessor.getDefaultTestAwsKey(),
+    private JCloudCredentials credentials = new JCloudCredentials(TestPropertiesAccessor.getDefaultTestAwsKey(),
             TestPropertiesAccessor.getDefaultTestAwsSecretKey());
 
     private static String BUCKET_NAME = "template-test-" + UUID.randomUUID().toString();
@@ -53,7 +43,7 @@ public class S3TemplateIntegrationTest {
     private static File TEST_FILE;
 
     static {
-        URL url = S3TemplateIntegrationTest.class.getResource(TEST_FILE_NAME);
+        URL url = JCloudAWSIntegrationTest.class.getResource(TEST_FILE_NAME);
         TEST_FILE = new File(url.getFile());
     }
 
@@ -61,7 +51,7 @@ public class S3TemplateIntegrationTest {
 
     @Before
     public void before() {
-        template = new S3Template(credentials, TestPropertiesAccessor.getDefaultContainerName());
+        template = new JCloudTemplate(CloudProvider.AWS_S3, credentials, TestPropertiesAccessor.getDefaultContainerName());
         template.createContainer(BUCKET_NAME);
     }
 
@@ -81,7 +71,7 @@ public class S3TemplateIntegrationTest {
     }
 
     @Test
-    public void testRealFileUpload() throws S3ServiceException, StorageCommunicationException, IOException {
+    public void testRealFileUpload() throws IOException {
         template.send(BUCKET_NAME, KEY, TEST_FILE);
 
         File f = File.createTempFile(getClass().getSimpleName(), ".txt");
@@ -92,6 +82,6 @@ public class S3TemplateIntegrationTest {
         System.out.println("Received file content: " + receivedFileContent);
 
         String orgFileContent = FileUtils.readFileToString(TEST_FILE);
-        assertEquals("File conetent does not match", orgFileContent, receivedFileContent);
+        assertEquals("File content does not match", orgFileContent, receivedFileContent);
     }
 }
